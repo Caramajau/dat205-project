@@ -177,6 +177,9 @@ void initialize()
 		2, 3, 0
 	};
 
+	glGenVertexArrays(1, &quadVAO);
+	glBindVertexArray(quadVAO);
+
 	glGenBuffers(1, &quadVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
@@ -184,9 +187,6 @@ void initialize()
 	glGenBuffers(1, &quadEBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &quadVAO);
-	glBindVertexArray(quadVAO);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
@@ -334,7 +334,7 @@ void display(void)
 	glUseProgram(perlinShader);
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glUniform1i(glGetUniformLocation(simpleShaderProgram, "perlinTex"), 7);
+	glUniform1i(glGetUniformLocation(perlinShader, "perlinTex"), 7);
 	//labhelper::setUniformSlow(perlinShader, "perlinTex", 7);
 
 	// Temporarily set to identify for fullscreen.
