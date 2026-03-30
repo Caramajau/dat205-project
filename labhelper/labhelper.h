@@ -208,5 +208,18 @@ void concentricSampleDisk(float* dx, float* dy);
 	* Generate points with a cosine distribution on the hemisphere
 	*/
 glm::vec3 cosineSampleHemisphere();
-} // namespace labhelper
+}
+
+// Methods added from the labhelper in TDA362.
+
+///////////////////////////////////////////////////////////////////////////
+/// Used to obtain the number of elements of a C-style array
+///////////////////////////////////////////////////////////////////////////
+template<typename _T, size_t _Sz>
+inline size_t array_length(const _T(&arr)[_Sz])
+{
+	return _Sz;
+}
+
+// namespace labhelper
 #endif // LAB_GL_UTILS_H
