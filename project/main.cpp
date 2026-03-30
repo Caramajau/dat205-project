@@ -285,7 +285,8 @@ void display(void)
 	// Check if window size has changed and resize buffers as needed
 	///////////////////////////////////////////////////////////////////////////
 	{
-		int w, h;
+		int w;
+		int h;
 		SDL_GetWindowSize(g_window, &w, &h);
 		if(w != windowWidth || h != windowHeight)
 		{
@@ -300,7 +301,7 @@ void display(void)
 	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 5.0f, 2000.0f);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
-	vec4 lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
+	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
 	lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
