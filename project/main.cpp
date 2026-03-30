@@ -161,7 +161,8 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	std::vector<float> grid = perlinGrid(100);
+	int perlinSize = 100;
+	std::vector<float> grid = perlinGrid(perlinSize);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
@@ -199,7 +200,7 @@ void initialize()
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 100, 100, 0, GL_RED, GL_FLOAT, grid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinSize, perlinSize, 0, GL_RED, GL_FLOAT, grid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
