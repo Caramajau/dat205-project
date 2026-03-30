@@ -116,20 +116,40 @@ void loadShaders(bool is_reload)
 	}
 }
 
-std::vector<float> perlinGrid(int size) {
-	std::vector<float> grid(size * size);
+std::vector<float> perlinGrid(int width, int height, int gridSize) {
+	std::vector<float> grid(width * height);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			float fx = (float)x / gridSize;
+			float fy = (float)y / gridSize;
+			
+			float value = 0.0f;
+			float frequency = 1.0f;
+			float amplitude = 1.0f;
 
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < size; j++)
-		{
-			// Important to normalise
-			float x = static_cast<float>(i) / size;
-			float y = static_cast<float>(j) / size;
-			grid[i + j * size] = perlin(x, y);
+			for (int i = 0; i < 12; i++) {
+				value += perlin(fx * frequency, fy * frequency) * amplitude;
+
+				frequency *= 2;
+				amplitude /= 2;
+			}
+
+			// "Contrast"
+			value *= 1.2f;
+
+			// Clamp values, since they can go beyond 1 / -1.
+			if (value > 1.0f) {
+				value = 1.0f;
+			}
+			else if (value < -1.0f) {
+				value = -1.0f;
+			}
+
+			// remap from [-1, 1] to [0, 1]
+			value = value * 0.5f + 0.5f;
+			grid[y * width + x] = value;
 		}
 	}
-
 	return grid;
 }
 
@@ -161,8 +181,9 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	int perlinSize = 100;
-	std::vector<float> grid = perlinGrid(perlinSize);
+	int perlinWidth = 1920;
+	int perlinHeight = 1080;
+	std::vector<float> grid = perlinGrid(perlinWidth, perlinHeight, 400);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
@@ -200,7 +221,7 @@ void initialize()
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinSize, perlinSize, 0, GL_RED, GL_FLOAT, grid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinWidth, perlinHeight, 0, GL_RED, GL_FLOAT, grid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
