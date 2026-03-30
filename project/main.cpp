@@ -22,6 +22,8 @@ using namespace glm;
 #include "hdr.h"
 #include "fbo.h"
 
+#include <vector>
+#include "../build/project/perlin.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -81,6 +83,13 @@ mat4 roomModelMatrix;
 mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
+GLuint perlinTexture;
+GLuint perlinShader;
+
+GLuint quadVAO;
+GLuint quadVBO;
+GLuint quadEBO;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -100,8 +109,29 @@ void loadShaders(bool is_reload)
 	{
 		shaderProgram = shader;
 	}
+
+	shader = labhelper::loadShaderProgram("../project/perlin.vert", "../project/perlin.frag", is_reload);
+	if (shader != 0) {
+		perlinShader = shader;
+	}
 }
 
+std::vector<float> perlinGrid(int size) {
+	std::vector<float> grid(size * size);
+
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			// Important to normalise
+			float x = static_cast<float>(i) / size;
+			float y = static_cast<float>(j) / size;
+			grid[i + j * size] = perlin(x, y);
+		}
+	}
+
+	return grid;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is called once at the start of the program and never again
@@ -131,6 +161,45 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
+	std::vector<float> grid = perlinGrid(100);
+
+	// Positions (x, y, z) and texture coords (u, v)
+	float quadVertices[] = {
+		//  x,     y,   z,    u,   v
+		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+		-1.0f,  1.0f, 0.0f,  0.0f, 1.0f
+	};
+
+	unsigned int quadIndices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	glGenBuffers(1, &quadVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &quadEBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &quadVAO);
+	glBindVertexArray(quadVAO);
+
+	// Position attribute
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	// Texture coord attribute
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0);
+
+	glGenTextures(1, &perlinTexture);
+	glBindTexture(GL_TEXTURE_2D, perlinTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 100, 100, 0, GL_RED, GL_FLOAT, grid.data());
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -262,6 +331,19 @@ void display(void)
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
+	glUseProgram(perlinShader);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, perlinTexture);
+	glUniform1i(glGetUniformLocation(simpleShaderProgram, "perlinTex"), 7);
+	//labhelper::setUniformSlow(perlinShader, "perlinTex", 7);
+
+	// Temporarily set to identify for fullscreen.
+	mat4 identity = mat4(1.0f);
+	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", identity);
+
+	glBindVertexArray(quadVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 
