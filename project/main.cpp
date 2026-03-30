@@ -23,7 +23,7 @@ using namespace glm;
 #include "fbo.h"
 
 #include <vector>
-#include "../build/project/perlin.h"
+#include "perlin.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
