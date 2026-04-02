@@ -11,4 +11,4 @@ float dotGridGradient(int integerX, int integerY, float x, float y);
 
 vec2 randomGradient(int integerX, int integerY);
 
-float interpolate(float firstValue, float secondValue, float weight);
+float interpolate(float a, float b, float weight);

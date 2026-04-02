@@ -81,7 +81,10 @@ vec2 randomGradient(int integerX, int integerY) {
 }
 
 // Will interpolate between the first and second value, weight between 0 and 1.
-float interpolate(float firstValue, float secondValue, float weight) {
-    // Uses cubic interpolation, using linear leads to "box-y" result.
-    return (firstValue - secondValue) * (3.0 - weight * 2.0) * weight * weight + firstValue;
+// NOTE: The function from the original tutorial might have been wrong (or I accidentally wrote it wrong...), 
+// so instead this interpolate implementation is used, which is based on the formula mentioned in this video
+// https://www.youtube.com/watch?v=ZsEnnB2wrbI
+float interpolate(float a, float b, float weight) {
+    float t = weight * weight * weight * (weight * (weight * 6.0f - 15.0f) + 10.0f);
+    return a + (b - a) * t;
 }
