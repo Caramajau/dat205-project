@@ -82,6 +82,7 @@ labhelper::Model* sphereModel = nullptr;
 mat4 roomModelMatrix;
 mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
+mat4 perlinNoiseModelMatrix;
 
 GLuint perlinTexture;
 GLuint perlinShader;
@@ -175,6 +176,7 @@ void initialize()
 	roomModelMatrix = mat4(1.0f);
 	fighterModelMatrix = translate(15.0f * worldUp);
 	landingPadModelMatrix = mat4(1.0f);
+	perlinNoiseModelMatrix = translate(100.0f * worldUp);
 
 	///////////////////////////////////////////////////////////////////////
 	// Load environment map
@@ -188,10 +190,10 @@ void initialize()
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
 		//  x,     y,   z,    u,   v
-		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f,  0.0f, 1.0f
+		-50.0f, -50.0f, 0.0f,  0.0f, 0.0f,
+		 50.0f, -50.0f, 0.0f,  1.0f, 0.0f,
+		 50.0f,  50.0f, 0.0f,  1.0f, 1.0f,
+		-50.0f,  50.0f, 0.0f,  0.0f, 1.0f
 	};
 
 	unsigned int quadIndices[] = {
@@ -365,9 +367,7 @@ void display(void)
 	glUniform1i(glGetUniformLocation(perlinShader, "perlinTex"), 7);
 	//labhelper::setUniformSlow(perlinShader, "perlinTex", 7);
 
-	// Temporarily set to identify for fullscreen.
-	mat4 identity = mat4(1.0f);
-	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", identity);
+	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * perlinNoiseModelMatrix);
 
 	glBindVertexArray(quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
