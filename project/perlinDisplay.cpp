@@ -32,15 +32,15 @@ void PerlinDisplay::initGpuData()
 		2, 3, 0
 	};
 
-	glGenVertexArrays(1, &quadVAO);
-	glBindVertexArray(quadVAO);
+	glGenVertexArrays(1, &quadVertexArrayObject);
+	glBindVertexArray(quadVertexArrayObject);
 
-	glGenBuffers(1, &quadVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glGenBuffers(1, &quadVertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBufferObject);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &quadEBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+	glGenBuffers(1, &quadIndexBufferObject);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIndexBufferObject);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
 
 	// Position attribute
@@ -68,11 +68,10 @@ void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& pr
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glUniform1i(glGetUniformLocation(perlinShader, "perlinTex"), 7);
-	//labhelper::setUniformSlow(perlinShader, "perlinTex", 7);
 
 	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * perlinNoiseModelMatrix);
 
-	glBindVertexArray(quadVAO);
+	glBindVertexArray(quadVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

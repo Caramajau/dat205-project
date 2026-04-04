@@ -26,9 +26,9 @@ private:
 	GLuint perlinTexture = 0;
 	GLuint perlinShader = 0;
 
-	GLuint quadVAO = 0;
-	GLuint quadVBO = 0;
-	GLuint quadEBO = 0;
+	GLuint quadVertexArrayObject = 0;
+	GLuint quadVertexBufferObject = 0;
+	GLuint quadIndexBufferObject = 0;
 
 	std::vector<float> grid;
 };
