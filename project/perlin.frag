@@ -3,7 +3,7 @@
 // required by GLSL spec Sect 4.5.3 (though nvidia does not, amd does)
 precision highp float;
 
-in vec2 v_texcoord;
+in vec2 texCoord;
 
 uniform sampler2D perlinTex;
 
@@ -11,6 +11,6 @@ layout(location = 0) out vec4 fragmentColor;
 
 void main()
 {
-    float value = texture(perlinTex, v_texcoord).r;
+    float value = texture(perlinTex, texCoord).r;
     fragmentColor = vec4(value, value, value, 1.0);
 }
