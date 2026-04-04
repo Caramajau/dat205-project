@@ -1,12 +1,8 @@
 #include "perlinDisplay.h"
 
-PerlinDisplay::PerlinDisplay()
-{
-}
+PerlinDisplay::PerlinDisplay() = default;
 
-PerlinDisplay::~PerlinDisplay()
-{
-}
+PerlinDisplay::~PerlinDisplay() = default;
 
 void PerlinDisplay::loadShader(bool is_reload)
 {

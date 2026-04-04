@@ -23,8 +23,8 @@ private:
 	// (probably won't in this project)
 	mat4 perlinNoiseModelMatrix = translate(100.0f * vec3(0.0f, 1.0f, 0.0f));
 
-	GLuint perlinTexture;
-	GLuint perlinShader;
+	GLuint perlinTexture = 0;
+	GLuint perlinShader = 0;
 
 	GLuint quadVAO = 0;
 	GLuint quadVBO = 0;
