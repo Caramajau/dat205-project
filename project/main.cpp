@@ -85,6 +85,8 @@ mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
 PerlinDisplay perlinDisplay;
+float lacunarity = 2.0f;
+float peristence = 2.0f;
 
 void loadShaders(bool is_reload)
 {
@@ -137,7 +139,7 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.initGpuData();
+	perlinDisplay.initGpuData(lacunarity, peristence);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -374,6 +376,12 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
+	ImGui::SliderFloat("Lacunarity", &lacunarity, 0.0f, 10.0f);
+	ImGui::SliderFloat("Peristence", &peristence, 0.0f, 10.0f);
+
+	if (ImGui::Button("Reload texture")) {
+		perlinDisplay.reloadTexture(lacunarity, peristence);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
