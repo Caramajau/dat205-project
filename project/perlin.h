@@ -6,7 +6,7 @@
 
 using namespace glm;
 
-std::vector<float> createPerlinGrid(int width, int height, int gridSize);
+std::vector<float> createPerlinGrid(int width, int height, int gridSize, float lacunarity = 2.0f, float persistence = 2.0f);
 
 float perlin(float x, float y);
 
