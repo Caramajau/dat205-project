@@ -148,7 +148,7 @@ void initialize()
 
 	int perlinWidth = 1920;
 	int perlinHeight = 1080;
-	std::vector<float> grid = perlinGrid(perlinWidth, perlinHeight, 400);
+	std::vector<float> grid = createPerlinGrid(perlinWidth, perlinHeight, 400);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {

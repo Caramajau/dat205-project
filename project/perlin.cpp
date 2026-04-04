@@ -4,7 +4,7 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-std::vector<float> perlinGrid(int width, int height, int gridSize) {
+std::vector<float> createPerlinGrid(int width, int height, int gridSize) {
     std::vector<float> grid(width * height);
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
