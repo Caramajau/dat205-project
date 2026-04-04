@@ -117,43 +117,6 @@ void loadShaders(bool is_reload)
 	}
 }
 
-std::vector<float> perlinGrid(int width, int height, int gridSize) {
-	std::vector<float> grid(width * height);
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			float fx = (float)x / gridSize;
-			float fy = (float)y / gridSize;
-			
-			float value = 0.0f;
-			float frequency = 1.0f;
-			float amplitude = 1.0f;
-
-			for (int i = 0; i < 12; i++) {
-				value += perlin(fx * frequency, fy * frequency) * amplitude;
-
-				frequency *= 2;
-				amplitude /= 2;
-			}
-
-			// "Contrast"
-			value *= 1.2f;
-
-			// Clamp values, since they can go beyond 1 / -1.
-			if (value > 1.0f) {
-				value = 1.0f;
-			}
-			else if (value < -1.0f) {
-				value = -1.0f;
-			}
-
-			// remap from [-1, 1] to [0, 1]
-			value = value * 0.5f + 0.5f;
-			grid[y * width + x] = value;
-		}
-	}
-	return grid;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is called once at the start of the program and never again
 ///////////////////////////////////////////////////////////////////////////////

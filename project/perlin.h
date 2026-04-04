@@ -2,8 +2,11 @@
 
 #include <glm/glm.hpp>
 #include <math.h>
+#include <vector>
 
 using namespace glm;
+
+std::vector<float> perlinGrid(int width, int height, int gridSize);
 
 float perlin(float x, float y);
 
