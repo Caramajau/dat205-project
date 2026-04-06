@@ -7,8 +7,6 @@
 #include <labhelper.h>
 #include "perlin.h"
 
-using namespace glm;
-
 class PerlinDisplay {
 public:
 	explicit PerlinDisplay();
@@ -22,7 +20,7 @@ public:
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.
 	// (probably won't in this project)
-	mat4 perlinNoiseModelMatrix = translate(100.0f * vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 perlinNoiseModelMatrix = translate(100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
 
 	GLuint perlinTexture = 0;
 	GLuint perlinShader = 0;
