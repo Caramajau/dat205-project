@@ -4,7 +4,7 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-std::vector<float> createPerlinGrid(int width, int height, int gridSize, float lacunarity, float persistence, InterpolationType interpolationType) {
+std::vector<float> createPerlinGrid(int width, int height, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
     std::vector<float> grid(width * height);
 
     InterpolateFunc interpolate = convertTypeToMethodInterpolationType(interpolationType);
@@ -18,7 +18,7 @@ std::vector<float> createPerlinGrid(int width, int height, int gridSize, float l
             float frequency = 1.0f;
             float amplitude = 1.0f;
 
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < octaveCount; i++) {
                 value += perlin(fx * frequency, fy * frequency, interpolate) * amplitude;
 
                 frequency *= lacunarity;

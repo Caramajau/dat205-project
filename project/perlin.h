@@ -5,7 +5,7 @@
 #include <vector>
 #include "interpolations.h"
 
-std::vector<float> createPerlinGrid(int width, int height, int gridSize, float lacunarity = 2.0f, float persistence = 2.0f, InterpolationType interpolationType = InterpolationType::Quintic);
+std::vector<float> createPerlinGrid(int width, int height, int gridSize, int octaveCount = 8, float lacunarity = 2.0f, float persistence = 2.0f, InterpolationType interpolationType = InterpolationType::Quintic);
 
 float perlin(float x, float y, InterpolateFunc interpolate);
 
