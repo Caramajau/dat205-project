@@ -15,9 +15,9 @@ public:
 	~PerlinDisplay();
 
 	void loadShader(bool is_reload);
-	void initGpuData(float lacunarity, float persistence);
+	void initGpuData(float lacunarity, float persistence, int gridSize);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
-	void reloadTexture(float lacunarity, float persistence);
+	void reloadTexture(float lacunarity, float persistence, int gridSize);
 
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.

@@ -12,9 +12,9 @@ void PerlinDisplay::loadShader(bool is_reload)
 	}
 }
 
-void PerlinDisplay::initGpuData(float lacunarity, float persistence)
+void PerlinDisplay::initGpuData(float lacunarity, float persistence, int gridSize)
 {
-	grid = createPerlinGrid(perlinWidth, perlinHeight, 400, lacunarity, persistence);
+	grid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, lacunarity, persistence);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
@@ -74,9 +74,9 @@ void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& pr
 	glBindVertexArray(0);
 }
 
-void PerlinDisplay::reloadTexture(float lacunarity, float persistence)
+void PerlinDisplay::reloadTexture(float lacunarity, float persistence, int gridSize)
 {
-	grid = createPerlinGrid(perlinWidth, perlinHeight, 400, lacunarity, persistence);
+	grid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, lacunarity, persistence);
 
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, perlinWidth, perlinHeight, GL_RED, GL_FLOAT, grid.data());
