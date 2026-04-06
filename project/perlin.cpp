@@ -88,19 +88,19 @@ float perlin(float x, float y, InterpolateFunc interpolate) {
 // Computes the dot product of the distance and gradient vectors
 float dotGridGradient(int integerX, int integerY, float x, float y) {
 	// Get gradient from integer coordinates
-    vec2 gradient = randomGradient(integerX, integerY);
+    glm::vec2 gradient = randomGradient(integerX, integerY);
 
     // Compute the distance vector
     float dx = x - (float)integerX;
     float dy = y - (float)integerY;
-    auto distanceVector = vec2(dx, dy);
+    auto distanceVector = glm::vec2(dx, dy);
 
     // Compute the dot-product.
-    return dot(distanceVector, gradient);
+    return glm::dot(distanceVector, gradient);
 }
 
 // Want random values to be repeatable, uses this hashing function, which is pseudo-random.
-vec2 randomGradient(int integerX, int integerY) {
+glm::vec2 randomGradient(int integerX, int integerY) {
     // No precomputed gradients mean this works for any number of grid coordinates
     const unsigned w = 8 * sizeof(unsigned);
     const unsigned s = w / 2;
@@ -116,7 +116,7 @@ vec2 randomGradient(int integerX, int integerY) {
     float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
 
     // Create the vector from the angle
-    auto v = vec2(sin(random), cos(random));
+    auto v = glm::vec2(sin(random), cos(random));
 
     return v;
 }
