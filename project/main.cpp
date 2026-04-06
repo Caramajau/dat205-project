@@ -88,6 +88,7 @@ PerlinDisplay perlinDisplay;
 float lacunarity = 2.0f;
 float peristence = 2.0f;
 int gridSize = 400;
+InterpolationType interpolationType = InterpolationType::Quintic;
 
 void loadShaders(bool is_reload)
 {
@@ -140,7 +141,7 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.initGpuData(lacunarity, peristence, gridSize);
+	perlinDisplay.initGpuData(lacunarity, peristence, gridSize, interpolationType);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -381,8 +382,13 @@ void gui()
 	ImGui::SliderFloat("Peristence", &peristence, 0.0f, 10.0f);
 	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
 
+	// Have convert temporarily to integer, (reinterpret_cast should be fine for enum).
+	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
+	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
+	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
+
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.reloadTexture(lacunarity, peristence, gridSize);
+		perlinDisplay.reloadTexture(lacunarity, peristence, gridSize, interpolationType);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

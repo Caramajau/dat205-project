@@ -4,8 +4,11 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-std::vector<float> createPerlinGrid(int width, int height, int gridSize, float lacunarity, float persistence) {
+std::vector<float> createPerlinGrid(int width, int height, int gridSize, float lacunarity, float persistence, InterpolationType interpolationType) {
     std::vector<float> grid(width * height);
+
+    InterpolateFunc interpolate = convertTypeToMethodInterpolationType(interpolationType);
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             float fx = (float)x / gridSize;
@@ -16,7 +19,7 @@ std::vector<float> createPerlinGrid(int width, int height, int gridSize, float l
             float amplitude = 1.0f;
 
             for (int i = 0; i < 12; i++) {
-                value += perlin(fx * frequency, fy * frequency) * amplitude;
+                value += perlin(fx * frequency, fy * frequency, interpolate) * amplitude;
 
                 frequency *= lacunarity;
                 amplitude /= persistence;
@@ -42,7 +45,7 @@ std::vector<float> createPerlinGrid(int width, int height, int gridSize, float l
 }
 
 // Sample Perlin noise at coordinates x, y
-float perlin(float x, float y) {
+float perlin(float x, float y, InterpolateFunc interpolate) {
 	// Determine grid cell corner coordinates
 	auto x0 = (int)x;
 	auto y0 = (int)y;
@@ -116,12 +119,4 @@ vec2 randomGradient(int integerX, int integerY) {
     auto v = vec2(sin(random), cos(random));
 
     return v;
-}
-
-// Will interpolate between the first and second value, weight between 0 and 1.
-// NOTE: This function is instead based on the formula from this video:
-// https://www.youtube.com/watch?v=ZsEnnB2wrbI
-float interpolate(float a, float b, float weight) {
-    float t = weight * weight * weight * (weight * (weight * 6.0f - 15.0f) + 10.0f);
-    return a + (b - a) * t;
 }
