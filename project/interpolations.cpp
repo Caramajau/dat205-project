@@ -21,9 +21,9 @@ float quinticInterpolate(float a, float b, float weight) {
 
 InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType) {
 	switch (interpolationType) {
-		case InterpolationType::Incorrect: return incorrectCubicInterpolation;
-		case InterpolationType::Cubic: return cubicInterpolate;
-		case InterpolationType::Quintic: return quinticInterpolate;
+		case InterpolationType::Incorrect: return &incorrectCubicInterpolation;
+		case InterpolationType::Cubic: return &cubicInterpolate;
+		case InterpolationType::Quintic: return &quinticInterpolate;
 		default: return nullptr;
 	}
 }
