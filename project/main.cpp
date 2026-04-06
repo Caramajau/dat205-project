@@ -85,11 +85,16 @@ mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
 PerlinDisplay perlinDisplay;
-int gridSize = 400;
-int octaveCount = 8;
-float lacunarity = 2.0f;
-float persistence = 2.0f;
-InterpolationType interpolationType = InterpolationType::Quintic;
+const int defaultGridSize = 400;
+int gridSize = defaultGridSize;
+const int defaultOctaveCount = 8;
+int octaveCount = defaultOctaveCount;
+const float defaultLacunarity = 2.0f;
+float lacunarity = defaultLacunarity;
+const float defaultPersistence = 2.0f;
+float persistence = defaultPersistence;
+const InterpolationType defaultInterpolationType = InterpolationType::Quintic;
+InterpolationType interpolationType = defaultInterpolationType;
 
 void loadShaders(bool is_reload)
 {
@@ -390,6 +395,17 @@ void gui()
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
 	if (ImGui::Button("Reload texture")) {
+		perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	}
+
+	if (ImGui::Button("Reset texture")) {
+		// Reset
+		gridSize = defaultGridSize;
+		octaveCount = defaultOctaveCount;
+		lacunarity = defaultLacunarity;
+		persistence = defaultPersistence;
+		interpolationType = defaultInterpolationType;
+
 		perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	}
 
