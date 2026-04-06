@@ -382,7 +382,7 @@ void gui()
 	ImGui::SliderFloat("Peristence", &persistence, 0.0f, 10.0f);
 	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
 
-	// Have convert temporarily to integer, (reinterpret_cast should be fine for enum).
+	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
