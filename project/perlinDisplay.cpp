@@ -14,8 +14,6 @@ void PerlinDisplay::loadShader(bool is_reload)
 
 void PerlinDisplay::initGpuData(float lacunarity, float persistence)
 {
-	int perlinWidth = 1000;
-	int perlinHeight = 1000;
 	grid = createPerlinGrid(perlinWidth, perlinHeight, 400, lacunarity, persistence);
 
 	// Positions (x, y, z) and texture coords (u, v)
@@ -78,8 +76,6 @@ void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& pr
 
 void PerlinDisplay::reloadTexture(float lacunarity, float persistence)
 {
-	int perlinWidth = 1000;
-	int perlinHeight = 1000;
 	grid = createPerlinGrid(perlinWidth, perlinHeight, 400, lacunarity, persistence);
 
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);

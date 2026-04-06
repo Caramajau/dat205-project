@@ -32,4 +32,7 @@ private:
 	GLuint quadIndexBufferObject = 0;
 
 	std::vector<float> grid;
+
+	int perlinWidth = 1000;
+	int perlinHeight = 1000;
 };
