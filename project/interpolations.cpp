@@ -2,8 +2,8 @@
 
 // Incorrect version of cubic interpolation, which is what I originally did when I followed the perlin video.
 // It is basically linear interpolation, but with extra steps..., maybe it will be interesting to look at?
-float incorrectCubicInterpolation(float firstValue, float secondValue, float weight) {
-    return (firstValue - secondValue) * (3.0f - weight * 2.0f) * weight * weight + firstValue;
+float incorrectCubicInterpolation(float a, float b, float weight) {
+    return (a - b) * (3.0f - weight * 2.0f) * weight * weight + a;
 }
 
 // Correct version of cubic interpolation, the interpolation suggested in the perlin video.

@@ -2,7 +2,7 @@
 
 // These will interpolate between the first and second value, weight between 0 and 1.
 
-float incorrectCubicInterpolation(float firstValue, float secondValue, float weight);
+float incorrectCubicInterpolation(float a, float b, float weight);
 
 float cubicInterpolate(float a, float b, float weight);
 
