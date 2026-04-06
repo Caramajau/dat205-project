@@ -10,9 +10,14 @@ file(GLOB_RECURSE SHADERS
 # Separate filter for shaders.
 source_group("Shaders" FILES ${SHADERS})
 
+file(GLOB_RECURSE SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
+
 # Build and link executable.
 add_executable ( ${PROJECT_NAME}
-    main.cpp
+    ${SOURCES}
     ${SHADERS}
     )
 

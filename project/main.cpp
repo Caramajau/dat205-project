@@ -22,6 +22,9 @@ using namespace glm;
 #include "hdr.h"
 #include "fbo.h"
 
+#include <vector>
+#include "perlin.h"
+#include "perlinDisplay.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -81,6 +84,13 @@ mat4 roomModelMatrix;
 mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
+PerlinDisplay perlinDisplay;
+int gridSize = 400;
+int octaveCount = 8;
+float lacunarity = 2.0f;
+float persistence = 2.0f;
+InterpolationType interpolationType = InterpolationType::Quintic;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -100,8 +110,9 @@ void loadShaders(bool is_reload)
 	{
 		shaderProgram = shader;
 	}
-}
 
+	perlinDisplay.loadShader(is_reload);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is called once at the start of the program and never again
@@ -131,6 +142,7 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
+	perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -216,7 +228,8 @@ void display(void)
 	// Check if window size has changed and resize buffers as needed
 	///////////////////////////////////////////////////////////////////////////
 	{
-		int w, h;
+		int w;
+		int h;
 		SDL_GetWindowSize(g_window, &w, &h);
 		if(w != windowWidth || h != windowHeight)
 		{
@@ -231,7 +244,7 @@ void display(void)
 	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 5.0f, 2000.0f);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
-	vec4 lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
+	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
 	lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
@@ -262,6 +275,7 @@ void display(void)
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
+	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
 }
 
 
@@ -365,6 +379,19 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
+	ImGui::SliderFloat("Lacunarity", &lacunarity, 0.0f, 10.0f);
+	ImGui::SliderFloat("Peristence", &persistence, 0.0f, 10.0f);
+	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
+	ImGui::SliderInt("Octaves", &octaveCount, 1, 12);
+
+	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
+	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
+	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
+	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
+
+	if (ImGui::Button("Reload texture")) {
+		perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
