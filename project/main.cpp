@@ -25,6 +25,7 @@ using namespace glm;
 #include <vector>
 #include "perlin.h"
 #include "perlinDisplay.h"
+#include "proceduralTerrain.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -84,7 +85,7 @@ mat4 roomModelMatrix;
 mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
-PerlinDisplay perlinDisplay;
+//PerlinDisplay perlinDisplay;
 const int defaultGridSize = 400;
 int gridSize = defaultGridSize;
 const int defaultOctaveCount = 8;
@@ -95,6 +96,8 @@ const float defaultPersistence = 2.0f;
 float persistence = defaultPersistence;
 const InterpolationType defaultInterpolationType = InterpolationType::Quintic;
 InterpolationType interpolationType = defaultInterpolationType;
+
+ProceduralTerrain proceduralTerrain;
 
 void loadShaders(bool is_reload)
 {
@@ -116,7 +119,8 @@ void loadShaders(bool is_reload)
 		shaderProgram = shader;
 	}
 
-	perlinDisplay.loadShader(is_reload);
+	//perlinDisplay.loadShader(is_reload);
+	proceduralTerrain.loadShader(is_reload);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,7 +151,8 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	//perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	proceduralTerrain.initGpuData(256, octaveCount, lacunarity, persistence, interpolationType);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -280,7 +285,8 @@ void display(void)
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
-	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
+	// perlinDisplay.submitToGpu(viewMatrix, projMatrix);
+	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 }
 
 
@@ -395,7 +401,7 @@ void gui()
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	}
 
 	if (ImGui::Button("Reset texture")) {
@@ -406,7 +412,7 @@ void gui()
 		persistence = defaultPersistence;
 		interpolationType = defaultInterpolationType;
 
-		perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

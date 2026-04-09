@@ -1,0 +1,92 @@
+#include "proceduralTerrain.h"
+
+ProceduralTerrain::ProceduralTerrain() = default;
+ProceduralTerrain::~ProceduralTerrain() = default;
+
+void ProceduralTerrain::loadShader(bool is_reload) {
+	GLuint shader = labhelper::loadShaderProgram("../project/procedural.vert", "../project/procedural.frag", is_reload);
+	if (shader != 0) {
+		terrainShader = shader;
+	}
+}
+
+void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
+	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+
+	glGenTextures(1, &perlinTexture);
+	glBindTexture(GL_TEXTURE_2D, perlinTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinWidth, perlinHeight, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
+
+	std::vector<float> vertices;
+	std::vector<unsigned int> indices;
+
+	for (int z = 0; z < perlinHeight; z++) {
+		for (int x = 0; x < perlinWidth; x++) {
+			float fx = (float)x / perlinWidth;
+			float fz = (float)z / perlinHeight;
+
+			// The terrain starts flat at y = 0
+			vertices.push_back(fx);
+			vertices.push_back(0);
+			vertices.push_back(fz);
+			vertices.push_back(fx);
+			vertices.push_back(fz);
+		}
+	}
+
+	// Then there should be two triangles per quad.
+	for (int z = 0; z < perlinHeight - 1; z++) {
+		for (int x = 0; x < perlinWidth - 1; x++) {
+			unsigned int topLeft = x + z * perlinWidth;
+			unsigned int topRight = (x + 1) + z * perlinWidth;
+			unsigned int bottomLeft = x + (z + 1) * perlinWidth;
+			unsigned int bottomRight = (x + 1) + (z + 1) * perlinWidth;
+
+			// First triangle
+			indices.push_back(topLeft);
+			indices.push_back(bottomLeft);
+			indices.push_back(topRight);
+
+			// Second triangle
+			indices.push_back(topRight);
+			indices.push_back(bottomRight);
+			indices.push_back(bottomLeft);
+		}
+	}
+
+	glGenVertexArrays(1, &terrainVertexArrayObject);
+	glBindVertexArray(terrainVertexArrayObject);
+
+	glGenBuffers(1, &terrainVertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVertexArrayObject);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &terrainIndexBufferObject);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIndexBufferObject);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * sizeof(float), nullptr);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0);
+}
+
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const {
+	glUseProgram(terrainShader);
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_2D, perlinTexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
+
+	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
+
+	glBindVertexArray(terrainVertexArrayObject);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	glBindVertexArray(0);
+}
+
+void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
+	// TODO
+}
