@@ -21,7 +21,7 @@ public:
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.
 	// (probably won't in this project)
-	glm::mat4 terrainModelMatrix = translate(100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
 
 	GLuint perlinTexture = 0;
 	GLuint terrainShader = 0;
@@ -34,4 +34,6 @@ private:
 
 	int perlinWidth = 256;
 	int perlinHeight = 256;
+
+	size_t triangleCount = 0;
 };

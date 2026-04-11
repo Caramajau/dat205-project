@@ -26,9 +26,9 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 			float fz = (float)z / perlinHeight;
 
 			// The terrain starts flat at y = 0
-			vertices.push_back(fx);
+			vertices.push_back(x);
 			vertices.push_back(0);
-			vertices.push_back(fz);
+			vertices.push_back(z);
 			vertices.push_back(fx);
 			vertices.push_back(fz);
 		}
@@ -49,16 +49,18 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 
 			// Second triangle
 			indices.push_back(topRight);
-			indices.push_back(bottomRight);
 			indices.push_back(bottomLeft);
+			indices.push_back(bottomRight);
 		}
 	}
+
+	triangleCount = indices.size();
 
 	glGenVertexArrays(1, &terrainVertexArrayObject);
 	glBindVertexArray(terrainVertexArrayObject);
 
 	glGenBuffers(1, &terrainVertexBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, terrainVertexArrayObject);
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVertexBufferObject);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
 	glGenBuffers(1, &terrainIndexBufferObject);
@@ -68,8 +70,8 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * sizeof(float), nullptr);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	glBindVertexArray(0);
 }
@@ -83,7 +85,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 
 	glBindVertexArray(terrainVertexArrayObject);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
 
