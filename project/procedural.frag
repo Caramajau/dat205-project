@@ -5,8 +5,10 @@ precision highp float;
 
 layout(location = 0) out vec4 fragmentColor;
 
+in float height;
+
 void main()
 {
-    // Completely white for now
-    fragmentColor = vec4(1.0);
+    // Uses the height value as colour for now.
+    fragmentColor = vec4(height, height, height, 1.0);
 }

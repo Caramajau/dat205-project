@@ -70,7 +70,7 @@ float point_light_intensity_multiplier = 10000.0f;
 ///////////////////////////////////////////////////////////////////////////////
 vec3 cameraPosition(-70.0f, 50.0f, 70.0f);
 vec3 cameraDirection = normalize(vec3(0.0f) - cameraPosition);
-float cameraSpeed = 10.f;
+float cameraSpeed = 100.f;
 
 vec3 worldUp(0.0f, 1.0f, 0.0f);
 

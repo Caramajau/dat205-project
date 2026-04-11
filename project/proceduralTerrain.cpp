@@ -17,6 +17,11 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinWidth, perlinHeight, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
 
