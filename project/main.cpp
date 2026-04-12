@@ -88,14 +88,21 @@ mat4 fighterModelMatrix;
 //PerlinDisplay perlinDisplay;
 const int defaultGridSize = 256;
 int gridSize = defaultGridSize;
+
 const int defaultOctaveCount = 8;
 int octaveCount = defaultOctaveCount;
+
 const float defaultLacunarity = 2.0f;
 float lacunarity = defaultLacunarity;
+
 const float defaultPersistence = 2.0f;
 float persistence = defaultPersistence;
+
 const InterpolationType defaultInterpolationType = InterpolationType::Quintic;
 InterpolationType interpolationType = defaultInterpolationType;
+
+const float defaultHeightScale = 100.0f;
+float heightScale = defaultHeightScale;
 
 ProceduralTerrain proceduralTerrain;
 
@@ -152,7 +159,7 @@ void initialize()
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
 	//perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
-	proceduralTerrain.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	proceduralTerrain.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -394,6 +401,7 @@ void gui()
 	ImGui::SliderFloat("Peristence", &persistence, 0.0f, 10.0f);
 	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
 	ImGui::SliderInt("Octaves", &octaveCount, 1, 12);
+	ImGui::SliderFloat("Height Scale", &heightScale, 0.1f, 512.0f);
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
@@ -402,7 +410,7 @@ void gui()
 
 	if (ImGui::Button("Reload texture")) {
 		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
@@ -412,9 +420,10 @@ void gui()
 		lacunarity = defaultLacunarity;
 		persistence = defaultPersistence;
 		interpolationType = defaultInterpolationType;
+		heightScale = defaultHeightScale;
 
 		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

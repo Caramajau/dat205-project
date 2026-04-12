@@ -10,8 +10,9 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	}
 }
 
-void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
+void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale) {
 	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	heightScale = initialHeightScale;
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -88,17 +89,19 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
-	labhelper::setUniformSlow(terrainShader, "heightScale", 100.0f);
+	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
 
-void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
+void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float newHeightScale) {
 	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, perlinWidth, perlinHeight, GL_RED, GL_FLOAT, heightMapGrid.data());
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	heightScale = newHeightScale;
 }
