@@ -23,42 +23,9 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	std::vector<float> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<float> vertices = createVertices(perlinWidth, perlinHeight);
 
-	for (int z = 0; z < perlinHeight; z++) {
-		for (int x = 0; x < perlinWidth; x++) {
-			float fx = (float)x / perlinWidth;
-			float fz = (float)z / perlinHeight;
-
-			// The terrain starts flat at y = 0
-			vertices.push_back(x);
-			vertices.push_back(0);
-			vertices.push_back(z);
-			vertices.push_back(fx);
-			vertices.push_back(fz);
-		}
-	}
-
-	// Then there should be two triangles per quad.
-	for (int z = 0; z < perlinHeight - 1; z++) {
-		for (int x = 0; x < perlinWidth - 1; x++) {
-			unsigned int topLeft = x + z * perlinWidth;
-			unsigned int topRight = (x + 1) + z * perlinWidth;
-			unsigned int bottomLeft = x + (z + 1) * perlinWidth;
-			unsigned int bottomRight = (x + 1) + (z + 1) * perlinWidth;
-
-			// First triangle
-			indices.push_back(topLeft);
-			indices.push_back(bottomLeft);
-			indices.push_back(topRight);
-
-			// Second triangle
-			indices.push_back(topRight);
-			indices.push_back(bottomLeft);
-			indices.push_back(bottomRight);
-		}
-	}
+	std::vector<unsigned int> indices = createIndices(perlinWidth, perlinHeight);
 
 	triangleCount = indices.size();
 
@@ -80,6 +47,52 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 	glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	glBindVertexArray(0);
+}
+
+std::vector<float> ProceduralTerrain::createVertices(int perlinWidth, int perlinHeight) const {
+	std::vector<float> vertices;
+
+	for (int z = 0; z < perlinHeight; z++) {
+		for (int x = 0; x < perlinWidth; x++) {
+			float fx = (float)x / perlinWidth;
+			float fz = (float)z / perlinHeight;
+
+			// The terrain starts flat at y = 0
+			vertices.push_back(x);
+			vertices.push_back(0);
+			vertices.push_back(z);
+			vertices.push_back(fx);
+			vertices.push_back(fz);
+		}
+	}
+
+	return vertices;
+}
+
+std::vector<unsigned int> ProceduralTerrain::createIndices(int perlinWidth, int perlinHeight) const {
+	std::vector<unsigned int> indices;
+
+	// Then there should be two triangles per quad.
+	for (int z = 0; z < perlinHeight - 1; z++) {
+		for (int x = 0; x < perlinWidth - 1; x++) {
+			unsigned int topLeft = x + z * perlinWidth;
+			unsigned int topRight = (x + 1) + z * perlinWidth;
+			unsigned int bottomLeft = x + (z + 1) * perlinWidth;
+			unsigned int bottomRight = (x + 1) + (z + 1) * perlinWidth;
+
+			// First triangle
+			indices.push_back(topLeft);
+			indices.push_back(bottomLeft);
+			indices.push_back(topRight);
+
+			// Second triangle
+			indices.push_back(topRight);
+			indices.push_back(bottomLeft);
+			indices.push_back(bottomRight);
+		}
+	}
+
+	return indices;
 }
 
 void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const {

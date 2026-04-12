@@ -38,4 +38,7 @@ private:
 	size_t triangleCount = 0;
 
 	float heightScale = 0;
+
+	std::vector<float> createVertices(int perlinWidth, int perlinHeight) const;
+	std::vector<unsigned int> createIndices(int perlinWidth, int perlinHeight) const;
 };
