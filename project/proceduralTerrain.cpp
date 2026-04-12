@@ -49,13 +49,13 @@ void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunar
 	glBindVertexArray(0);
 }
 
-std::vector<float> ProceduralTerrain::createVertices(int perlinWidth, int perlinHeight) const {
+std::vector<float> ProceduralTerrain::createVertices(int width, int height) const {
 	std::vector<float> vertices;
 
-	for (int z = 0; z < perlinHeight; z++) {
-		for (int x = 0; x < perlinWidth; x++) {
-			float fx = (float)x / perlinWidth;
-			float fz = (float)z / perlinHeight;
+	for (int z = 0; z < height; z++) {
+		for (int x = 0; x < width; x++) {
+			float fx = (float)x / width;
+			float fz = (float)z / height;
 
 			// The terrain starts flat at y = 0
 			vertices.push_back(x);
@@ -69,16 +69,16 @@ std::vector<float> ProceduralTerrain::createVertices(int perlinWidth, int perlin
 	return vertices;
 }
 
-std::vector<unsigned int> ProceduralTerrain::createIndices(int perlinWidth, int perlinHeight) const {
+std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int height) const {
 	std::vector<unsigned int> indices;
 
 	// Then there should be two triangles per quad.
-	for (int z = 0; z < perlinHeight - 1; z++) {
-		for (int x = 0; x < perlinWidth - 1; x++) {
-			unsigned int topLeft = x + z * perlinWidth;
-			unsigned int topRight = (x + 1) + z * perlinWidth;
-			unsigned int bottomLeft = x + (z + 1) * perlinWidth;
-			unsigned int bottomRight = (x + 1) + (z + 1) * perlinWidth;
+	for (int z = 0; z < height - 1; z++) {
+		for (int x = 0; x < width - 1; x++) {
+			unsigned int topLeft = x + z * width;
+			unsigned int topRight = (x + 1) + z * width;
+			unsigned int bottomLeft = x + (z + 1) * width;
+			unsigned int bottomRight = (x + 1) + (z + 1) * width;
 
 			// First triangle
 			indices.push_back(topLeft);

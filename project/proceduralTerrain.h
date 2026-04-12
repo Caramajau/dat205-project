@@ -39,6 +39,6 @@ private:
 
 	float heightScale = 0;
 
-	std::vector<float> createVertices(int perlinWidth, int perlinHeight) const;
-	std::vector<unsigned int> createIndices(int perlinWidth, int perlinHeight) const;
+	std::vector<float> createVertices(int width, int height) const;
+	std::vector<unsigned int> createIndices(int width, int height) const;
 };
