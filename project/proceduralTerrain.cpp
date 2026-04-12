@@ -95,5 +95,9 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 }
 
 void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
-	// TODO
+	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+
+	glBindTexture(GL_TEXTURE_2D, perlinTexture);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, perlinWidth, perlinHeight, GL_RED, GL_FLOAT, heightMapGrid.data());
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

@@ -86,7 +86,7 @@ mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
 //PerlinDisplay perlinDisplay;
-const int defaultGridSize = 400;
+const int defaultGridSize = 256;
 int gridSize = defaultGridSize;
 const int defaultOctaveCount = 8;
 int octaveCount = defaultOctaveCount;
@@ -152,7 +152,7 @@ void initialize()
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
 	//perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
-	proceduralTerrain.initGpuData(256, octaveCount, lacunarity, persistence, interpolationType);
+	proceduralTerrain.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -402,6 +402,7 @@ void gui()
 
 	if (ImGui::Button("Reload texture")) {
 		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	}
 
 	if (ImGui::Button("Reset texture")) {
@@ -413,6 +414,7 @@ void gui()
 		interpolationType = defaultInterpolationType;
 
 		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
