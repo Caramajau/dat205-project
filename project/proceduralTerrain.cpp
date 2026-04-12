@@ -88,6 +88,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
+	labhelper::setUniformSlow(terrainShader, "heightScale", 100.0f);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
