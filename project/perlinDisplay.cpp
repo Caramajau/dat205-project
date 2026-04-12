@@ -74,6 +74,7 @@ void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& pr
 	glBindVertexArray(0);
 }
 
+// TODO: Similar case to proceduralTerrain
 void PerlinDisplay::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType)
 {
 	grid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
