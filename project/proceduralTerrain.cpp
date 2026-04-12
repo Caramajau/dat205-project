@@ -96,6 +96,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glBindVertexArray(0);
 }
 
+// TODO: To allow changes to the size, could probably just use the init gpu data method and remove this one
 void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float newHeightScale) {
 	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 
