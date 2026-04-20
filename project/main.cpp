@@ -88,6 +88,9 @@ mat4 fighterModelMatrix;
 
 PerlinDisplay perlinDisplay;
 
+const int defaultSeed = 0;
+int seed = defaultSeed;
+
 const int defaultTerrainWidth = 256;
 int terrainWidth = defaultTerrainWidth;
 
@@ -166,8 +169,8 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-	proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+	perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -405,6 +408,8 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
+	ImGui::SliderInt("Seed", &seed, -100000, 100000);
+
 	ImGui::SliderInt("Width", &terrainWidth, 1, 1000);
 	ImGui::SliderInt("Height", &terrainHeight, 1, 1000);
 	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
@@ -422,12 +427,13 @@ void gui()
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
 		// Reset to default values
+		seed = defaultSeed;
 		terrainWidth = defaultTerrainWidth;
 		terrainHeight = defaultTerrainHeight;
 		gridSize = defaultGridSize;
@@ -437,8 +443,8 @@ void gui()
 		interpolationType = defaultInterpolationType;
 		heightScale = defaultHeightScale;
 
-		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

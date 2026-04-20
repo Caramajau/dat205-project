@@ -14,7 +14,7 @@ public:
 	~PerlinDisplay();
 
 	void loadShader(bool is_reload);
-	void setGpuData(int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType);
+	void setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 
 private:
