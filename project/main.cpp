@@ -85,7 +85,14 @@ mat4 roomModelMatrix;
 mat4 landingPadModelMatrix;
 mat4 fighterModelMatrix;
 
-//PerlinDisplay perlinDisplay;
+PerlinDisplay perlinDisplay;
+
+const int defaultTerrainWidth = 1000;
+int terrainWidth = defaultTerrainWidth;
+
+const int defaultTerrainHeight = 1000;
+int terrainHeight = defaultTerrainHeight;
+
 const int defaultGridSize = 256;
 int gridSize = defaultGridSize;
 
@@ -126,7 +133,7 @@ void loadShaders(bool is_reload)
 		shaderProgram = shader;
 	}
 
-	//perlinDisplay.loadShader(is_reload);
+	perlinDisplay.loadShader(is_reload);
 	proceduralTerrain.loadShader(is_reload);
 }
 
@@ -158,7 +165,7 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	//perlinDisplay.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	proceduralTerrain.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
@@ -292,7 +299,7 @@ void display(void)
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
-	// perlinDisplay.submitToGpu(viewMatrix, projMatrix);
+	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 }
 
@@ -397,10 +404,15 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
+	ImGui::SliderInt("Width", &terrainWidth, 1, 1000);
+	ImGui::SliderInt("Height", &terrainHeight, 1, 1000);
+	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
+
 	ImGui::SliderFloat("Lacunarity", &lacunarity, 0.0f, 10.0f);
 	ImGui::SliderFloat("Peristence", &persistence, 0.0f, 10.0f);
-	ImGui::SliderInt("Grid Size", &gridSize, 1, 1000);
+
 	ImGui::SliderInt("Octaves", &octaveCount, 1, 12);
+
 	ImGui::SliderFloat("Height Scale", &heightScale, 0.1f, 512.0f);
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
@@ -409,12 +421,14 @@ void gui()
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
 	if (ImGui::Button("Reload texture")) {
-		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
-		// Reset
+		// Reset to default values
+		terrainWidth = defaultTerrainWidth;
+		terrainHeight = defaultTerrainHeight;
 		gridSize = defaultGridSize;
 		octaveCount = defaultOctaveCount;
 		lacunarity = defaultLacunarity;
@@ -422,7 +436,7 @@ void gui()
 		interpolationType = defaultInterpolationType;
 		heightScale = defaultHeightScale;
 
-		// perlinDisplay.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType);
+		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
