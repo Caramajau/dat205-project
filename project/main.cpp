@@ -34,7 +34,8 @@ SDL_Window* g_window = nullptr;
 float currentTime = 0.0f;
 float previousTime = 0.0f;
 float deltaTime = 0.0f;
-int windowWidth, windowHeight;
+int windowWidth;
+int windowHeight;
 
 // Mouse input
 ivec2 g_prevMouseCoords = { -1, -1 };
