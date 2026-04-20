@@ -408,7 +408,8 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
-	ImGui::SliderInt("Seed", &seed, -100000, 100000);
+	// Slider int seems to only support half the range (still gives many seed options anyways)
+	ImGui::SliderInt("Seed", &seed, INT_MIN / 2, INT_MAX / 2);
 
 	ImGui::SliderInt("Width", &terrainWidth, 1, 1000);
 	ImGui::SliderInt("Height", &terrainHeight, 1, 1000);
