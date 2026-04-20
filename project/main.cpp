@@ -87,10 +87,10 @@ mat4 fighterModelMatrix;
 
 PerlinDisplay perlinDisplay;
 
-const int defaultTerrainWidth = 1000;
+const int defaultTerrainWidth = 256;
 int terrainWidth = defaultTerrainWidth;
 
-const int defaultTerrainHeight = 1000;
+const int defaultTerrainHeight = 256;
 int terrainHeight = defaultTerrainHeight;
 
 const int defaultGridSize = 256;
@@ -166,7 +166,7 @@ void initialize()
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
 	perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-	proceduralTerrain.initGpuData(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+	proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -422,7 +422,7 @@ void gui()
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
@@ -437,7 +437,7 @@ void gui()
 		heightScale = defaultHeightScale;
 
 		perlinDisplay.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.reloadTexture(gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		proceduralTerrain.setGpuData(terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

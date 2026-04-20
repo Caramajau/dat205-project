@@ -10,7 +10,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	}
 }
 
-void ProceduralTerrain::initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale) {
+void ProceduralTerrain::setGpuData(int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale) {
 	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 	heightScale = initialHeightScale;
 
@@ -107,15 +107,4 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
-}
-
-// TODO: To allow changes to the size, could probably just use the init gpu data method and remove this one
-void ProceduralTerrain::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float newHeightScale) {
-	heightMapGrid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-
-	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, perlinWidth, perlinHeight, GL_RED, GL_FLOAT, heightMapGrid.data());
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	heightScale = newHeightScale;
 }

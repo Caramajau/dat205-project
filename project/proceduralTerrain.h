@@ -14,9 +14,8 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
-	void initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale);
+	void setGpuData(int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
-	void reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float newHeightScale);
 
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.
@@ -31,9 +30,6 @@ private:
 	GLuint terrainIndexBufferObject = 0;
 
 	std::vector<float> heightMapGrid;
-
-	int perlinWidth = 256;
-	int perlinHeight = 256;
 
 	size_t triangleCount = 0;
 
