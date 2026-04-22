@@ -12,9 +12,9 @@ void PerlinDisplay::loadShader(bool is_reload)
 	}
 }
 
-void PerlinDisplay::initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType)
+void PerlinDisplay::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType)
 {
-	grid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	grid = createPerlinGrid(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
@@ -72,14 +72,4 @@ void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& pr
 	glBindVertexArray(quadVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
-}
-
-// TODO: Similar case to proceduralTerrain
-void PerlinDisplay::reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType)
-{
-	grid = createPerlinGrid(perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-
-	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, perlinWidth, perlinHeight, GL_RED, GL_FLOAT, grid.data());
-	glBindTexture(GL_TEXTURE_2D, 0);
 }

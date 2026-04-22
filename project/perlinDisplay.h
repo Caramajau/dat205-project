@@ -14,9 +14,8 @@ public:
 	~PerlinDisplay();
 
 	void loadShader(bool is_reload);
-	void initGpuData(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType);
+	void setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
-	void reloadTexture(int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType);
 
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.
@@ -31,7 +30,4 @@ private:
 	GLuint quadIndexBufferObject = 0;
 
 	std::vector<float> grid;
-
-	int perlinWidth = 1000;
-	int perlinHeight = 1000;
 };
