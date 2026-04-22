@@ -397,6 +397,18 @@ bool handleEvents(void)
 	return quitEvent;
 }
 
+void resetTerrainParameters()
+{
+	seed = defaultSeed;
+	terrainWidth = defaultTerrainWidth;
+	terrainHeight = defaultTerrainHeight;
+	gridSize = defaultGridSize;
+	octaveCount = defaultOctaveCount;
+	lacunarity = defaultLacunarity;
+	persistence = defaultPersistence;
+	interpolationType = defaultInterpolationType;
+	heightScale = defaultHeightScale;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is to hold the general GUI logic
@@ -433,16 +445,7 @@ void gui()
 	}
 
 	if (ImGui::Button("Reset texture")) {
-		// Reset to default values
-		seed = defaultSeed;
-		terrainWidth = defaultTerrainWidth;
-		terrainHeight = defaultTerrainHeight;
-		gridSize = defaultGridSize;
-		octaveCount = defaultOctaveCount;
-		lacunarity = defaultLacunarity;
-		persistence = defaultPersistence;
-		interpolationType = defaultInterpolationType;
-		heightScale = defaultHeightScale;
+		resetTerrainParameters();
 
 		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
 		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
