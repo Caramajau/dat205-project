@@ -5,7 +5,7 @@
 #include <vector>
 #include "interpolations.h"
 
-std::vector<float> createPerlinGrid(int seed, int width, int height, int gridSize, int octaveCount = 8, float lacunarity = 2.0f, float persistence = 2.0f, InterpolationType interpolationType = InterpolationType::Quintic);
+std::vector<float> createHeightMap(int seed, int width, int height, int gridSize, int octaveCount = 8, float lacunarity = 2.0f, float persistence = 2.0f, InterpolationType interpolationType = InterpolationType::Quintic);
 
 float fbm(int octaveCount, int seed, float fx, float fy, InterpolateFunc interpolate, float lacunarity, float persistence);
 

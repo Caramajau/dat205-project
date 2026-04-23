@@ -4,7 +4,7 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-std::vector<float> createPerlinGrid(int seed, int width, int height, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
+std::vector<float> createHeightMap(int seed, int width, int height, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType) {
     std::vector<float> grid(width * height);
 
     InterpolateFunc interpolate = convertTypeToMethodInterpolationType(interpolationType);
