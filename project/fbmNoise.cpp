@@ -4,14 +4,25 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-float fbm(int octaveCount, int seed, float fx, float fy, InterpolateFunc interpolate, float lacunarity, float persistence)
+FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate)
+{
+    this->seed = seed;
+    this->octaveCount = octaveCount;
+    this->lacunarity = lacunarity;
+    this->persistence = persistence;
+    this->interpolate = interpolate;
+}
+
+FbmNoise::~FbmNoise() = default;
+
+float FbmNoise::sample(float fx, float fy)
 {
     float value = 0.0f;
     float frequency = 1.0f;
     float amplitude = 1.0f;
 
     for (int i = 0; i < octaveCount; i++) {
-        value += perlin(seed, fx * frequency, fy * frequency, interpolate) * amplitude;
+        value += perlin(fx * frequency, fy * frequency) * amplitude;
 
         frequency *= lacunarity;
         amplitude /= persistence;
@@ -35,7 +46,7 @@ float fbm(int octaveCount, int seed, float fx, float fy, InterpolateFunc interpo
 }
 
 // Sample Perlin noise at coordinates x, y
-float perlin(int seed, float x, float y, InterpolateFunc interpolate) {
+float FbmNoise::perlin(float x, float y) {
     // Determine grid cell corner coordinates
     auto x0 = (int)x;
     auto y0 = (int)y;
@@ -47,8 +58,8 @@ float perlin(int seed, float x, float y, InterpolateFunc interpolate) {
     float sy = y - (float)y0;
 
     // Compute and interpolate top two corners
-    float topLeftDotGradient = dotGridGradient(seed, x0, y0, x, y);
-    float topRightDotGradient = dotGridGradient(seed, x1, y0, x, y);
+    float topLeftDotGradient = dotGridGradient(x0, y0, x, y);
+    float topRightDotGradient = dotGridGradient(x1, y0, x, y);
     float horizontalTopInterpolation = interpolate(
         topLeftDotGradient,
         topRightDotGradient,
@@ -56,8 +67,8 @@ float perlin(int seed, float x, float y, InterpolateFunc interpolate) {
     );
 
     // Compute and interpolate bottom two corners
-    float bottomLeftDotGradient = dotGridGradient(seed, x0, y1, x, y);
-    float bottomRightDotGradient = dotGridGradient(seed, x1, y1, x, y);
+    float bottomLeftDotGradient = dotGridGradient(x0, y1, x, y);
+    float bottomRightDotGradient = dotGridGradient(x1, y1, x, y);
     float horizontalBottomInterpolation = interpolate(
         bottomLeftDotGradient,
         bottomRightDotGradient,
@@ -76,9 +87,9 @@ float perlin(int seed, float x, float y, InterpolateFunc interpolate) {
 }
 
 // Computes the dot product of the distance and gradient vectors
-float dotGridGradient(int seed, int integerX, int integerY, float x, float y) {
+float FbmNoise::dotGridGradient(int integerX, int integerY, float x, float y) {
     // Get gradient from integer coordinates
-    glm::vec2 gradient = randomGradient(seed, integerX, integerY);
+    glm::vec2 gradient = randomGradient(integerX, integerY);
 
     // Compute the distance vector
     float dx = x - (float)integerX;
@@ -90,7 +101,7 @@ float dotGridGradient(int seed, int integerX, int integerY, float x, float y) {
 }
 
 // Want random values to be repeatable, uses this hashing function, which is pseudo-random.
-glm::vec2 randomGradient(int seed, int integerX, int integerY) {
+glm::vec2 FbmNoise::randomGradient(int integerX, int integerY) {
     // No precomputed gradients mean this works for any number of grid coordinates
     const unsigned int w = 8 * sizeof(unsigned int);
     const unsigned int s = w / 2;

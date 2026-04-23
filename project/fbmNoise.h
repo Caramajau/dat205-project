@@ -4,10 +4,21 @@
 #include <math.h>
 #include "interpolations.h"
 
-float fbm(int octaveCount, int seed, float fx, float fy, InterpolateFunc interpolate, float lacunarity, float persistence);
+class FbmNoise {
+public:
+	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate);
+	~FbmNoise();
+	float sample(float fx, float fy);
 
-float perlin(int seed, float x, float y, InterpolateFunc interpolate);
+private:
+	int seed;
+	int octaveCount;
+	float lacunarity;
+	float persistence;
+	InterpolateFunc interpolate;
 
-float dotGridGradient(int seed, int integerX, int integerY, float x, float y);
-
-glm::vec2 randomGradient(int seed, int integerX, int integerY);
+	// TODO: Move?
+	float perlin(float x, float y);
+	float dotGridGradient(int integerX, int integerY, float x, float y);
+	glm::vec2 randomGradient(int integerX, int integerY);
+};
