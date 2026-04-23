@@ -14,6 +14,24 @@ std::vector<float> createPerlinGrid(int seed, int width, int height, int gridSiz
             float fx = (float)x / gridSize;
             float fy = (float)y / gridSize;
 
+            // TODO: Make customisable through GUI?
+
+            // Domain warping based on: https://iquilezles.org/articles/warp/
+
+            // First warping
+            float qx = 4 * fbm(octaveCount, seed, fx, fy, interpolate, lacunarity, persistence);
+            float qy = 4 * fbm(octaveCount, seed, fx + 5.2f, fy + 1.3f, interpolate, lacunarity, persistence);
+
+            // Second warping
+            float rx = 4 * fbm(octaveCount, seed, qx + 1.7f, qy + 9.2f, interpolate, lacunarity, persistence);
+            float ry = 4 * fbm(octaveCount, seed, qx + 8.3f, qy + 2.8f, interpolate, lacunarity, persistence);
+
+            // fx += qx;
+            // fy += qy;
+
+            fx += rx;
+            fy += ry;
+
             grid[y * width + x] = fbm(octaveCount, seed, fx, fy, interpolate, lacunarity, persistence);
         }
     }
