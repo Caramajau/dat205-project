@@ -14,34 +14,40 @@ std::vector<float> createPerlinGrid(int seed, int width, int height, int gridSiz
             float fx = (float)x / gridSize;
             float fy = (float)y / gridSize;
 
-            float value = 0.0f;
-            float frequency = 1.0f;
-            float amplitude = 1.0f;
-
-            for (int i = 0; i < octaveCount; i++) {
-                value += perlin(seed, fx * frequency, fy * frequency, interpolate) * amplitude;
-
-                frequency *= lacunarity;
-                amplitude /= persistence;
-            }
-
-            // "Contrast"
-            value *= 1.2f;
-
-            // Clamp values, since they can go beyond 1 / -1.
-            if (value > 1.0f) {
-                value = 1.0f;
-            }
-            else if (value < -1.0f) {
-                value = -1.0f;
-            }
-
-            // remap from [-1, 1] to [0, 1]
-            value = value * 0.5f + 0.5f;
-            grid[y * width + x] = value;
+            grid[y * width + x] = fbm(octaveCount, seed, fx, fy, interpolate, lacunarity, persistence);
         }
     }
     return grid;
+}
+
+float fbm(int octaveCount, int seed, float fx, float fy, InterpolateFunc interpolate, float lacunarity, float persistence)
+{
+    float value = 0.0f;
+    float frequency = 1.0f;
+    float amplitude = 1.0f;
+
+    for (int i = 0; i < octaveCount; i++) {
+        value += perlin(seed, fx * frequency, fy * frequency, interpolate) * amplitude;
+
+        frequency *= lacunarity;
+        amplitude /= persistence;
+    }
+
+    // "Contrast"
+    value *= 1.2f;
+
+    // Clamp values, since they can go beyond 1 / -1.
+    if (value > 1.0f) {
+        value = 1.0f;
+    }
+    else if (value < -1.0f) {
+        value = -1.0f;
+    }
+
+    // remap from [-1, 1] to [0, 1]
+    value = value * 0.5f + 0.5f;
+
+    return value;
 }
 
 // Sample Perlin noise at coordinates x, y
