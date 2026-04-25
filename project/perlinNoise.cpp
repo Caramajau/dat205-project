@@ -12,7 +12,7 @@ PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate) {
 PerlinNoise::~PerlinNoise() = default;
 
 // Sample Perlin noise at coordinates x, y
-float PerlinNoise::sample(float x, float y) {
+float PerlinNoise::sample(float x, float y) const {
     // Determine grid cell corner coordinates
     auto x0 = (int)x;
     auto y0 = (int)y;
