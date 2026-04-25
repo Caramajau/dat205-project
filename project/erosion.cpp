@@ -70,7 +70,7 @@ void Erosion::erode(std::vector<float> map, int mapSize, int numInterations, boo
 			float deltaHeight = newHeight - heightAndGradient.height;
 
 			// Calculate the droplet's sediment capacity (higher when moving fast down a slope and contains lots of water)
-			float sedimentCapacity = std::max(-deltaHeight * speed * water * sedimentCapacity, minSedimentCapacity);
+			float sedimentCapacity = std::max(-deltaHeight * speed * water * sedimentCapacityFactor, minSedimentCapacity);
 
 			// If carrying more sediment than capacity, or if flowing uphill:
 			if (sediment > sedimentCapacity || deltaHeight > 0) {
