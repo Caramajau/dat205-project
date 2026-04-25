@@ -9,7 +9,7 @@ void Erosion::initialize(int mapSize, bool resetSeed)
 	}
 
 	// Skipped erosionBrushIndices null check
-	if (currentErosionRadius != erosionRadius || currentMapSize == mapSize) {
+	if (currentErosionRadius != erosionRadius || currentMapSize != mapSize) {
 		initializeBrushIndices(mapSize, erosionRadius);
 		currentErosionRadius = erosionRadius;
 		currentMapSize = mapSize;
@@ -137,6 +137,9 @@ HeightAndGradient Erosion::calculateHeightAndGradient(std::vector<float> nodes, 
 
 void Erosion::initializeBrushIndices(int mapSize, int radius)
 {
+	erosionBrushIndices.resize(mapSize * mapSize);
+	erosionBrushWeights.resize(mapSize * mapSize);
+
 	std::vector<int> xOffsets(radius * radius * 4);
 	std::vector<int> yOffsets(radius * radius * 4);
 	std::vector<float> weights(radius * radius * 4);
@@ -173,6 +176,8 @@ void Erosion::initializeBrushIndices(int mapSize, int radius)
 		}
 
 		int numEntries = addIndex;
+		erosionBrushIndices[i].resize(numEntries);
+		erosionBrushWeights[i].resize(numEntries);
 		
 		for (int j = 0; j < numEntries; j++) {
 			erosionBrushIndices[i][j] = (yOffsets[j] + centreY) * mapSize + xOffsets[j] + centreX;
