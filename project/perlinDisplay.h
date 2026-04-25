@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
-#include "perlin.h"
+#include "height.h"
 #include "interpolations.h"
 
 class PerlinDisplay {
