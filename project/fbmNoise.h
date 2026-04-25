@@ -19,6 +19,6 @@ private:
 
 	// TODO: Move?
 	float perlin(float x, float y);
-	float dotGridGradient(int integerX, int integerY, float x, float y);
-	glm::vec2 randomGradient(int integerX, int integerY);
+	float dotGridGradient(int integerX, int integerY, float x, float y) const;
+	glm::vec2 randomGradient(int integerX, int integerY) const;
 };

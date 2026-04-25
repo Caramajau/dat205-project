@@ -87,7 +87,7 @@ float FbmNoise::perlin(float x, float y) {
 }
 
 // Computes the dot product of the distance and gradient vectors
-float FbmNoise::dotGridGradient(int integerX, int integerY, float x, float y) {
+float FbmNoise::dotGridGradient(int integerX, int integerY, float x, float y) const {
     // Get gradient from integer coordinates
     glm::vec2 gradient = randomGradient(integerX, integerY);
 
@@ -101,7 +101,7 @@ float FbmNoise::dotGridGradient(int integerX, int integerY, float x, float y) {
 }
 
 // Want random values to be repeatable, uses this hashing function, which is pseudo-random.
-glm::vec2 FbmNoise::randomGradient(int integerX, int integerY) {
+glm::vec2 FbmNoise::randomGradient(int integerX, int integerY) const {
     // No precomputed gradients mean this works for any number of grid coordinates
     const unsigned int w = 8 * sizeof(unsigned int);
     const unsigned int s = w / 2;
