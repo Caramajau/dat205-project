@@ -23,7 +23,6 @@ using namespace glm;
 #include "fbo.h"
 
 #include <vector>
-#include "perlin.h"
 #include "perlinDisplay.h"
 #include "proceduralTerrain.h"
 
