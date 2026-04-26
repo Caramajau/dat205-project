@@ -13,7 +13,7 @@ struct HeightAndGradient {
 
 class Erosion {
 public:
-	void erode(std::vector<float> map, int mapSize, int numInterations = 1, bool resetSeed = false);
+	std::vector<float> erode(std::vector<float> map, int mapSize, int numInterations = 1, bool resetSeed = false);
 private:
 	int seed = 0;
 
