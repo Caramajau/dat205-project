@@ -1,7 +1,6 @@
 #include "erosion.h"
 
-void Erosion::initialize(int mapSize, bool resetSeed)
-{
+void Erosion::initialize(int mapSize, bool resetSeed) {
 	// Skipped prng null check
 	if (resetSeed || currentSeed != seed) {
 		prng.seed(seed);
@@ -16,8 +15,7 @@ void Erosion::initialize(int mapSize, bool resetSeed)
 	}
 }
 
-void Erosion::erode(std::vector<float>& map, int mapSize, int numInterations, bool resetSeed)
-{
+void Erosion::erode(std::vector<float>& map, int mapSize, int numInterations, bool resetSeed) {
 	initialize(mapSize, resetSeed);
 
 	std::uniform_int_distribution<int> dist(0, mapSize - 2);
@@ -108,8 +106,7 @@ void Erosion::erode(std::vector<float>& map, int mapSize, int numInterations, bo
 	}
 }
 
-HeightAndGradient Erosion::calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY)
-{
+HeightAndGradient Erosion::calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY) const {
 	int coordX = posX;
 	int coordY = posY;
 
@@ -134,8 +131,7 @@ HeightAndGradient Erosion::calculateHeightAndGradient(const std::vector<float>& 
 	return { height, gradientX, gradientY };
 }
 
-void Erosion::initializeBrushIndices(int mapSize, int radius)
-{
+void Erosion::initializeBrushIndices(int mapSize, int radius) {
 	erosionBrushIndices.resize(mapSize * mapSize);
 	erosionBrushWeights.resize(mapSize * mapSize);
 

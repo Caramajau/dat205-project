@@ -45,6 +45,6 @@ private:
 	int currentMapSize;
 
 	void initialize(int mapSize, bool resetSeed);
-	HeightAndGradient calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY);
+	HeightAndGradient calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY) const;
 	void initializeBrushIndices(int mapSize, int radius);
 };
