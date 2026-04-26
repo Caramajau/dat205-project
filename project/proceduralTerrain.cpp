@@ -12,6 +12,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 
 void ProceduralTerrain::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, float initialHeightScale) {
 	heightMapGrid = createHeightMap(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	erosion.erode(heightMapGrid, perlinWidth);
 	heightScale = initialHeightScale;
 
 	glGenTextures(1, &perlinTexture);

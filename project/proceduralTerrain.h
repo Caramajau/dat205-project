@@ -7,6 +7,7 @@
 #include <labhelper.h>
 #include "height.h"
 #include "interpolations.h"
+#include "erosion.h"
 
 class ProceduralTerrain {
 public:
@@ -37,4 +38,6 @@ private:
 
 	std::vector<float> createVertices(int width, int height) const;
 	std::vector<unsigned int> createIndices(int width, int height) const;
+
+	Erosion erosion;
 };
