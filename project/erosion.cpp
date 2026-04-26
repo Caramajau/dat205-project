@@ -100,7 +100,8 @@ void Erosion::erode(std::vector<float>& map, int mapSize, int numInterations, bo
 			}
 
 			// Update droplet's speed and water content
-			speed = sqrtf(speed * speed + deltaHeight * gravity);
+			// NOTE: clamping should be done to avoid possible NAN speed
+			speed = sqrtf(std::max(0.0f, speed * speed + deltaHeight * gravity));
 			water *= (1 - evaporateSpeed);
 		}
 	}
@@ -145,10 +146,10 @@ void Erosion::initializeBrushIndices(int mapSize, int radius) {
 		int centreX = i % mapSize;
 		int centreY = i / mapSize;
 
-		if (centreY <= radius || centreY >= mapSize - radius || centreX <= radius + 1 || centreX >= mapSize - radius) {
-			weightSum = 0;
-			addIndex = 0;
+		weightSum = 0;
+		addIndex = 0;
 
+		if (centreY <= radius || centreY >= mapSize - radius || centreX <= radius + 1 || centreX >= mapSize - radius) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int x = -radius; x <= radius; x++) {
 					float squareDistance = x * x + y * y;
