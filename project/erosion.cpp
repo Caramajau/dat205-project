@@ -16,7 +16,7 @@ void Erosion::initialize(int mapSize, bool resetSeed)
 	}
 }
 
-std::vector<float> Erosion::erode(std::vector<float> map, int mapSize, int numInterations, bool resetSeed)
+void Erosion::erode(std::vector<float>& map, int mapSize, int numInterations, bool resetSeed)
 {
 	initialize(mapSize, resetSeed);
 
@@ -106,10 +106,9 @@ std::vector<float> Erosion::erode(std::vector<float> map, int mapSize, int numIn
 			water *= (1 - evaporateSpeed);
 		}
 	}
-	return map;
 }
 
-HeightAndGradient Erosion::calculateHeightAndGradient(std::vector<float> nodes, int mapSize, float posX, float posY)
+HeightAndGradient Erosion::calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY)
 {
 	int coordX = posX;
 	int coordY = posY;

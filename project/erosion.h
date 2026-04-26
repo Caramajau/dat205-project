@@ -13,7 +13,7 @@ struct HeightAndGradient {
 
 class Erosion {
 public:
-	std::vector<float> erode(std::vector<float> map, int mapSize, int numInterations = 1, bool resetSeed = false);
+	void erode(std::vector<float>& map, int mapSize, int numInterations = 1, bool resetSeed = false);
 private:
 	int seed = 0;
 
@@ -45,6 +45,6 @@ private:
 	int currentMapSize;
 
 	void initialize(int mapSize, bool resetSeed);
-	HeightAndGradient calculateHeightAndGradient(std::vector<float> nodes, int mapSize, float posX, float posY);
+	HeightAndGradient calculateHeightAndGradient(const std::vector<float>& nodes, int mapSize, float posX, float posY);
 	void initializeBrushIndices(int mapSize, int radius);
 };
