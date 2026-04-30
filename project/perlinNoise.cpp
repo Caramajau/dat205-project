@@ -24,28 +24,28 @@ float PerlinNoise::sample(float x, float y) const {
     float sy = y - (float)y0;
 
     // Compute and interpolate top two corners
-    float topLeftDotGradient = dotGridGradient(x0, y0, x, y);
-    float topRightDotGradient = dotGridGradient(x1, y0, x, y);
-    float horizontalTopInterpolation = interpolate(
-        topLeftDotGradient,
-        topRightDotGradient,
+    float topLeftDot = dotGridGradient(x0, y0, x, y);
+    float topRightDot = dotGridGradient(x1, y0, x, y);
+    float topInterpolation = interpolate(
+        topLeftDot,
+        topRightDot,
         sx
     );
 
     // Compute and interpolate bottom two corners
-    float bottomLeftDotGradient = dotGridGradient(x0, y1, x, y);
-    float bottomRightDotGradient = dotGridGradient(x1, y1, x, y);
-    float horizontalBottomInterpolation = interpolate(
-        bottomLeftDotGradient,
-        bottomRightDotGradient,
+    float bottomLeftDot = dotGridGradient(x0, y1, x, y);
+    float bottomRightDot = dotGridGradient(x1, y1, x, y);
+    float bottomInterpolation = interpolate(
+        bottomLeftDot,
+        bottomRightDot,
         sx
     );
 
     // Then interpolate horizontal with vertical
     // I.e.: interpolate between the two previously interpolated values, now in y.
     float finalInterpolation = interpolate(
-        horizontalTopInterpolation,
-        horizontalBottomInterpolation,
+        topInterpolation,
+        bottomInterpolation,
         sy
     );
 
@@ -54,10 +54,10 @@ float PerlinNoise::sample(float x, float y) const {
 
 // Computes the dot product of the distance and gradient vectors
 float PerlinNoise::dotGridGradient(int integerX, int integerY, float x, float y) const {
-    // Get gradient from integer coordinates
+    // Get gradient from integer coordinates, i.e. gradient from a grid corner
     glm::vec2 gradient = randomGradient(integerX, integerY);
 
-    // Compute the distance vector
+    // Compute the distance vector to the grid corner
     float dx = x - (float)integerX;
     float dy = y - (float)integerY;
     auto distanceVector = glm::vec2(dx, dy);
