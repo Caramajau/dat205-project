@@ -14,9 +14,25 @@ float FbmNoise::sample(float fx, float fy)
     float value = 0.0f;
     float frequency = 1.0f;
     float amplitude = 1.0f;
+    glm::vec2 d(0.0f);
 
     for (int i = 0; i < octaveCount; i++) {
-        value += perlin.sample(fx * frequency, fy * frequency) * amplitude;
+        float dx = 0.0f;
+        float dy = 0.0f;
+        float current = perlin.sample(fx * frequency, fy * frequency, dx, dy);
+
+        dx *= frequency;
+        dy *= frequency;
+
+        // Erosion weight to suppress detail on steep slopes
+        // i.e bigger gradient, less contribution
+        float weight = 1.0f / (1.0f + glm::dot(d, d));
+
+        value += current * amplitude * weight;
+
+        // Accumulate the derivative
+        d.x += amplitude * dx;
+        d.y += amplitude * dy;
 
         frequency *= lacunarity;
         amplitude /= persistence;

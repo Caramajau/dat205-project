@@ -9,7 +9,7 @@ public:
 	PerlinNoise(int seed, InterpolateFunc interpolate);
 	~PerlinNoise();
 
-	float sample(float x, float y) const;
+	float sample(float x, float y, float& outDx, float& outDy) const;
 
 private:
 	int seed;

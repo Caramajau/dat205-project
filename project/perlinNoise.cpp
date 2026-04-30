@@ -12,7 +12,7 @@ PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate) {
 PerlinNoise::~PerlinNoise() = default;
 
 // Sample Perlin noise at coordinates x, y
-float PerlinNoise::sample(float x, float y) const {
+float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     // Determine grid cell corner coordinates
     auto x0 = (int)x;
     auto y0 = (int)y;
@@ -48,6 +48,18 @@ float PerlinNoise::sample(float x, float y) const {
         bottomInterpolation,
         sy
     );
+
+    // TODO: Integrate better rather than hard-coding it.
+    // Derivative of quintic interpolation
+    float dfx = sx * sx * (sx * (sx * 30 - 60) + 30);
+    float dfy = sy * sy * (sy * (sy * 30 - 60) + 30);
+
+    // Hard-coded to account for chain rule (TODO: should be removed)
+    float fy = sy * sy * sy * (sy * (sy * 6 - 15) + 10);
+    float topContribution = topRightDot - topLeftDot;
+    float bottomContribution = fy * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
+    outDx = dfx * (topContribution + bottomContribution);
+    outDy = dfy * (bottomInterpolation - topInterpolation);
 
     return finalInterpolation;
 }
