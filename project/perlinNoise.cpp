@@ -28,6 +28,7 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float topRightDot = dotGridGradient(x1, y0, x, y);
     float topInterpolation = interpolate(sx);
     float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
+    // float topBlending = incorrectBlending(topLeftDot, topRightDot, topInterpolation);
 
     // blending factor
 
@@ -36,11 +37,13 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
     float bottomInterpolation = interpolate(sx);
     float bottomBlending = blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
+    // float bottomBlending = incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation);
 
     // Then interpolate horizontal with vertical
     // I.e.: interpolate between the two previously interpolated values, now in y.
     float finalInterpolation = interpolate(sy);
     float finalBlending = blending(topBlending, bottomBlending, finalInterpolation);
+    // float finalBlending = incorrectBlending(topBlending, bottomBlending, finalInterpolation);
 
     // TODO: Integrate better rather than hard-coding it.
     // Derivative of quintic interpolation
