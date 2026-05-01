@@ -1,7 +1,7 @@
 #include "interpolations.h"
 
-float incorrectCubicInterpolation(float weight) {
-	return weight * weight * (3.0f - 2.0f * weight);
+float linearInterpolate(float weight) {
+	return weight;
 }
 
 // Correct version of cubic interpolation, the interpolation suggested in the perlin video.
@@ -28,7 +28,7 @@ float incorrectBlending(float a, float b, float blendingFactor) {
 
 InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType) {
 	switch (interpolationType) {
-		case InterpolationType::Incorrect: return &incorrectCubicInterpolation;
+		case InterpolationType::Linear: return &linearInterpolate;
 		case InterpolationType::Cubic: return &cubicInterpolate;
 		case InterpolationType::Quintic: return &quinticInterpolate;
 		default: return nullptr;

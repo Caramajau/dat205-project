@@ -438,7 +438,7 @@ void gui()
 	ImGui::SliderFloat("Height Scale", &heightScale, 0.1f, 512.0f);
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
-	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
+	ImGui::RadioButton("Linear", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Linear));
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
