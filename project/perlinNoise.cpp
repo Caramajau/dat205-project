@@ -26,42 +26,34 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     // Compute and interpolate top two corners
     float topLeftDot = dotGridGradient(x0, y0, x, y);
     float topRightDot = dotGridGradient(x1, y0, x, y);
-    float topInterpolation = interpolate(
-        topLeftDot,
-        topRightDot,
-        sx
-    );
+    float topInterpolation = interpolate(sx);
+    float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
+
+    // blending factor
 
     // Compute and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
-    float bottomInterpolation = interpolate(
-        bottomLeftDot,
-        bottomRightDot,
-        sx
-    );
+    float bottomInterpolation = interpolate(sx);
+    float bottomBlending = blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
 
     // Then interpolate horizontal with vertical
     // I.e.: interpolate between the two previously interpolated values, now in y.
-    float finalInterpolation = interpolate(
-        topInterpolation,
-        bottomInterpolation,
-        sy
-    );
+    float finalInterpolation = interpolate(sy);
+    float finalBlending = blending(topBlending, bottomBlending, finalInterpolation);
 
     // TODO: Integrate better rather than hard-coding it.
     // Derivative of quintic interpolation
     float dfx = sx * sx * (sx * (sx * 30 - 60) + 30);
     float dfy = sy * sy * (sy * (sy * 30 - 60) + 30);
 
-    // Hard-coded to account for chain rule (TODO: should be removed)
-    float fy = sy * sy * sy * (sy * (sy * 6 - 15) + 10);
+    // Account for chain rule
     float topContribution = topRightDot - topLeftDot;
-    float bottomContribution = fy * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
+    float bottomContribution = finalInterpolation * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
     outDx = dfx * (topContribution + bottomContribution);
-    outDy = dfy * (bottomInterpolation - topInterpolation);
+    outDy = dfy * (bottomBlending - topBlending);
 
-    return finalInterpolation;
+    return finalBlending;
 }
 
 // Computes the dot product of the distance and gradient vectors

@@ -2,11 +2,15 @@
 
 // These will interpolate between the first and second value, weight between 0 and 1.
 
-float incorrectCubicInterpolation(float a, float b, float weight);
+float incorrectCubicInterpolation(float weight);
 
-float cubicInterpolate(float a, float b, float weight);
+float cubicInterpolate(float weight);
 
-float quinticInterpolate(float a, float b, float weight);
+float quinticInterpolate(float weight);
+
+float blending(float a, float b, float blendingFactor);
+
+float incorrectBlending(float a, float b, float blendingFactor);
 
 enum class InterpolationType
 {
@@ -16,6 +20,6 @@ enum class InterpolationType
 };
 
 // Function pointer for what kind of interpolation function to use.
-using InterpolateFunc = float(*)(float, float, float);
+using InterpolateFunc = float(*)(float);
 
 InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType);
