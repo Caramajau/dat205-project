@@ -4,8 +4,9 @@ std::vector<float> createHeightMap(int seed, int width, int height, int gridSize
     std::vector<float> grid(width * height);
 
     InterpolateFunc interpolate = convertTypeToMethodInterpolationType(interpolationType);
+    InterpolateFunc interpolateDerivative = convertTypeToMethodDerivativeType(interpolationType);
 
-    auto fbm = FbmNoise(seed, octaveCount, lacunarity, persistence, interpolate);
+    auto fbm = FbmNoise(seed, octaveCount, lacunarity, persistence, interpolate, interpolateDerivative);
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {

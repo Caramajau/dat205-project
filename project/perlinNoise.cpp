@@ -4,9 +4,10 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate) {
+PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative) {
     this->seed = seed;
     this->interpolate = interpolate;
+    this->interpolateDerivative = interpolateDerivative;
 }
 
 PerlinNoise::~PerlinNoise() = default;
@@ -30,7 +31,7 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
     // float topBlending = incorrectBlending(topLeftDot, topRightDot, topInterpolation);
 
-    // blending factor
+    // TODO: blending factor
 
     // Compute and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
@@ -45,16 +46,15 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float finalBlending = blending(topBlending, bottomBlending, finalInterpolation);
     // float finalBlending = incorrectBlending(topBlending, bottomBlending, finalInterpolation);
 
-    // TODO: Integrate better rather than hard-coding it.
-    // Derivative of quintic interpolation
-    float dfx = sx * sx * (sx * (sx * 30 - 60) + 30);
-    float dfy = sy * sy * (sy * (sy * 30 - 60) + 30);
+    // Derivative of chosen interpolation
+    float dx = interpolateDerivative(sx);
+    float dy = interpolateDerivative(sy);
 
     // Account for chain rule
     float topContribution = topRightDot - topLeftDot;
     float bottomContribution = finalInterpolation * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
-    outDx = dfx * (topContribution + bottomContribution);
-    outDy = dfy * (bottomBlending - topBlending);
+    outDx = dx * (topContribution + bottomContribution);
+    outDy = dy * (bottomBlending - topBlending);
 
     return finalBlending;
 }

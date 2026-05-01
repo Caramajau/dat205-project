@@ -1,6 +1,6 @@
 #include "fbmNoise.h"
 
-FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate) : perlin(seed, interpolate)
+FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative) : perlin(seed, interpolate, interpolateDerivative)
 {
     this->octaveCount = octaveCount;
     this->lacunarity = lacunarity;

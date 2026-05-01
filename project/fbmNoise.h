@@ -6,7 +6,7 @@
 
 class FbmNoise {
 public:
-	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate);
+	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative);
 	~FbmNoise();
 	float sample(float fx, float fy);
 

@@ -4,10 +4,13 @@
 
 // Here mostly to make it used similar to other methods.
 float linearInterpolate(float weight);
+float linearDerivative(float);
 
 float cubicInterpolate(float weight);
+float cubicDerivative(float weight);
 
 float quinticInterpolate(float weight);
+float quinticDerivative(float weight);
 
 // Will interpolate (blend) between the first and second value, blendingFactor between 0 and 1.
 float blending(float a, float b, float blendingFactor);
@@ -25,3 +28,4 @@ enum class InterpolationType
 using InterpolateFunc = float(*)(float);
 
 InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType);
+InterpolateFunc convertTypeToMethodDerivativeType(InterpolationType interpolationType);
