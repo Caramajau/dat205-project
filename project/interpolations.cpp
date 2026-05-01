@@ -1,9 +1,10 @@
 #include "interpolations.h"
 
 // Incorrect version of cubic interpolation, which is what I originally did when I followed the perlin video.
-// It is basically linear interpolation, but with extra steps..., maybe it will be interesting to look at?
+// Where I messed up the order of the values, maybe it will be interesting to look at?
 float incorrectCubicInterpolation(float a, float b, float weight) {
-    return (a - b) * (3.0f - weight * 2.0f) * weight * weight + a;
+	float t = weight * weight * (3.0f - 2.0f * weight);
+    return a + (a - b) * t;
 }
 
 // Correct version of cubic interpolation, the interpolation suggested in the perlin video.
