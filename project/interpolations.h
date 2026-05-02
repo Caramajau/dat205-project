@@ -1,21 +1,31 @@
 #pragma once
 
-// These will interpolate between the first and second value, weight between 0 and 1.
+// Here are functions that can be used for the interpolations as well as the actual blending.
 
-float incorrectCubicInterpolation(float a, float b, float weight);
+// Here mostly to make it used similar to other methods.
+float linearInterpolate(float weight);
+float linearDerivative(float);
 
-float cubicInterpolate(float a, float b, float weight);
+float cubicInterpolate(float weight);
+float cubicDerivative(float weight);
 
-float quinticInterpolate(float a, float b, float weight);
+float quinticInterpolate(float weight);
+float quinticDerivative(float weight);
+
+// Will interpolate (blend) between the first and second value, blendingFactor between 0 and 1.
+float blending(float a, float b, float blendingFactor);
+
+float incorrectBlending(float a, float b, float blendingFactor);
 
 enum class InterpolationType
 {
-	Incorrect,
+	Linear,
 	Cubic,
 	Quintic
 };
 
 // Function pointer for what kind of interpolation function to use.
-using InterpolateFunc = float(*)(float, float, float);
+using InterpolateFunc = float(*)(float);
 
 InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType);
+InterpolateFunc convertTypeToMethodDerivativeType(InterpolationType interpolationType);

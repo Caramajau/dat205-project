@@ -4,15 +4,16 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate) {
+PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative) {
     this->seed = seed;
     this->interpolate = interpolate;
+    this->interpolateDerivative = interpolateDerivative;
 }
 
 PerlinNoise::~PerlinNoise() = default;
 
 // Sample Perlin noise at coordinates x, y
-float PerlinNoise::sample(float x, float y) const {
+float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     // Determine grid cell corner coordinates
     auto x0 = (int)x;
     auto y0 = (int)y;
@@ -26,30 +27,34 @@ float PerlinNoise::sample(float x, float y) const {
     // Compute and interpolate top two corners
     float topLeftDot = dotGridGradient(x0, y0, x, y);
     float topRightDot = dotGridGradient(x1, y0, x, y);
-    float topInterpolation = interpolate(
-        topLeftDot,
-        topRightDot,
-        sx
-    );
+    float topInterpolation = interpolate(sx);
+    float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
+    // float topBlending = incorrectBlending(topLeftDot, topRightDot, topInterpolation);
 
     // Compute and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
-    float bottomInterpolation = interpolate(
-        bottomLeftDot,
-        bottomRightDot,
-        sx
-    );
+    float bottomInterpolation = interpolate(sx);
+    float bottomBlending = blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
+    // float bottomBlending = incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation);
 
     // Then interpolate horizontal with vertical
     // I.e.: interpolate between the two previously interpolated values, now in y.
-    float finalInterpolation = interpolate(
-        topInterpolation,
-        bottomInterpolation,
-        sy
-    );
+    float finalInterpolation = interpolate(sy);
+    float finalBlending = blending(topBlending, bottomBlending, finalInterpolation);
+    // float finalBlending = incorrectBlending(topBlending, bottomBlending, finalInterpolation);
 
-    return finalInterpolation;
+    // Derivative of chosen interpolation
+    float dx = interpolateDerivative(sx);
+    float dy = interpolateDerivative(sy);
+
+    // Account for chain rule
+    float topContribution = topRightDot - topLeftDot;
+    float bottomContribution = finalInterpolation * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
+    outDx = dx * (topContribution + bottomContribution);
+    outDy = dy * (bottomBlending - topBlending);
+
+    return finalBlending;
 }
 
 // Computes the dot product of the distance and gradient vectors

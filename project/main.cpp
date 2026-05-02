@@ -111,6 +111,15 @@ float persistence = defaultPersistence;
 const InterpolationType defaultInterpolationType = InterpolationType::Quintic;
 InterpolationType interpolationType = defaultInterpolationType;
 
+const ErosionType defaultErosionType = ErosionType::Rational;
+ErosionType erosionType = defaultErosionType;
+
+const float defaultErosionStrength = 1.0f;
+float erosionStrength = defaultErosionStrength;
+
+const int defaultWarpLevel = 2;
+int warpLevel = defaultWarpLevel;
+
 const float defaultHeightScale = 100.0f;
 float heightScale = defaultHeightScale;
 
@@ -168,8 +177,8 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-	proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+	perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
+	proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel, heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -406,6 +415,9 @@ void resetTerrainParameters()
 	lacunarity = defaultLacunarity;
 	persistence = defaultPersistence;
 	interpolationType = defaultInterpolationType;
+	erosionType = defaultErosionType;
+	erosionStrength = defaultErosionStrength;
+	warpLevel = defaultWarpLevel;
 	heightScale = defaultHeightScale;
 }
 
@@ -434,20 +446,27 @@ void gui()
 	ImGui::SliderFloat("Height Scale", &heightScale, 0.1f, 512.0f);
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
-	ImGui::RadioButton("Incorrect Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Incorrect));
+	ImGui::RadioButton("Linear", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Linear));
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
+	ImGui::RadioButton("Rational", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Rational));
+	ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Exponential));
+
+	ImGui::SliderFloat("Erosion Strength", &erosionStrength, 0.0f, 10.0f);
+
+	ImGui::SliderInt("Domain Warping Level", &warpLevel, 0, 2);
+
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
+		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel, heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
 		resetTerrainParameters();
 
-		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
-		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, heightScale);
+		perlinDisplay.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
+		proceduralTerrain.setGpuData(seed, terrainWidth, terrainHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel, heightScale);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

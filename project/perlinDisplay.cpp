@@ -12,9 +12,9 @@ void PerlinDisplay::loadShader(bool is_reload)
 	}
 }
 
-void PerlinDisplay::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType)
+void PerlinDisplay::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, ErosionType erosionType, float erosionStrength, int warpLevel)
 {
-	grid = createHeightMap(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType);
+	grid = createHeightMap(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
