@@ -370,11 +370,6 @@ bool handleEvents(void)
 	return quitEvent;
 }
 
-void resetTerrainParameters()
-{
-	config.reset();
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is to hold the general GUI logic
 ///////////////////////////////////////////////////////////////////////////////
@@ -417,7 +412,7 @@ void gui()
 	}
 
 	if (ImGui::Button("Reset texture")) {
-		resetTerrainParameters();
+		config.reset();
 
 		perlinDisplay.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
 		proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
