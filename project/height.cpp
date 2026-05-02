@@ -1,12 +1,13 @@
 #include "height.h"
 
-std::vector<float> createHeightMap(int seed, int width, int height, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, int warpLevel) {
+std::vector<float> createHeightMap(int seed, int width, int height, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, ErosionType erosionType, float erosionStrength, int warpLevel) {
     std::vector<float> grid(width * height);
 
     InterpolateFunc interpolate = convertTypeToMethodInterpolationType(interpolationType);
     InterpolateFunc interpolateDerivative = convertTypeToMethodDerivativeType(interpolationType);
+    ErosionFunc erosion = convertTypeToMethodErosionType(erosionType);
 
-    auto fbm = FbmNoise(seed, octaveCount, lacunarity, persistence, interpolate, interpolateDerivative);
+    auto fbm = FbmNoise(seed, octaveCount, lacunarity, persistence, interpolate, interpolateDerivative, erosion, erosionStrength);
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {

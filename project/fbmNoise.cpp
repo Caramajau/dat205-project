@@ -2,11 +2,14 @@
 
 // Using gradients to create an erosion look idea from: https://www.youtube.com/watch?v=gsJHzBTPG0Y
 
-FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative) : perlin(seed, interpolate, interpolateDerivative)
+FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, ErosionFunc erosion, float erosionStrength) 
+    : perlin(seed, interpolate, interpolateDerivative)
 {
     this->octaveCount = octaveCount;
     this->lacunarity = lacunarity;
     this->persistence = persistence;
+    this->erosion = erosion;
+    this->erosionStrength = erosionStrength;
 }
 
 FbmNoise::~FbmNoise() = default;
@@ -29,7 +32,7 @@ float FbmNoise::sample(float fx, float fy)
         // Erosion weight to suppress detail on steep slopes
         // i.e bigger gradient, less contribution
         float length = glm::dot(d, d);
-        float weight = 1.0f / (1.0f + length);
+        float weight = erosion(length, erosionStrength);
 
         value += current * amplitude * weight;
 
