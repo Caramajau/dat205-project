@@ -143,7 +143,7 @@ void initialize()
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
 	perlinDisplay.setGpuData(config);
-	proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
+	proceduralTerrain.setGpuData(config);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -408,14 +408,14 @@ void gui()
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
-		proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
+		proceduralTerrain.setGpuData(config);
 	}
 
 	if (ImGui::Button("Reset texture")) {
 		config.reset();
 
 		perlinDisplay.setGpuData(config);
-		proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
+		proceduralTerrain.setGpuData(config);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
