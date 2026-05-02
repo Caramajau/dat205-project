@@ -450,7 +450,6 @@ void gui()
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&interpolationType), static_cast<int>(InterpolationType::Quintic));
 
-	ImGui::RadioButton("None", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::None));
 	ImGui::RadioButton("Rational", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Rational));
 	ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Exponential));
 

@@ -3,12 +3,9 @@
 
 enum class ErosionType
 {
-	None,
 	Rational,
 	Exponential
 };
-
-float noErosion(float, float);
 
 float rationalErosion(float length, float strength);
 
