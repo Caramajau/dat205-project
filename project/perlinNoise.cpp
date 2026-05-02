@@ -31,8 +31,6 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
     // float topBlending = incorrectBlending(topLeftDot, topRightDot, topInterpolation);
 
-    // TODO: blending factor
-
     // Compute and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
