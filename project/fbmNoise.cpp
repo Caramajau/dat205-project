@@ -14,7 +14,7 @@ FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistenc
 
 FbmNoise::~FbmNoise() = default;
 
-float FbmNoise::sample(float fx, float fy)
+float FbmNoise::sample(float fx, float fy) const
 {
     float value = 0.0f;
     float frequency = 1.0f;

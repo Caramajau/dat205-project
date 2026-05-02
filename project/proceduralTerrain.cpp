@@ -10,22 +10,22 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	}
 }
 
-void ProceduralTerrain::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, ErosionType erosionType, float erosionStrength, int warpLevel, float initialHeightScale) {
-	heightMapGrid = createHeightMap(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
-	heightScale = initialHeightScale;
+void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
+	heightMapGrid = createHeightMap(config);
+	heightScale = config.heightScale;
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinWidth, perlinHeight, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.height, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	std::vector<float> vertices = createVertices(perlinWidth, perlinHeight);
+	std::vector<float> vertices = createVertices(config.width, config.height);
 
-	std::vector<unsigned int> indices = createIndices(perlinWidth, perlinHeight);
+	std::vector<unsigned int> indices = createIndices(config.width, config.height);
 
 	triangleCount = indices.size();
 

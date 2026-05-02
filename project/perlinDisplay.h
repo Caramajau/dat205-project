@@ -7,6 +7,7 @@
 #include <labhelper.h>
 #include "height.h"
 #include "interpolations.h"
+#include "ProceduralConfig.h"
 
 class PerlinDisplay {
 public:
@@ -14,7 +15,7 @@ public:
 	~PerlinDisplay();
 
 	void loadShader(bool is_reload);
-	void setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, ErosionType erosionType, float erosionStrength, int warpLevel);
+	void setGpuData(const ProceduralConfig& config);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 
 private:

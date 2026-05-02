@@ -9,7 +9,7 @@ class FbmNoise {
 public:
 	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, ErosionFunc erosion, float erosionStrength);
 	~FbmNoise();
-	float sample(float fx, float fy);
+	float sample(float fx, float fy) const;
 
 private:
 	int octaveCount;

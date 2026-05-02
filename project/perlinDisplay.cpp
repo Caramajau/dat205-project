@@ -12,9 +12,9 @@ void PerlinDisplay::loadShader(bool is_reload)
 	}
 }
 
-void PerlinDisplay::setGpuData(int seed, int perlinWidth, int perlinHeight, int gridSize, int octaveCount, float lacunarity, float persistence, InterpolationType interpolationType, ErosionType erosionType, float erosionStrength, int warpLevel)
+void PerlinDisplay::setGpuData(const ProceduralConfig& config)
 {
-	grid = createHeightMap(seed, perlinWidth, perlinHeight, gridSize, octaveCount, lacunarity, persistence, interpolationType, erosionType, erosionStrength, warpLevel);
+	grid = createHeightMap(config);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
@@ -52,7 +52,7 @@ void PerlinDisplay::setGpuData(int seed, int perlinWidth, int perlinHeight, int 
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, perlinWidth, perlinHeight, 0, GL_RED, GL_FLOAT, grid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.height, 0, GL_RED, GL_FLOAT, grid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
