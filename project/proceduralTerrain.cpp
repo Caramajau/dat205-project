@@ -11,7 +11,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
-	heightMapGrid = createHeightMap(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
+	heightMapGrid = createHeightMap(config);
 	heightScale = config.heightScale;
 
 	glGenTextures(1, &perlinTexture);

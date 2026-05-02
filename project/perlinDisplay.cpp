@@ -14,7 +14,7 @@ void PerlinDisplay::loadShader(bool is_reload)
 
 void PerlinDisplay::setGpuData(const ProceduralConfig& config)
 {
-	grid = createHeightMap(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
+	grid = createHeightMap(config);
 
 	// Positions (x, y, z) and texture coords (u, v)
 	float quadVertices[] = {
