@@ -454,6 +454,8 @@ void gui()
 	ImGui::RadioButton("Rational", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Rational));
 	ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&erosionType), static_cast<int>(ErosionType::Exponential));
 
+	ImGui::SliderFloat("Erosion Strength", &erosionStrength, 0.0f, 10.0f);
+
 	ImGui::SliderInt("Domain Warping Level", &warpLevel, 0, 2);
 
 	if (ImGui::Button("Reload texture")) {
