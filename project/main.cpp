@@ -142,7 +142,7 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
+	perlinDisplay.setGpuData(config);
 	proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
@@ -407,14 +407,14 @@ void gui()
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
+		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
 	}
 
 	if (ImGui::Button("Reset texture")) {
 		config.reset();
 
-		perlinDisplay.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel);
+		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config.seed, config.width, config.height, config.gridSize, config.octaveCount, config.lacunarity, config.persistence, config.interpolationType, config.erosionType, config.erosionStrength, config.warpLevel, config.heightScale);
 	}
 
