@@ -25,7 +25,7 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
 }
 
 // Domain warping based on: https://iquilezles.org/articles/warp/
-void domainWarp(FbmNoise& fbm, float& fx, float& fy, int warpLevel)
+void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel)
 {
     // First warping
     float qx = 4 * fbm.sample(fx, fy);
