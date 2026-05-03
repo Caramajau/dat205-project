@@ -7,11 +7,11 @@ uniform mat4 modelViewProjectionMatrix;
 uniform sampler2D heightMap;
 uniform float heightScale;
 
-out float height;
+out vec3 positionWithHeight;
 
 void main()
 {
-	height = texture(heightMap, texCoordIn).r;
-	vec3 positionWithHeight = vec3(position.x, height * heightScale, position.z);
+	float height = texture(heightMap, texCoordIn).r;
+	positionWithHeight = vec3(position.x, height * heightScale, position.z);
 	gl_Position = modelViewProjectionMatrix * vec4(positionWithHeight, 1.0);
 }
