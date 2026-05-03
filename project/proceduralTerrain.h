@@ -16,7 +16,7 @@ public:
 
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::mat4& lightProjectionMatrix, const glm::mat4& lightViewMatrix) const;
 
 private:
 	// NOTE: If world up is changed from 0, 1, 0 this should match.

@@ -95,14 +95,19 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int height
 	return indices;
 }
 
-void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const {
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::mat4& lightProjectionMatrix, const glm::mat4& lightViewMatrix) const {
 	glUseProgram(terrainShader);
 	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
+	labhelper::setUniformSlow(terrainShader, "modelViewMatrix", viewMatrix * terrainModelMatrix);
+	labhelper::setUniformSlow(terrainShader, "viewMatrix", viewMatrix);
+	labhelper::setUniformSlow(terrainShader, "viewInverse", inverse(viewMatrix));
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
+	glm::mat4 lightMatrix = glm::translate(glm::vec3(0.5f)) * glm::scale(glm::vec3(0.5f)) * lightProjectionMatrix * lightViewMatrix * inverse(viewMatrix);
+	labhelper::setUniformSlow(terrainShader, "lightMatrix", lightMatrix);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
