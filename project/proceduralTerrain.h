@@ -36,6 +36,7 @@ private:
 
 	float heightScale = 0;
 	float gridSize = 0;
+	bool useNeighbours = false;
 
 	std::vector<float> createVertices(int width, int height) const;
 	std::vector<unsigned int> createIndices(int width, int height) const;

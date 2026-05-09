@@ -12,6 +12,8 @@ in vec2 texCoord;
 
 in vec3 positionWithHeight;
 
+uniform bool useNeighbours;
+
 // Idea from https://www.youtube.com/shorts/gc7rT3sF1S8
 vec3 positionNormal(vec3 position)
 {
@@ -26,17 +28,15 @@ vec3 neighbourNormal(vec2 uv, float texelSize, float texelAspect)
     float hL = texture(heightMap, uv + texelSize*vec2(-1, 0)).r * texelAspect;
     float hR = texture(heightMap, uv + texelSize*vec2( 1, 0)).r * texelAspect;
     float hU = texture(heightMap, uv + texelSize*vec2( 0, 1)).r * texelAspect;
-
-    vec3 normal = vec3(hL - hR, 2.0, hD - hU);
     
+    vec3 normal = vec3(hL - hR, 2.0, hD - hU);
     return normalize(normal);
 } 
 
 void main()
 {
-    bool useNeighbour = true;
-    vec3 normal = useNeighbour ? neighbourNormal(texCoord, 1.0f/gridSize, heightScale) : positionNormal(positionWithHeight);
-
+    vec3 normal = useNeighbours ? neighbourNormal(texCoord, 1.0f/gridSize, heightScale) : positionNormal(positionWithHeight);
+    
     float slope = 1 - normal.y;
 
     // Terrain colours (could be changed to use textures instead)

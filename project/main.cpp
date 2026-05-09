@@ -406,6 +406,8 @@ void gui()
 
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 
+	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
+
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);

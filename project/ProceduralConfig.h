@@ -20,8 +20,9 @@ struct ProceduralConfig {
 
 	int warpLevel = 2;
 
-	// NOTE: only used by terrain and not display
+	// Configs used only by terrain and not display
 	float heightScale = 100.0f;
+	bool useNeighbours = true;
 
 	void reset() { *this = ProceduralConfig{}; }
 };
