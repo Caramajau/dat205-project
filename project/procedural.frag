@@ -6,6 +6,7 @@ precision highp float;
 layout(location = 0) out vec4 fragmentColor;
 
 uniform float heightScale;
+uniform float gridSize;
 uniform sampler2D heightMap;
 in vec2 texCoord;
 
@@ -33,8 +34,8 @@ vec3 neighbourNormal(vec2 uv, float texelSize, float texelAspect)
 
 void main()
 {
-    bool useNeightbour = true;
-    vec3 normal = useNeightbour ? neighbourNormal(texCoord, 1.0f/256.0f, heightScale) : positionNormal(positionWithHeight);
+    bool useNeighbour = true;
+    vec3 normal = useNeighbour ? neighbourNormal(texCoord, 1.0f/gridSize, heightScale) : positionNormal(positionWithHeight);
 
     float slope = 1 - normal.y;
 

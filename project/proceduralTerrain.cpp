@@ -13,6 +13,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightMapGrid = createHeightMap(config);
 	heightScale = config.heightScale;
+	gridSize = config.gridSize;
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -103,6 +104,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
+	labhelper::setUniformSlow(terrainShader, "gridSize", gridSize);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
