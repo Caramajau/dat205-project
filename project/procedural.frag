@@ -8,6 +8,7 @@ layout(location = 0) out vec4 fragmentColor;
 uniform float heightScale;
 uniform float gridSize;
 uniform sampler2D heightMap;
+uniform sampler2D grassTexture;
 in vec2 texCoord;
 
 in vec3 positionWithHeight;
@@ -32,7 +33,7 @@ vec3 neighbourNormal(vec2 uv, float texelSize, float texelAspect)
     
     vec3 normal = vec3(hL - hR, 2.0, hD - hU);
     return normalize(normal);
-} 
+}
 
 void main()
 {
@@ -40,9 +41,9 @@ void main()
     
     float slope = 1 - normal.y;
 
-    // Terrain colours (could be changed to use textures instead)
-    // Maybe customise through GUI?
-    vec3 grass = vec3(0.2, 0.6, 0.1);
+    // 32 seemed like a good "zoom".
+    // Texture from https://ambientcg.com/a/Grass005
+    vec3 grass = texture(grassTexture, 32 * texCoord).rgb;
     vec3 rock  = vec3(0.4, 0.3, 0.2);
 
     float rockBlend = smoothstep(0.2, 0.4, slope);

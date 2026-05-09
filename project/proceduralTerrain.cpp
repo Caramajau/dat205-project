@@ -1,4 +1,5 @@
 #include "proceduralTerrain.h"
+#include <stb_image.h>
 
 ProceduralTerrain::ProceduralTerrain() = default;
 ProceduralTerrain::~ProceduralTerrain() = default;
@@ -8,6 +9,26 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	if (shader != 0) {
 		terrainShader = shader;
 	}
+
+	int w;
+	int h;
+	int comp;
+	unsigned char* grassImage = stbi_load("../scenes/textures/grass.jpg", &w, &h, &comp, STBI_rgb_alpha);
+	//init texture data
+	glGenTextures(1, &grassTexture);
+	//bind texture, allocate storage and upload the data
+	glBindTexture(GL_TEXTURE_2D, grassTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, grassImage);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	stbi_image_free(grassImage);
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
@@ -103,6 +124,10 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
+
+	glActiveTexture(GL_TEXTURE9);
+	glBindTexture(GL_TEXTURE_2D, grassTexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "grassTexture"), 9);
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
