@@ -36,15 +36,14 @@ void main()
     bool useNeightbour = true;
     vec3 normal = useNeightbour ? neighbourNormal(texCoord, 1.0f/256.0f, heightScale) : positionNormal(positionWithHeight);
 
-    float slope = normal.y;
+    float slope = 1 - normal.y;
 
     // Terrain colours (could be changed to use textures instead)
     // Maybe customise through GUI?
     vec3 grass = vec3(0.2, 0.6, 0.1);
     vec3 rock  = vec3(0.4, 0.3, 0.2);
 
-    // NOTE: reversed order since the "slope" is based on the normal.
-    float rockBlend = smoothstep(0.8, 0.6, slope);
+    float rockBlend = smoothstep(0.2, 0.4, slope);
     vec3 colour = mix(grass, rock, rockBlend);
 
     // Temporary sun direction, customise through GUI?
