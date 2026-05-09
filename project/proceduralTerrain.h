@@ -26,6 +26,7 @@ private:
 
 	GLuint perlinTexture = 0;
 	GLuint grassTexture = 0;
+	GLuint rockTexture = 0;
 	GLuint terrainShader = 0;
 
 	GLuint terrainVertexArrayObject = 0;

@@ -9,6 +9,7 @@ uniform float heightScale;
 uniform float gridSize;
 uniform sampler2D heightMap;
 uniform sampler2D grassTexture;
+uniform sampler2D rockTexture;
 in vec2 texCoord;
 
 in vec3 positionWithHeight;
@@ -44,7 +45,8 @@ void main()
     // 32 seemed like a good "zoom".
     // Texture from https://ambientcg.com/a/Grass005
     vec3 grass = texture(grassTexture, 32 * texCoord).rgb;
-    vec3 rock  = vec3(0.4, 0.3, 0.2);
+    // Texture from https://ambientcg.com/a/Ground067
+    vec3 rock  = texture(rockTexture, 32 * texCoord).rgb;
 
     float rockBlend = smoothstep(0.2, 0.4, slope);
     vec3 colour = mix(grass, rock, rockBlend);
