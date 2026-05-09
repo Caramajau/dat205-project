@@ -1,4 +1,6 @@
 #pragma once
+
+#include <glm/glm.hpp>
 #include "interpolations.h"
 #include "erosion.h"
 
@@ -23,6 +25,7 @@ struct ProceduralConfig {
 	// Configs used only by terrain and not display
 	float heightScale = 100.0f;
 	bool useNeighbours = true;
+	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);
 
 	void reset() { *this = ProceduralConfig{}; }
 };

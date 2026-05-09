@@ -13,6 +13,7 @@ in vec2 texCoord;
 in vec3 positionWithHeight;
 
 uniform bool useNeighbours;
+uniform vec3 sunDirection;
 
 // Idea from https://www.youtube.com/shorts/gc7rT3sF1S8
 vec3 positionNormal(vec3 position)
@@ -47,9 +48,7 @@ void main()
     float rockBlend = smoothstep(0.2, 0.4, slope);
     vec3 colour = mix(grass, rock, rockBlend);
 
-    // Temporary sun direction, customise through GUI?
-    vec3 sunDirection = normalize(vec3(0.8, 1.0, 0.6));
-    float diffuse = max(dot(normal, sunDirection), 0.0);
+    float diffuse = max(dot(normal, normalize(sunDirection)), 0.0);
 
     // Simple shading with some ambient and mostly diffuse
     float light = 0.1 + 0.9 * diffuse;
