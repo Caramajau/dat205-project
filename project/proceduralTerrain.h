@@ -15,6 +15,7 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
+	void loadTerrainTexture(GLuint& texture, const char* filepath) const;
 	void setGpuData(const ProceduralConfig& config);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 

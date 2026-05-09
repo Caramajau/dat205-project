@@ -10,15 +10,19 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 		terrainShader = shader;
 	}
 
+	loadTerrainTexture(grassTexture, "../scenes/textures/grass.jpg");
+}
+
+void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath) const {
 	int w;
 	int h;
 	int comp;
-	unsigned char* grassImage = stbi_load("../scenes/textures/grass.jpg", &w, &h, &comp, STBI_rgb_alpha);
+	unsigned char* image = stbi_load(filepath, &w, &h, &comp, STBI_rgb_alpha);
 	//init texture data
-	glGenTextures(1, &grassTexture);
+	glGenTextures(1, &texture);
 	//bind texture, allocate storage and upload the data
-	glBindTexture(GL_TEXTURE_2D, grassTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, grassImage);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -28,7 +32,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	stbi_image_free(grassImage);
+	stbi_image_free(image);
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
