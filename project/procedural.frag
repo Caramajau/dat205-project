@@ -6,13 +6,35 @@ precision highp float;
 layout(location = 0) out vec4 fragmentColor;
 
 uniform float heightScale;
+uniform sampler2D heightMap;
+in vec2 texCoord;
 
 in vec3 positionWithHeight;
 
+// Idea from https://www.youtube.com/shorts/gc7rT3sF1S8
+vec3 positionNormal(vec3 position)
+{
+    vec3 normal = cross(dFdx(position), dFdy(position));
+    return normalize(normal);
+}
+
+// Heavily inspired by https://media.contentapi.ea.com/content/dam/eacom/frostbite/files/chapter5-andersson-terrain-rendering-in-frostbite.pdf
+vec3 neighbourNormal(vec2 uv, float texelSize, float texelAspect)
+{
+    float hD = texture(heightMap, uv + texelSize*vec2( 0,-1)).r * texelAspect;
+    float hL = texture(heightMap, uv + texelSize*vec2(-1, 0)).r * texelAspect;
+    float hR = texture(heightMap, uv + texelSize*vec2( 1, 0)).r * texelAspect;
+    float hU = texture(heightMap, uv + texelSize*vec2( 0, 1)).r * texelAspect;
+
+    vec3 normal = vec3(hL - hR, 2.0, hD - hU);
+    
+    return normalize(normal);
+} 
+
 void main()
 {
-    // Calculate normal to get correct lighting, idea from: https://www.youtube.com/shorts/gc7rT3sF1S8
-	vec3 normal = normalize(cross(dFdx(positionWithHeight), dFdy(positionWithHeight)));
+    bool useNeightbour = true;
+    vec3 normal = useNeightbour ? neighbourNormal(texCoord, 1.0f/256.0f, heightScale) : positionNormal(positionWithHeight);
 
     float slope = normal.y;
 
