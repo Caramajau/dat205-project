@@ -406,6 +406,12 @@ void gui()
 
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 
+	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
+
+	ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
+	ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
+	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);

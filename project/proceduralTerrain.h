@@ -15,6 +15,7 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
+	void loadTerrainTexture(GLuint& texture, const char* filepath) const;
 	void setGpuData(const ProceduralConfig& config);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 
@@ -24,6 +25,12 @@ private:
 	glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
 
 	GLuint perlinTexture = 0;
+
+	GLuint grassTexture = 0;
+	GLuint grassNormalMap = 0;
+	GLuint rockTexture = 0;
+	GLuint rockNormalMap = 0;
+
 	GLuint terrainShader = 0;
 
 	GLuint terrainVertexArrayObject = 0;
@@ -35,6 +42,9 @@ private:
 	size_t triangleCount = 0;
 
 	float heightScale = 0;
+	int gridSize = 0;
+	bool useNeighbours = false;
+	glm::vec3 sunDirection;
 
 	std::vector<float> createVertices(int width, int height) const;
 	std::vector<unsigned int> createIndices(int width, int height) const;
