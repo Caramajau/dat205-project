@@ -383,29 +383,32 @@ void gui()
 	// Slider int seems to only support half the range (still gives many seed options anyways)
 	ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
+	ImGui::Text("Terrain size options");
 	ImGui::SliderInt("Width", &config.width, 1, 1000);
 	ImGui::SliderInt("Height", &config.height, 1, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
+	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 512.0f);
 
+	ImGui::Text("fBm options");
+	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
 	ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
 	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 10.0f);
 
-	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
-
-	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 512.0f);
-
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
+	ImGui::Text("Interpolation options");
 	ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
 
+	ImGui::Text("Erosion options");
+	ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
 	ImGui::RadioButton("Rational", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Rational));
 	ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Exponential));
 
-	ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
-
+	ImGui::Text("Domain warping options");
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 
+	ImGui::Text("Lighting options");
 	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
 
 	ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
