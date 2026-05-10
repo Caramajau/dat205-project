@@ -48,10 +48,10 @@ mat3 buildTBN(vec3 terrainNormal)
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     T = normalize(T - terrainNormal.x * terrainNormal);
 
-    // Similarly, the bitangent is just positive Z
-    // Maybe cross product?
-    vec3 B = vec3(0.0, 0.0, 1.0);
-    B = normalize(B - terrainNormal * terrainNormal.z);
+    // Can get the bitangent with cross product.
+    // Although, unlike in the article linked above this is the correct order.
+    // They might be dealing with reversed x axis or something.
+    vec3 B = cross(T, terrainNormal);
 
     return mat3(T, B, terrainNormal);
 }
