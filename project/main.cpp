@@ -74,6 +74,8 @@ float cameraSpeed = 100.f;
 
 vec3 worldUp(0.0f, 1.0f, 0.0f);
 
+bool hasEntered;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Models
 ///////////////////////////////////////////////////////////////////////////////
@@ -288,6 +290,9 @@ bool handleEvents(void)
 	// check events (keyboard among other)
 	SDL_Event event;
 	bool quitEvent = false;
+
+	SDL_SetRelativeMouseMode(hasEntered ? SDL_TRUE : SDL_FALSE);
+
 	while(SDL_PollEvent(&event))
 	{
 		labhelper::processEvent( &event );
@@ -315,7 +320,8 @@ bool handleEvents(void)
 
 		if(!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)))
 		{
-			g_isMouseDragging = false;
+			// When you have entered the world you always want to drag the camera.
+			g_isMouseDragging = hasEntered;
 		}
 
 		if(event.type == SDL_MOUSEMOTION && g_isMouseDragging)
@@ -333,29 +339,32 @@ bool handleEvents(void)
 	const uint8_t* state = SDL_GetKeyboardState(nullptr);
 	vec3 cameraRight = cross(cameraDirection, worldUp);
 
-	if(state[SDL_SCANCODE_W])
+	if (state[SDL_SCANCODE_W])
 	{
 		cameraPosition += cameraSpeed * deltaTime * cameraDirection;
 	}
-	if(state[SDL_SCANCODE_S])
+	if (state[SDL_SCANCODE_S])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * cameraDirection;
 	}
-	if(state[SDL_SCANCODE_A])
+	if (state[SDL_SCANCODE_A])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * cameraRight;
 	}
-	if(state[SDL_SCANCODE_D])
+	if (state[SDL_SCANCODE_D])
 	{
 		cameraPosition += cameraSpeed * deltaTime * cameraRight;
 	}
-	if(state[SDL_SCANCODE_Q])
+	if (state[SDL_SCANCODE_Q])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * worldUp;
 	}
-	if(state[SDL_SCANCODE_E])
+	if (state[SDL_SCANCODE_E])
 	{
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
+	}
+	if (state[SDL_SCANCODE_Z]) {
+		hasEntered = false;
 	}
 	return quitEvent;
 }
@@ -416,6 +425,10 @@ void gui()
 
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+	}
+
+	if (ImGui::Button("Enter world")) {
+		hasEntered = true;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
