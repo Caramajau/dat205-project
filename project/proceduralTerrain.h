@@ -42,7 +42,7 @@ private:
 	size_t triangleCount = 0;
 
 	float heightScale = 0;
-	float gridSize = 0;
+	int gridSize = 0;
 	bool useNeighbours = false;
 	glm::vec3 sunDirection;
 

@@ -6,7 +6,7 @@ precision highp float;
 layout(location = 0) out vec4 fragmentColor;
 
 uniform float heightScale;
-uniform float gridSize;
+uniform int gridSize;
 uniform sampler2D heightMap;
 uniform sampler2D grassTexture;
 uniform sampler2D rockTexture;
