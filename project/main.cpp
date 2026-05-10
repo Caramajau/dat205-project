@@ -38,7 +38,6 @@ int windowWidth;
 int windowHeight;
 
 // Mouse input
-ivec2 g_prevMouseCoords = { -1, -1 };
 bool g_isMouseDragging = false;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -312,11 +311,6 @@ bool handleEvents(void)
 		   && (!labhelper::isGUIvisible() || !ImGui::GetIO().WantCaptureMouse))
 		{
 			g_isMouseDragging = true;
-			int x;
-			int y;
-			SDL_GetMouseState(&x, &y);
-			g_prevMouseCoords.x = x;
-			g_prevMouseCoords.y = y;
 		}
 
 		if(!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)))
@@ -327,15 +321,11 @@ bool handleEvents(void)
 		if(event.type == SDL_MOUSEMOTION && g_isMouseDragging)
 		{
 			// More info at https://wiki.libsdl.org/SDL_MouseMotionEvent
-			int delta_x = event.motion.x - g_prevMouseCoords.x;
-			int delta_y = event.motion.y - g_prevMouseCoords.y;
 			float rotationSpeed = 0.1f;
-			mat4 yaw = rotate(rotationSpeed * deltaTime * -delta_x, worldUp);
-			mat4 pitch = rotate(rotationSpeed * deltaTime * -delta_y,
+			mat4 yaw = rotate(rotationSpeed * deltaTime * -event.motion.xrel, worldUp);
+			mat4 pitch = rotate(rotationSpeed * deltaTime * -event.motion.yrel,
 			                    normalize(cross(cameraDirection, worldUp)));
 			cameraDirection = vec3(pitch * yaw * vec4(cameraDirection, 0.0f));
-			g_prevMouseCoords.x = event.motion.x;
-			g_prevMouseCoords.y = event.motion.y;
 		}
 	}
 
