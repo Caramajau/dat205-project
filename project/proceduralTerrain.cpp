@@ -12,6 +12,8 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 
 	loadTerrainTexture(grassTexture, "../scenes/textures/grass.jpg");
 	loadTerrainTexture(rockTexture, "../scenes/textures/rock.jpg");
+	loadTerrainTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
+	loadTerrainTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
 }
 
 void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath) const {
@@ -137,6 +139,14 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glActiveTexture(GL_TEXTURE10);
 	glBindTexture(GL_TEXTURE_2D, rockTexture);
 	glUniform1i(glGetUniformLocation(terrainShader, "rockTexture"), 10);
+
+	glActiveTexture(GL_TEXTURE11);
+	glBindTexture(GL_TEXTURE_2D, grassNormalMap);
+	glUniform1i(glGetUniformLocation(terrainShader, "grassNormalMap"), 11);
+
+	glActiveTexture(GL_TEXTURE12);
+	glBindTexture(GL_TEXTURE_2D, rockNormalMap);
+	glUniform1i(glGetUniformLocation(terrainShader, "rockNormalMap"), 12);
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);

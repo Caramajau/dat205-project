@@ -25,8 +25,12 @@ private:
 	glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
 
 	GLuint perlinTexture = 0;
+
 	GLuint grassTexture = 0;
+	GLuint grassNormalMap = 0;
 	GLuint rockTexture = 0;
+	GLuint rockNormalMap = 0;
+
 	GLuint terrainShader = 0;
 
 	GLuint terrainVertexArrayObject = 0;
