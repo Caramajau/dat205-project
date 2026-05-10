@@ -7,7 +7,7 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
     InterpolateFunc interpolateDerivative = convertTypeToMethodDerivativeType(config.interpolationType);
     ErosionFunc erosion = convertTypeToMethodErosionType(config.erosionType);
 
-    auto fbm = FbmNoise(config.seed, config.octaveCount, config.lacunarity, config.persistence, interpolate, interpolateDerivative, erosion, config.erosionStrength);
+    auto fbm = FbmNoise(config.seed, config.octaveCount, config.lacunarity, config.persistence, interpolate, interpolateDerivative, config.useIncorrectBlending, erosion, config.erosionStrength);
 
     for (int y = 0; y < config.height; y++) {
         for (int x = 0; x < config.width; x++) {

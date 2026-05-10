@@ -6,7 +6,7 @@
 
 class PerlinNoise {
 public:
-	PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative);
+	PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, bool useIncorrectBlending);
 	~PerlinNoise();
 
 	float sample(float x, float y, float& outDx, float& outDy) const;
@@ -15,6 +15,7 @@ private:
 	int seed;
 	InterpolateFunc interpolate;
 	InterpolateFunc interpolateDerivative;
+	bool useIncorrectBlending;
 
 	float dotGridGradient(int integerX, int integerY, float x, float y) const;
 	glm::vec2 randomGradient(int integerX, int integerY) const;

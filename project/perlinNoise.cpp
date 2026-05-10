@@ -4,10 +4,11 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative) {
+PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, bool useIncorrectBlending) {
     this->seed = seed;
     this->interpolate = interpolate;
     this->interpolateDerivative = interpolateDerivative;
+    this->useIncorrectBlending = useIncorrectBlending;
 }
 
 PerlinNoise::~PerlinNoise() = default;
@@ -28,21 +29,21 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float topLeftDot = dotGridGradient(x0, y0, x, y);
     float topRightDot = dotGridGradient(x1, y0, x, y);
     float topInterpolation = interpolate(sx);
-    float topBlending = blending(topLeftDot, topRightDot, topInterpolation);
-    // float topBlending = incorrectBlending(topLeftDot, topRightDot, topInterpolation);
+    float topBlending = useIncorrectBlending ?
+        incorrectBlending(topLeftDot, topRightDot, topInterpolation) : blending(topLeftDot, topRightDot, topInterpolation);
 
     // Compute and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
     float bottomInterpolation = interpolate(sx);
-    float bottomBlending = blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
-    // float bottomBlending = incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation);
+    float bottomBlending = useIncorrectBlending ?
+        incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation) : blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
 
     // Then interpolate horizontal with vertical
     // I.e.: interpolate between the two previously interpolated values, now in y.
     float finalInterpolation = interpolate(sy);
-    float finalBlending = blending(topBlending, bottomBlending, finalInterpolation);
-    // float finalBlending = incorrectBlending(topBlending, bottomBlending, finalInterpolation);
+    float finalBlending = useIncorrectBlending ?
+        incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation) : blending(topBlending, bottomBlending, finalInterpolation);
 
     // Derivative of chosen interpolation
     float dx = interpolateDerivative(sx);

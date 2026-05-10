@@ -399,6 +399,7 @@ void gui()
 	ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
 	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
 	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
+	ImGui::Checkbox("Use incorrect blending?", &config.useIncorrectBlending);
 
 	ImGui::Text("Erosion options");
 	ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);

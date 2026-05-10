@@ -16,6 +16,7 @@ struct ProceduralConfig {
 	float persistence = 2.0f;
 
 	InterpolationType interpolationType = InterpolationType::Quintic;
+	bool useIncorrectBlending = false;
 
 	ErosionType erosionType = ErosionType::Rational;
 	float erosionStrength = 1.0f;

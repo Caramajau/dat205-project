@@ -21,9 +21,8 @@ void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath
 	int h;
 	int comp;
 	unsigned char* image = stbi_load(filepath, &w, &h, &comp, STBI_rgb_alpha);
-	//init texture data
+
 	glGenTextures(1, &texture);
-	//bind texture, allocate storage and upload the data
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 

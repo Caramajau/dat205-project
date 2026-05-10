@@ -7,7 +7,7 @@
 
 class FbmNoise {
 public:
-	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, ErosionFunc erosion, float erosionStrength);
+	FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, bool useIncorrectBlending, ErosionFunc erosion, float erosionStrength);
 	~FbmNoise();
 	float sample(float fx, float fy) const;
 
