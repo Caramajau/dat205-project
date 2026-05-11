@@ -40,7 +40,6 @@ void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightMapGrid = createHeightMap(config);
 	heightScale = config.heightScale;
-	gridSize = config.gridSize;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
 
@@ -149,7 +148,6 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
-	labhelper::setUniformSlow(terrainShader, "gridSize", gridSize);
 	labhelper::setUniformSlow(terrainShader, "useNeighbours", useNeighbours);
 	labhelper::setUniformSlow(terrainShader, "sunDirection", sunDirection);
 
