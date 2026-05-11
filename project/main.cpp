@@ -38,7 +38,6 @@ int windowWidth;
 int windowHeight;
 
 // Mouse input
-ivec2 g_prevMouseCoords = { -1, -1 };
 bool g_isMouseDragging = false;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,9 +70,12 @@ float point_light_intensity_multiplier = 10000.0f;
 ///////////////////////////////////////////////////////////////////////////////
 vec3 cameraPosition(-70.0f, 50.0f, 70.0f);
 vec3 cameraDirection = normalize(vec3(0.0f) - cameraPosition);
-float cameraSpeed = 100.f;
+float cameraSpeed = 100.0f;
 
 vec3 worldUp(0.0f, 1.0f, 0.0f);
+
+bool hasEntered;
+const float terrainOffset = 5.0f;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Models
@@ -242,7 +244,7 @@ void display(void)
 	///////////////////////////////////////////////////////////////////////////
 	// setup matrices
 	///////////////////////////////////////////////////////////////////////////
-	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 5.0f, 2000.0f);
+	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 1.0f, 2000.0f);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
 	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
@@ -280,6 +282,32 @@ void display(void)
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 }
 
+// Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
+// Assumes 1:1 scale between camera position and grid (which is currently true)
+float getTerrainHeight(float worldX, float worldZ, const std::vector<float>& grid, int gridWidth) {
+	auto x0 = (int)worldX;
+	auto z0 = (int)worldZ;
+	int x1 = x0 + 1;
+	int z1 = z0 + 1;
+
+	float sx = worldX - (int)worldX;
+	float sz = worldZ - (int)worldZ;
+
+	// Sample the 4 corners
+	float h00 = grid[z0 * gridWidth + x0];
+	float h10 = grid[z0 * gridWidth + x1];
+	float h01 = grid[z1 * gridWidth + x0];
+	float h11 = grid[z1 * gridWidth + x1];
+
+	float topHeight = linearInterpolate(sx);
+	topHeight = blending(h00, h10, topHeight);
+
+	float bottomHeight = linearInterpolate(sx);
+	bottomHeight = blending(h01, h11, bottomHeight);
+
+	float finalHeight = linearInterpolate(sz);
+	return blending(topHeight, bottomHeight, finalHeight);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is used to update the scene according to user input
@@ -289,6 +317,9 @@ bool handleEvents(void)
 	// check events (keyboard among other)
 	SDL_Event event;
 	bool quitEvent = false;
+
+	SDL_SetRelativeMouseMode(hasEntered ? SDL_TRUE : SDL_FALSE);
+
 	while(SDL_PollEvent(&event))
 	{
 		labhelper::processEvent( &event );
@@ -312,30 +343,22 @@ bool handleEvents(void)
 		   && (!labhelper::isGUIvisible() || !ImGui::GetIO().WantCaptureMouse))
 		{
 			g_isMouseDragging = true;
-			int x;
-			int y;
-			SDL_GetMouseState(&x, &y);
-			g_prevMouseCoords.x = x;
-			g_prevMouseCoords.y = y;
 		}
 
 		if(!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)))
 		{
-			g_isMouseDragging = false;
+			// When you have entered the world you always want to drag the camera.
+			g_isMouseDragging = hasEntered;
 		}
 
 		if(event.type == SDL_MOUSEMOTION && g_isMouseDragging)
 		{
 			// More info at https://wiki.libsdl.org/SDL_MouseMotionEvent
-			int delta_x = event.motion.x - g_prevMouseCoords.x;
-			int delta_y = event.motion.y - g_prevMouseCoords.y;
 			float rotationSpeed = 0.1f;
-			mat4 yaw = rotate(rotationSpeed * deltaTime * -delta_x, worldUp);
-			mat4 pitch = rotate(rotationSpeed * deltaTime * -delta_y,
+			mat4 yaw = rotate(rotationSpeed * deltaTime * -event.motion.xrel, worldUp);
+			mat4 pitch = rotate(rotationSpeed * deltaTime * -event.motion.yrel,
 			                    normalize(cross(cameraDirection, worldUp)));
 			cameraDirection = vec3(pitch * yaw * vec4(cameraDirection, 0.0f));
-			g_prevMouseCoords.x = event.motion.x;
-			g_prevMouseCoords.y = event.motion.y;
 		}
 	}
 
@@ -343,29 +366,46 @@ bool handleEvents(void)
 	const uint8_t* state = SDL_GetKeyboardState(nullptr);
 	vec3 cameraRight = cross(cameraDirection, worldUp);
 
-	if(state[SDL_SCANCODE_W])
+	if (state[SDL_SCANCODE_W])
 	{
 		cameraPosition += cameraSpeed * deltaTime * cameraDirection;
 	}
-	if(state[SDL_SCANCODE_S])
+	if (state[SDL_SCANCODE_S])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * cameraDirection;
 	}
-	if(state[SDL_SCANCODE_A])
+	if (state[SDL_SCANCODE_A])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * cameraRight;
 	}
-	if(state[SDL_SCANCODE_D])
+	if (state[SDL_SCANCODE_D])
 	{
 		cameraPosition += cameraSpeed * deltaTime * cameraRight;
 	}
-	if(state[SDL_SCANCODE_Q])
+	if (state[SDL_SCANCODE_Q])
 	{
 		cameraPosition -= cameraSpeed * deltaTime * worldUp;
 	}
-	if(state[SDL_SCANCODE_E])
+	if (state[SDL_SCANCODE_E])
 	{
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
+	}
+
+	if (hasEntered
+		&& 0 <= cameraPosition.x && cameraPosition.x < config.width - 1
+		&& 0 <= cameraPosition.z && cameraPosition.z < config.height - 1) {
+		
+		cameraPosition.y = getTerrainHeight(
+			cameraPosition.x, 
+			cameraPosition.z, 
+			proceduralTerrain.getHeightMapGrid(), 
+			config.width
+		) * config.heightScale + proceduralTerrain.yOffset + terrainOffset;
+	}
+
+	if (state[SDL_SCANCODE_Z]) {
+		hasEntered = false;
+		cameraSpeed = 100.0f;
 	}
 	return quitEvent;
 }
@@ -384,10 +424,10 @@ void gui()
 	ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
 	ImGui::Text("Terrain size options");
-	ImGui::SliderInt("Width", &config.width, 1, 1000);
-	ImGui::SliderInt("Height", &config.height, 1, 1000);
+	ImGui::SliderInt("Width", &config.width, 2, 1000);
+	ImGui::SliderInt("Height", &config.height, 2, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
-	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 512.0f);
+	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 
 	ImGui::Text("fBm options");
 	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
@@ -420,12 +460,18 @@ void gui()
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
 	}
-
+	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
 		config.reset();
 
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+	}
+
+	if (ImGui::Button("Enter world")) {
+		hasEntered = true;
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.yOffset + terrainOffset, 0);
+		cameraSpeed = 10.0f;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
