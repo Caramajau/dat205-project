@@ -73,8 +73,8 @@ vec3 unpackNormal(sampler2D map, vec2 uv)
 
 void main()
 {
-    // The terrain normal, which is given in world space, so y is up.
     ivec2 terrainSize = textureSize(heightMap, 0);
+    // The terrain normal, which is given in world space, so y is up.
     vec3 terrainNormal = useNeighbours ? neighbourNormal(texCoord, 1.0/terrainSize.x, 1.0/terrainSize.y, heightScale) : positionNormal(positionWithHeight);
 
     float slope = 1.0 - terrainNormal.y;
