@@ -6,12 +6,13 @@ precision highp float;
 layout(location = 0) out vec4 fragmentColor;
 
 uniform float heightScale;
-uniform int gridSize;
 uniform sampler2D heightMap;
+
 uniform sampler2D grassTexture;
 uniform sampler2D rockTexture;
 uniform sampler2D grassNormalMap;
 uniform sampler2D rockNormalMap;
+
 in vec2 texCoord;
 
 in vec3 positionWithHeight;
@@ -27,12 +28,12 @@ vec3 positionNormal(vec3 position)
 }
 
 // Heavily inspired by https://media.contentapi.ea.com/content/dam/eacom/frostbite/files/chapter5-andersson-terrain-rendering-in-frostbite.pdf
-vec3 neighbourNormal(vec2 uv, float texelSize, float texelAspect)
+vec3 neighbourNormal(vec2 uv, float texelWidth, float texelHeight, float texelAspect)
 {
-    float hD = texture(heightMap, uv + texelSize*vec2( 0,-1)).r * texelAspect;
-    float hL = texture(heightMap, uv + texelSize*vec2(-1, 0)).r * texelAspect;
-    float hR = texture(heightMap, uv + texelSize*vec2( 1, 0)).r * texelAspect;
-    float hU = texture(heightMap, uv + texelSize*vec2( 0, 1)).r * texelAspect;
+    float hD = texture(heightMap, uv + texelHeight*vec2( 0,-1)).r * texelAspect;
+    float hL = texture(heightMap, uv + texelWidth*vec2(-1, 0)).r * texelAspect;
+    float hR = texture(heightMap, uv + texelWidth*vec2( 1, 0)).r * texelAspect;
+    float hU = texture(heightMap, uv + texelHeight*vec2( 0, 1)).r * texelAspect;
 
     vec3 normal = vec3(hL - hR, 2.0, hD - hU);
     return normalize(normal);
@@ -72,8 +73,9 @@ vec3 unpackNormal(sampler2D map, vec2 uv)
 
 void main()
 {
+    ivec2 terrainSize = textureSize(heightMap, 0);
     // The terrain normal, which is given in world space, so y is up.
-    vec3 terrainNormal = useNeighbours ? neighbourNormal(texCoord, 1.0/gridSize, heightScale) : positionNormal(positionWithHeight);
+    vec3 terrainNormal = useNeighbours ? neighbourNormal(texCoord, 1.0/terrainSize.x, 1.0/terrainSize.y, heightScale) : positionNormal(positionWithHeight);
 
     float slope = 1.0 - terrainNormal.y;
 
