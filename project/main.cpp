@@ -75,6 +75,7 @@ float cameraSpeed = 100.0f;
 vec3 worldUp(0.0f, 1.0f, 0.0f);
 
 bool hasEntered;
+const float terrainOffset = 5.0f;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Models
@@ -394,9 +395,12 @@ bool handleEvents(void)
 		&& 0 <= cameraPosition.x && cameraPosition.x < config.width 
 		&& 0 <= cameraPosition.z && cameraPosition.z < config.height) {
 		
-		// 100 is since the terrain is moved 100 down
-		// 5 is offset from the ground
-		cameraPosition.y = getTerrainHeight(cameraPosition.x, cameraPosition.z, proceduralTerrain.getHeightMapGrid(), config.width) * config.heightScale - 100 + 5;
+		cameraPosition.y = getTerrainHeight(
+			cameraPosition.x, 
+			cameraPosition.z, 
+			proceduralTerrain.getHeightMapGrid(), 
+			config.width
+		) * config.heightScale + proceduralTerrain.yOffset + terrainOffset;
 	}
 
 	if (state[SDL_SCANCODE_Z]) {
@@ -466,7 +470,7 @@ void gui()
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
-		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale - 100 + 5, 0);
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.yOffset + terrainOffset, 0);
 		cameraSpeed = 10.0f;
 	}
 

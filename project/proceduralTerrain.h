@@ -11,9 +11,7 @@
 
 class ProceduralTerrain {
 public:
-	// NOTE: If world up is changed from 0, 1, 0 this should match.
-	// (probably won't in this project)
-	const glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+	const float yOffset = -100.0f;
 
 	explicit ProceduralTerrain();
 	~ProceduralTerrain();
@@ -26,6 +24,10 @@ public:
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
 private:
+	// NOTE: If world up is changed from 0, 1, 0 this should match.
+	// (probably won't in this project)
+	const glm::mat4 terrainModelMatrix = translate(yOffset * glm::vec3(0.0f, 1.0f, 0.0f));
+
 	GLuint perlinTexture = 0;
 
 	GLuint grassTexture = 0;
