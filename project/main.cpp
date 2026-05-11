@@ -282,6 +282,7 @@ void display(void)
 }
 
 // Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
+// Assumes 1:1 scale between camera position and grid (which is currently true)
 float getTerrainHeight(float worldX, float worldZ, const std::vector<float>& grid, int gridWidth) {
 	auto x0 = (int)worldX;
 	auto z0 = (int)worldZ;
@@ -393,6 +394,8 @@ bool handleEvents(void)
 		&& 0 <= cameraPosition.x && cameraPosition.x < config.width 
 		&& 0 <= cameraPosition.z && cameraPosition.z < config.height) {
 		
+		// 100 is since the terrain is moved 100 down
+		// 5 is offset from the ground
 		cameraPosition.y = getTerrainHeight(cameraPosition.x, cameraPosition.z, proceduralTerrain.getHeightMapGrid(), config.width) * config.heightScale - 100 + 5;
 	}
 
@@ -420,7 +423,7 @@ void gui()
 	ImGui::SliderInt("Width", &config.width, 1, 1000);
 	ImGui::SliderInt("Height", &config.height, 1, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
-	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 512.0f);
+	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 
 	ImGui::Text("fBm options");
 	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
@@ -453,7 +456,7 @@ void gui()
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
 	}
-
+	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
 		config.reset();
 
