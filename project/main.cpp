@@ -70,7 +70,7 @@ float point_light_intensity_multiplier = 10000.0f;
 ///////////////////////////////////////////////////////////////////////////////
 vec3 cameraPosition(-70.0f, 50.0f, 70.0f);
 vec3 cameraDirection = normalize(vec3(0.0f) - cameraPosition);
-float cameraSpeed = 100.f;
+float cameraSpeed = 100.0f;
 
 vec3 worldUp(0.0f, 1.0f, 0.0f);
 
@@ -243,7 +243,7 @@ void display(void)
 	///////////////////////////////////////////////////////////////////////////
 	// setup matrices
 	///////////////////////////////////////////////////////////////////////////
-	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 5.0f, 2000.0f);
+	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 1.0f, 2000.0f);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
 	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
@@ -281,6 +281,31 @@ void display(void)
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 }
 
+// Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
+float getTerrainHeight(float worldX, float worldZ, const std::vector<float>& grid, int gridWidth) {
+	auto x0 = (int)worldX;
+	auto z0 = (int)worldZ;
+	int x1 = x0 + 1;
+	int z1 = z0 + 1;
+
+	float sx = worldX - (int)worldX;
+	float sz = worldZ - (int)worldZ;
+
+	// Sample the 4 corners
+	float h00 = grid[z0 * gridWidth + x0];
+	float h10 = grid[z0 * gridWidth + x1];
+	float h01 = grid[z1 * gridWidth + x0];
+	float h11 = grid[z1 * gridWidth + x1];
+
+	float topHeight = linearInterpolate(sx);
+	topHeight = blending(h00, h10, topHeight);
+
+	float bottomHeight = linearInterpolate(sx);
+	bottomHeight = blending(h01, h11, bottomHeight);
+
+	float finalHeight = linearInterpolate(sz);
+	return blending(topHeight, bottomHeight, finalHeight);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is used to update the scene according to user input
@@ -363,8 +388,17 @@ bool handleEvents(void)
 	{
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
 	}
+
+	if (hasEntered 
+		&& 0 <= cameraPosition.x && cameraPosition.x < config.width 
+		&& 0 <= cameraPosition.z && cameraPosition.z < config.height) {
+		
+		cameraPosition.y = getTerrainHeight(cameraPosition.x, cameraPosition.z, proceduralTerrain.getHeightMapGrid(), config.width) * config.heightScale - 100 + 5;
+	}
+
 	if (state[SDL_SCANCODE_Z]) {
 		hasEntered = false;
+		cameraSpeed = 100.0f;
 	}
 	return quitEvent;
 }
@@ -429,6 +463,8 @@ void gui()
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale - 100 + 5, 0);
+		cameraSpeed = 10.0f;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

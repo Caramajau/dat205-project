@@ -21,7 +21,7 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     int x1 = x0 + 1;
     int y1 = y0 + 1;
 
-    // Compute interpolation weights
+    // Compute interpolation weights (the fractional part)
     float sx = x - (float)x0;
     float sy = y - (float)y0;
 

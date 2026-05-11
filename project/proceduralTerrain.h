@@ -11,6 +11,10 @@
 
 class ProceduralTerrain {
 public:
+	// NOTE: If world up is changed from 0, 1, 0 this should match.
+	// (probably won't in this project)
+	const glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+
 	explicit ProceduralTerrain();
 	~ProceduralTerrain();
 
@@ -19,11 +23,9 @@ public:
 	void setGpuData(const ProceduralConfig& config);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 
-private:
-	// NOTE: If world up is changed from 0, 1, 0 this should match.
-	// (probably won't in this project)
-	glm::mat4 terrainModelMatrix = translate(-100.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
+private:
 	GLuint perlinTexture = 0;
 
 	GLuint grassTexture = 0;
