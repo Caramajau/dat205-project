@@ -26,6 +26,7 @@ using namespace glm;
 #include "perlinDisplay.h"
 #include "proceduralTerrain.h"
 #include "ProceduralConfig.h"
+#include "water.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -92,6 +93,8 @@ PerlinDisplay perlinDisplay;
 ProceduralTerrain proceduralTerrain;
 ProceduralConfig config{};
 
+Water water;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -114,6 +117,7 @@ void loadShaders(bool is_reload)
 
 	perlinDisplay.loadShader(is_reload);
 	proceduralTerrain.loadShader(is_reload);
+	water.loadShader(is_reload);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,6 +150,7 @@ void initialize()
 
 	perlinDisplay.setGpuData(config);
 	proceduralTerrain.setGpuData(config);
+	water.setGpuData(config);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -280,6 +285,7 @@ void display(void)
 
 	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
+	water.submitToGpu(viewMatrix, projMatrix);
 }
 
 // Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
@@ -459,6 +465,7 @@ void gui()
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+		water.setGpuData(config);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
@@ -466,6 +473,7 @@ void gui()
 
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+		water.setGpuData(config);
 	}
 
 	if (ImGui::Button("Enter world")) {
