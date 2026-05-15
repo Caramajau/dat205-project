@@ -227,6 +227,9 @@ void drawScene(GLuint currentShaderProgram,
 	                          inverse(transpose(viewMatrix * fighterModelMatrix)));
 
 	labhelper::render(fighterModel);
+
+	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix);
 }
 
 
@@ -289,13 +292,10 @@ void display(void)
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
-	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
-
 	waterFBOs.bindReflectionFrameBuffer();
-
-	// Render scene to reflection frame buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Render scene to reflection frame buffer
 	{
 		labhelper::perf::Scope s("Background");
 		drawBackground(viewMatrix, projMatrix);
@@ -305,12 +305,9 @@ void display(void)
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
-	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
-	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 	water.submitToGpu(viewMatrix, projMatrix);
 	waterFBOs.submitToGpu();
 }
