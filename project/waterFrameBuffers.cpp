@@ -122,3 +122,55 @@ GLuint WaterFrameBuffers::getRefractionTexture() const {
 GLuint WaterFrameBuffers::getRefractionDepthTexture() const {
 	return refractionDepthTexture;
 }
+
+// The methods below are only for seeing the content in the framebuffer objects, 
+// i.e. only intended for debugging
+void WaterFrameBuffers::loadShader(bool is_reload) {
+	GLuint shader = labhelper::loadShaderProgram("../project/debugWaterFrameBuffers.vert", "../project/debugWaterFrameBuffers.frag", is_reload);
+	if (shader != 0) {
+		waterDebugShader = shader;
+	}
+}
+
+// Setup to draw frame buffer content in corner
+void WaterFrameBuffers::setGpuData(GLuint texture) {
+	debugTexture = texture;
+
+	float vertices[] = {
+		-1.0f, -1.0f,   0.0f, 0.0f,
+		-0.5f, -1.0f,   1.0f, 0.0f,
+		-0.5f, -0.5f,   1.0f, 1.0f,
+		-1.0f, -0.5f,   0.0f, 1.0f,
+	};
+
+	unsigned int indices[] = { 
+		0, 1, 2, 
+		2, 3, 0 
+	};
+
+	glGenVertexArrays(1, &debugVertexArrayObject);
+	glGenBuffers(1, &debugVertexBufferObject);
+	glGenBuffers(1, &debugIndexBufferObject);
+
+	glBindVertexArray(debugVertexArrayObject);
+	glBindBuffer(GL_ARRAY_BUFFER, debugVertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, debugIndexBufferObject);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+}
+
+void WaterFrameBuffers::submitToGpu() const {
+	glUseProgram(waterDebugShader);
+	glActiveTexture(GL_TEXTURE13);
+	glBindTexture(GL_TEXTURE_2D, debugTexture);
+	glUniform1i(glGetUniformLocation(waterDebugShader, "debugTexture"), 13);
+
+	glBindVertexArray(debugVertexArrayObject);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	glBindVertexArray(0);
+}

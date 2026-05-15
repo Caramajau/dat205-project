@@ -27,6 +27,7 @@ using namespace glm;
 #include "proceduralTerrain.h"
 #include "ProceduralConfig.h"
 #include "water.h"
+#include "waterFrameBuffers.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -94,6 +95,7 @@ ProceduralTerrain proceduralTerrain;
 ProceduralConfig config{};
 
 Water water;
+WaterFrameBuffers waterFBOs;
 
 void loadShaders(bool is_reload)
 {
@@ -118,6 +120,7 @@ void loadShaders(bool is_reload)
 	perlinDisplay.loadShader(is_reload);
 	proceduralTerrain.loadShader(is_reload);
 	water.loadShader(is_reload);
+	waterFBOs.loadShader(is_reload);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,6 +154,9 @@ void initialize()
 	perlinDisplay.setGpuData(config);
 	proceduralTerrain.setGpuData(config);
 	water.setGpuData(config);
+
+	waterFBOs.initialise();
+	waterFBOs.setGpuData(waterFBOs.getReflectionTexture());
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -284,8 +290,15 @@ void display(void)
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
 	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
+
+	waterFBOs.bindReflectionFrameBuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
+	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
+
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
 	water.submitToGpu(viewMatrix, projMatrix);
+	waterFBOs.submitToGpu();
 }
 
 // Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
