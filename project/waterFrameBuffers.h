@@ -9,6 +9,8 @@ public:
 	explicit WaterFrameBuffers();
 	~WaterFrameBuffers();
 
+	void initialise();
+
 	void bindReflectionFrameBuffer() const;
 	void bindRefractionFrameBuffer() const;
 
@@ -26,13 +28,13 @@ private:
 	const int REFRACTION_WIDTH = 1280;
 	const int REFRACTION_HEIGHT = 720;
 
-	GLuint reflectionFrameBuffer;
-	GLuint reflectionTexture;
-	GLuint reflectionDepthBuffer;
+	GLuint reflectionFrameBuffer = 0;
+	GLuint reflectionTexture = 0;
+	GLuint reflectionDepthBuffer = 0;
 
-	GLuint refractionFrameBuffer;
-	GLuint refractionTexture;
-	GLuint refractionDepthTexture;
+	GLuint refractionFrameBuffer = 0;
+	GLuint refractionTexture = 0;
+	GLuint refractionDepthTexture = 0;
 
 	void initialiseReflectionFrameBuffer();
 

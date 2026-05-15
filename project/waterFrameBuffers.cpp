@@ -1,10 +1,6 @@
 #include "waterFrameBuffers.h"
 
-// call when loading the game
-WaterFrameBuffers::WaterFrameBuffers() {
-	initialiseReflectionFrameBuffer();
-	initialiseRefractionFrameBuffer();
-}
+WaterFrameBuffers::WaterFrameBuffers() = default;
 
 // call when closing the game
 WaterFrameBuffers::~WaterFrameBuffers() {
@@ -15,6 +11,12 @@ WaterFrameBuffers::~WaterFrameBuffers() {
 	glDeleteFramebuffers(1, &refractionFrameBuffer);
 	glDeleteTextures(1, &refractionTexture);
 	glDeleteTextures(1, &refractionDepthTexture);
+}
+
+// call when loading the game
+void WaterFrameBuffers::initialise() {
+	initialiseReflectionFrameBuffer();
+	initialiseRefractionFrameBuffer();
 }
 
 void WaterFrameBuffers::initialiseReflectionFrameBuffer() {
