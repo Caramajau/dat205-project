@@ -17,37 +17,6 @@ WaterFrameBuffers::~WaterFrameBuffers() {
 	glDeleteTextures(1, &refractionDepthTexture);
 }
 
-// call before rendering to this FBO
-void WaterFrameBuffers::bindReflectionFrameBuffer() const {
-	bindFrameBuffer(reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
-}
-
-// call before rendering to this FBO
-void WaterFrameBuffers::bindRefractionFrameBuffer() const {
-	bindFrameBuffer(refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
-}
-
-// call to switch to default frame buffer
-void WaterFrameBuffers::unbindCurrentFrameBuffer() const {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// glViewport(0, 0, windowWidth, windowHeight);
-}
-
-// get the resulting texture
-GLuint WaterFrameBuffers::getReflectionTexture() const {
-	return reflectionTexture;
-}
-
-// get the resulting texture
-GLuint WaterFrameBuffers::getRefractionTexture() const {
-	return refractionTexture;
-}
-
-// get the resulting depth texture
-GLuint WaterFrameBuffers::getRefractionDepthTexture() const {
-	return refractionDepthTexture;
-}
-
 void WaterFrameBuffers::initialiseReflectionFrameBuffer() {
 	reflectionFrameBuffer = createFrameBuffer();
 	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
@@ -62,13 +31,10 @@ void WaterFrameBuffers::initialiseRefractionFrameBuffer() {
 	unbindCurrentFrameBuffer();
 }
 
-// To be able to tell OpenGL to render to own frame buffer objects
-void WaterFrameBuffers::bindFrameBuffer(GLuint frameBuffer, int width, int height) const {
-	// To make sure the texture isn't bound
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-	// Change resolution of viewport to match selected framebuffer object.
-	glViewport(0, 0, width, height);
+// call to switch to default frame buffer
+void WaterFrameBuffers::unbindCurrentFrameBuffer() const {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// glViewport(0, 0, windowWidth, windowHeight);
 }
 
 GLuint WaterFrameBuffers::createFrameBuffer() const {
@@ -119,4 +85,38 @@ GLuint WaterFrameBuffers::createDepthBufferAttachment(int width, int height) con
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	return depthBuffer;
+}
+
+// call before rendering to this FBO
+void WaterFrameBuffers::bindReflectionFrameBuffer() const {
+	bindFrameBuffer(reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+}
+
+// call before rendering to this FBO
+void WaterFrameBuffers::bindRefractionFrameBuffer() const {
+	bindFrameBuffer(refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+}
+
+// To be able to tell OpenGL to render to own frame buffer objects
+void WaterFrameBuffers::bindFrameBuffer(GLuint frameBuffer, int width, int height) const {
+	// To make sure the texture isn't bound
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	// Change resolution of viewport to match selected framebuffer object.
+	glViewport(0, 0, width, height);
+}
+
+// get the resulting texture
+GLuint WaterFrameBuffers::getReflectionTexture() const {
+	return reflectionTexture;
+}
+
+// get the resulting texture
+GLuint WaterFrameBuffers::getRefractionTexture() const {
+	return refractionTexture;
+}
+
+// get the resulting depth texture
+GLuint WaterFrameBuffers::getRefractionDepthTexture() const {
+	return refractionDepthTexture;
 }
