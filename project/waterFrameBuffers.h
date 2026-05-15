@@ -12,7 +12,7 @@ public:
 	void bindReflectionFrameBuffer() const;
 	void bindRefractionFrameBuffer() const;
 
-	void unbindCurrentFrameBuffer() const;
+	void unbindCurrentFrameBuffer(int windowWidth, int windowHeight) const;
 
 	GLuint getReflectionTexture() const;
 	GLuint getRefractionTexture() const;

@@ -21,20 +21,20 @@ void WaterFrameBuffers::initialiseReflectionFrameBuffer() {
 	reflectionFrameBuffer = createFrameBuffer();
 	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
 	reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
-	unbindCurrentFrameBuffer();
+	unbindCurrentFrameBuffer(0, 0);
 }
 
 void WaterFrameBuffers::initialiseRefractionFrameBuffer() {
 	refractionFrameBuffer = createFrameBuffer();
 	refractionTexture = createTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
 	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
-	unbindCurrentFrameBuffer();
+	unbindCurrentFrameBuffer(0, 0);
 }
 
 // call to switch to default frame buffer
-void WaterFrameBuffers::unbindCurrentFrameBuffer() const {
+void WaterFrameBuffers::unbindCurrentFrameBuffer(int windowWidth, int windowHeight) const {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// glViewport(0, 0, windowWidth, windowHeight);
+	glViewport(0, 0, windowWidth, windowHeight);
 }
 
 GLuint WaterFrameBuffers::createFrameBuffer() const {
