@@ -292,8 +292,22 @@ void display(void)
 	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
 
 	waterFBOs.bindReflectionFrameBuffer();
+
+	// Render scene to reflection frame buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	{
+		labhelper::perf::Scope s("Background");
+		drawBackground(viewMatrix, projMatrix);
+	}
+	{
+		labhelper::perf::Scope s("Scene");
+		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix);
+	}
+	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
+	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
+
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
 	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
