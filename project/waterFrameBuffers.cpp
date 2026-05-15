@@ -62,21 +62,26 @@ void WaterFrameBuffers::initialiseRefractionFrameBuffer() {
 	unbindCurrentFrameBuffer();
 }
 
+// To be able to tell OpenGL to render to own frame buffer objects
 void WaterFrameBuffers::bindFrameBuffer(GLuint frameBuffer, int width, int height) const {
 	// To make sure the texture isn't bound
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	// Change resolution of viewport to match selected framebuffer object.
 	glViewport(0, 0, width, height);
 }
 
 GLuint WaterFrameBuffers::createFrameBuffer() const {
 	GLuint frameBuffer;
-	glGenFramebuffers(1, &frameBuffer);
 	// generate name for frame buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	glGenFramebuffers(1, &frameBuffer);
+
 	// create the framebuffer
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
 	// indicate that we will always render to colour attachment 0
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
 	return frameBuffer;
 }
 
@@ -87,6 +92,8 @@ GLuint WaterFrameBuffers::createTextureAttachment(int width, int height) const {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	// Adds texture to currently bound framebuffer object
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
 	return texture;
 }
@@ -98,10 +105,13 @@ GLuint WaterFrameBuffers::createDepthTextureAttachment(int width, int height) co
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	// Adds texture to currently bound framebuffer object
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
 	return texture;
 }
 
+// Depth buffer attachment that isn't a texture, but rather a render buffer
 GLuint WaterFrameBuffers::createDepthBufferAttachment(int width, int height) const {
 	GLuint depthBuffer;
 	glGenRenderbuffers(1, &depthBuffer);

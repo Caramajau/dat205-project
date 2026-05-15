@@ -19,6 +19,7 @@ public:
 	GLuint getRefractionDepthTexture() const;
 
 private:
+	// Resolutions could be changed, higher is more expensive.
 	const int REFLECTION_WIDTH = 320;
 	const int REFLECTION_HEIGHT = 180;
 
