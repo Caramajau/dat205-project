@@ -124,7 +124,7 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int height
 	return indices;
 }
 
-void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const {
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const {
 	glUseProgram(terrainShader);
 	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -150,6 +150,8 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
 	labhelper::setUniformSlow(terrainShader, "useNeighbours", useNeighbours);
 	labhelper::setUniformSlow(terrainShader, "sunDirection", sunDirection);
+	glUniform4f(glGetUniformLocation(terrainShader, "waterPlane"), 
+		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);

@@ -191,7 +191,8 @@ void drawScene(GLuint currentShaderProgram,
                const mat4& viewMatrix,
                const mat4& projectionMatrix,
                const mat4& lightViewMatrix,
-               const mat4& lightProjectionMatrix)
+               const mat4& lightProjectionMatrix,
+			   const vec4& waterPlane)
 {
 	glUseProgram(currentShaderProgram);
 	// Light source
@@ -229,7 +230,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
 }
 
 
@@ -288,9 +289,11 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s( "Scene" );
-		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix );
+		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0, 1, 0, 0) );
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
+
+	glEnable(GL_CLIP_DISTANCE0);
 
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -302,7 +305,9 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix);
+		// 100 - 80 = 20, terrain is at -100 and water is at -80
+		auto waterPlane = glm::vec4(0, -1, 0, 20);
+		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
