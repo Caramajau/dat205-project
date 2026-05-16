@@ -211,7 +211,12 @@ void drawScene(GLuint currentShaderProgram,
 	// camera
 	labhelper::setUniformSlow(currentShaderProgram, "viewInverse", inverse(viewMatrix));
 
+	// water plane
+	glUniform4f(glGetUniformLocation(currentShaderProgram, "waterPlane"),
+		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
+
 	// landing pad
+	labhelper::setUniformSlow(currentShaderProgram, "modelMatrix", landingPadModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewProjectionMatrix",
 	                          projectionMatrix * viewMatrix * landingPadModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewMatrix", viewMatrix * landingPadModelMatrix);
@@ -221,6 +226,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(landingpadModel);
 
 	// Fighter
+	labhelper::setUniformSlow(currentShaderProgram, "modelMatrix", fighterModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewProjectionMatrix",
 	                          projectionMatrix * viewMatrix * fighterModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewMatrix", viewMatrix * fighterModelMatrix);
