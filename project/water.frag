@@ -30,11 +30,13 @@ void main()
 
 	// Distortion only in red and green and also stored in [0, 1], converted to [-1, 1]
 	vec2 firstDistortion = (texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
+	vec2 secondDistortion = (texture(dudvMap, vec2(1.0 - texCoords.x, texCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
+	vec2 totalDistortion = firstDistortion + secondDistortion;
 
-	refractTexCoords += firstDistortion;
+	refractTexCoords += totalDistortion;
 	// clamp to avoid wrap around glitch
 	refractTexCoords = clamp(refractTexCoords, 0.001, 0.999);
-	reflectTexCoords += firstDistortion;
+	reflectTexCoords += totalDistortion;
 	reflectTexCoords = clamp(reflectTexCoords, 0.001, 0.999);
 
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
