@@ -303,7 +303,27 @@ void display(void)
 
 	glEnable(GL_CLIP_DISTANCE0);
 
+	// Reflection
 	waterFBOs.bindReflectionFrameBuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Render scene to reflection frame buffer
+	{
+		labhelper::perf::Scope s("Background");
+		drawBackground(viewMatrix, projMatrix);
+	}
+	{
+		labhelper::perf::Scope s("Scene");
+		// Water is at -80
+		auto waterPlane = glm::vec4(0, 1, 0, 80);
+		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
+	}
+	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
+
+	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
+
+	// Refraction
+	waterFBOs.bindRefractionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render scene to reflection frame buffer
