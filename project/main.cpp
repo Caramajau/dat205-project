@@ -289,7 +289,9 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s( "Scene" );
-		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0, 1, 0, 0) );
+		// Terrain is at -100, but more importantly that is the lowest anything is,
+		// as here nothing should be culled.
+		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0, 1, 0, 100) );
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
@@ -305,8 +307,8 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// 100 - 80 = 20, terrain is at -100 and water is at -80
-		auto waterPlane = glm::vec4(0, -1, 0, 20);
+		// Water is at -80
+		auto waterPlane = glm::vec4(0, -1, 0, -80);
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));

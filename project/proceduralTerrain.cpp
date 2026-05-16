@@ -146,6 +146,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glBindTexture(GL_TEXTURE_2D, rockNormalMap);
 	glUniform1i(glGetUniformLocation(terrainShader, "rockNormalMap"), 12);
 
+	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
 	labhelper::setUniformSlow(terrainShader, "useNeighbours", useNeighbours);
