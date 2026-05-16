@@ -43,4 +43,6 @@ void main()
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 	
 	fragmentColor = mix(reflectColour, refractColour, 0.5);
+	// Tint slightly blue
+	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05);
 }
