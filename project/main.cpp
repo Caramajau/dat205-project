@@ -245,7 +245,7 @@ mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirec
 	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
 	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
 	// Assuming you probably also want to invert world direction?
-	return lookAt(reflectionCameraPosition, reflectionCameraPosition + invertedPitchCameraDirection, vec3(0, -1, 0));
+	return lookAt(reflectionCameraPosition, reflectionCameraPosition + invertedPitchCameraDirection, worldUp);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

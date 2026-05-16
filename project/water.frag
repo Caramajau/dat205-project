@@ -8,12 +8,21 @@ layout(location = 0) out vec4 fragmentColor;
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 
-in vec2 texCoords;
+in vec4 clipSpace;
 
 void main()
 {
-	vec4 reflectColour = texture(reflectionTexture, texCoords);
-	vec4 refractColour = texture(refractionTexture, texCoords);
+	// Gives screen space points in [-1, 1]
+	vec2 normalizedDeviceSpace = clipSpace.xy/clipSpace.w;
+	// Change to [0, 1]
+	normalizedDeviceSpace = normalizedDeviceSpace/2.0 + 0.5;
+
+	// Y needs to be inverted for reflection
+	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
+	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
+
+	// Can be used directly.
+	vec4 refractColour = texture(refractionTexture, normalizedDeviceSpace);
 	
 	fragmentColor = mix(reflectColour, refractColour, 0.5);
 }

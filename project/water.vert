@@ -4,10 +4,10 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoordsIn;
 uniform mat4 modelViewProjectionMatrix;
 
-out vec2 texCoords;
+out vec4 clipSpace;
 
 void main()
 {
-	texCoords = texCoordsIn;
-	gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);
+	clipSpace = modelViewProjectionMatrix * vec4(position, 1.0);
+	gl_Position = clipSpace;
 }
