@@ -29,10 +29,11 @@ void main()
 	// Y needs to be inverted for reflection
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
 
-	// Distortion only in red and green and also stored in [0, 1], converted to [-1, 1]
-	vec2 firstDistortion = (texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
-	vec2 secondDistortion = (texture(dudvMap, vec2(1.0 - texCoords.x, texCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
-	vec2 totalDistortion = firstDistortion + secondDistortion;
+	// Distortion only in red and green
+	vec2 distortedTexCoords = texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 0.1;
+	distortedTexCoords = texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
+	// Distortion is also stored as [0, 1], convert to [-1, 1]
+	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
 
 	refractTexCoords += totalDistortion;
 	// clamp to avoid wrap around glitch
