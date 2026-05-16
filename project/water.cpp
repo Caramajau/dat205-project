@@ -69,7 +69,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	glBindVertexArray(0);
 }
 
-void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime) {
+void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition) {
 	moveFactor += waveSpeed * deltaTime;
 	// Loop back
 	if (moveFactor > 1.0f)
@@ -90,8 +90,10 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindTexture(GL_TEXTURE_2D, dudvTexture);
 	glUniform1i(glGetUniformLocation(waterShader, "dudvMap"), 16);
 
+	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
+	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
