@@ -7,6 +7,7 @@ void Water::loadShader(bool is_reload) {
 	}
 
 	loadDuDvTexture(dudvTexture, "../scenes/textures/waterDuDv.png");
+	loadDuDvTexture(normalMap, "../scenes/textures/waterNormal.png");
 }
 
 void Water::loadDuDvTexture(GLuint& texture, const char* filepath) const {
@@ -35,6 +36,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	int terrainHeight = config.height;
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
+	sunDirection = config.sunDirection;
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
@@ -90,10 +92,15 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindTexture(GL_TEXTURE_2D, dudvTexture);
 	glUniform1i(glGetUniformLocation(waterShader, "dudvMap"), 16);
 
+	glActiveTexture(GL_TEXTURE17);
+	glBindTexture(GL_TEXTURE_2D, normalMap);
+	glUniform1i(glGetUniformLocation(waterShader, "normalMap"), 17);
+
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
+	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
 
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

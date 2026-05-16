@@ -8,6 +8,8 @@ layout(location = 0) out vec4 fragmentColor;
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
+uniform sampler2D normalMap;
+uniform vec3 sunDirection;
 
 uniform float moveFactor;
 
@@ -17,6 +19,8 @@ in vec3 toCameraVector;
 
 // TODO: make customisable?
 const float waveStrength = 0.02;
+const float shineDamper = 20.0;
+const float reflectivity = 0.6;
 
 void main()
 {
@@ -50,7 +54,18 @@ void main()
 	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
 	refractiveFactor = pow(refractiveFactor, 2);
 
+	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
+	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0);
+	normal = normalize(normal);
+
+	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
+	// When similar: more light into the camera, brighter specular highlight.
+	float specular = max(dot(reflectedLight, viewVector), 0.0);
+	specular = pow(specular, shineDamper);
+	// vec3(1.0) could be changed to different light colours
+	vec3 specularHighlights = vec3(1.0) * specular * reflectivity;
+
 	fragmentColor = mix(reflectColour, refractColour, refractiveFactor);
 	// Tint slightly blue
-	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05);
+	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
 }
