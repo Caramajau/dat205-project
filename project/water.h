@@ -28,9 +28,9 @@ private:
 
 	GLuint dudvTexture = 0;
 
-	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
-
 	// TODO: make customsiable?
 	float waveSpeed = 0.03f;
 	float moveFactor = 0.0f;
+
+	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
 };
