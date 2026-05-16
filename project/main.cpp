@@ -26,6 +26,8 @@ using namespace glm;
 #include "perlinDisplay.h"
 #include "proceduralTerrain.h"
 #include "ProceduralConfig.h"
+#include "water.h"
+#include "waterFrameBuffers.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Various globals
@@ -92,6 +94,9 @@ PerlinDisplay perlinDisplay;
 ProceduralTerrain proceduralTerrain;
 ProceduralConfig config{};
 
+Water water;
+WaterFrameBuffers waterFBOs;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -114,6 +119,8 @@ void loadShaders(bool is_reload)
 
 	perlinDisplay.loadShader(is_reload);
 	proceduralTerrain.loadShader(is_reload);
+	water.loadShader(is_reload);
+	waterFBOs.loadShader(is_reload);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,6 +153,10 @@ void initialize()
 
 	perlinDisplay.setGpuData(config);
 	proceduralTerrain.setGpuData(config);
+
+	waterFBOs.initialise();
+	water.setGpuData(config, waterFBOs);
+	waterFBOs.setGpuData(waterFBOs.getReflectionTexture());
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -180,7 +191,8 @@ void drawScene(GLuint currentShaderProgram,
                const mat4& viewMatrix,
                const mat4& projectionMatrix,
                const mat4& lightViewMatrix,
-               const mat4& lightProjectionMatrix)
+               const mat4& lightProjectionMatrix,
+			   const vec4& waterPlane)
 {
 	glUseProgram(currentShaderProgram);
 	// Light source
@@ -199,7 +211,12 @@ void drawScene(GLuint currentShaderProgram,
 	// camera
 	labhelper::setUniformSlow(currentShaderProgram, "viewInverse", inverse(viewMatrix));
 
+	// water plane
+	glUniform4f(glGetUniformLocation(currentShaderProgram, "waterPlane"),
+		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
+
 	// landing pad
+	labhelper::setUniformSlow(currentShaderProgram, "modelMatrix", landingPadModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewProjectionMatrix",
 	                          projectionMatrix * viewMatrix * landingPadModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewMatrix", viewMatrix * landingPadModelMatrix);
@@ -209,6 +226,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(landingpadModel);
 
 	// Fighter
+	labhelper::setUniformSlow(currentShaderProgram, "modelMatrix", fighterModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewProjectionMatrix",
 	                          projectionMatrix * viewMatrix * fighterModelMatrix);
 	labhelper::setUniformSlow(currentShaderProgram, "modelViewMatrix", viewMatrix * fighterModelMatrix);
@@ -216,8 +234,21 @@ void drawScene(GLuint currentShaderProgram,
 	                          inverse(transpose(viewMatrix * fighterModelMatrix)));
 
 	labhelper::render(fighterModel);
+
+	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
 }
 
+// The camera for the reflection should be 2*d lower, where d is distance to water,
+// and also have inverted pitch.
+mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection) {
+	// Water is at -80
+	float distance = 2 * (cameraPosition.y + 80);
+	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
+	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
+	// NOTE: y is inverted in the shader
+	return lookAt(reflectionCameraPosition, reflectionCameraPosition + invertedPitchCameraDirection, worldUp);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// This function will be called once per frame, so the code to set up
@@ -274,12 +305,55 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s( "Scene" );
-		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix );
+		// Nothing should be culled so a 0 vector is sent, the dot product will be 0.
+		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0) );
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
-	perlinDisplay.submitToGpu(viewMatrix, projMatrix);
-	proceduralTerrain.submitToGpu(viewMatrix, projMatrix);
+	glEnable(GL_CLIP_DISTANCE0);
+
+	// Reflection
+	waterFBOs.bindReflectionFrameBuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection);
+
+	// Render scene to reflection frame buffer
+	{
+		labhelper::perf::Scope s("Background");
+		drawBackground(reflectionViewMatrix, projMatrix);
+	}
+	{
+		labhelper::perf::Scope s("Scene");
+		// Water is at -80
+		auto waterPlane = glm::vec4(0, 1, 0, 80);
+		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
+	}
+	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
+
+	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
+
+	// Refraction
+	waterFBOs.bindRefractionFrameBuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Render scene to reflection frame buffer
+	{
+		labhelper::perf::Scope s("Background");
+		drawBackground(viewMatrix, projMatrix);
+	}
+	{
+		labhelper::perf::Scope s("Scene");
+		// Water is at -80
+		auto waterPlane = glm::vec4(0, -1, 0, -80);
+		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
+	}
+	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
+
+	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
+
+	water.submitToGpu(viewMatrix, projMatrix);
+	waterFBOs.submitToGpu();
 }
 
 // Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
@@ -459,6 +533,7 @@ void gui()
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+		water.setGpuData(config, waterFBOs);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
@@ -466,6 +541,7 @@ void gui()
 
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
+		water.setGpuData(config, waterFBOs);
 	}
 
 	if (ImGui::Button("Enter world")) {

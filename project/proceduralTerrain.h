@@ -19,7 +19,7 @@ public:
 	void loadShader(bool is_reload);
 	void loadTerrainTexture(GLuint& texture, const char* filepath) const;
 	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const;
 
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
