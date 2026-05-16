@@ -60,14 +60,17 @@ void PerlinDisplay::setGpuData(const ProceduralConfig& config)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const
+void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const
 {
 	glUseProgram(perlinShader);
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glUniform1i(glGetUniformLocation(perlinShader, "perlinTex"), 7);
 
+	labhelper::setUniformSlow(perlinShader, "modelMatrix", perlinNoiseModelMatrix);
 	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * perlinNoiseModelMatrix);
+	glUniform4f(glGetUniformLocation(perlinShader, "waterPlane"),
+		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
 
 	glBindVertexArray(quadVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

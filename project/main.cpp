@@ -235,7 +235,7 @@ void drawScene(GLuint currentShaderProgram,
 
 	labhelper::render(fighterModel);
 
-	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix);
+	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
 	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
 }
 
