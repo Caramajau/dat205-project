@@ -7,9 +7,11 @@ void Water::loadShader(bool is_reload) {
 	}
 }
 
-void Water::setGpuData(const ProceduralConfig& config) {
+void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
 	int terrainWidth = config.width;
 	int terrainHeight = config.height;
+	reflectionTexture = waterFBOs.getReflectionTexture();
+	refractionTexture = waterFBOs.getRefractionTexture();
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			0.0f, 0.0f,
@@ -46,6 +48,13 @@ void Water::setGpuData(const ProceduralConfig& config) {
 
 void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const {
 	glUseProgram(waterShader);
+	glActiveTexture(GL_TEXTURE14);
+	glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+	glUniform1i(glGetUniformLocation(waterShader, "reflectionTexture"), 14);
+
+	glActiveTexture(GL_TEXTURE15);
+	glBindTexture(GL_TEXTURE_2D, refractionTexture);
+	glUniform1i(glGetUniformLocation(waterShader, "refractionTexture"), 15);
 
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 

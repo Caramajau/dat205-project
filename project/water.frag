@@ -3,11 +3,17 @@
 // required by GLSL spec Sect 4.5.3 (though nvidia does not, amd does)
 precision highp float;
 
-uniform vec3 material_color;
-
 layout(location = 0) out vec4 fragmentColor;
+
+uniform sampler2D reflectionTexture;
+uniform sampler2D refractionTexture;
+
+in vec2 texCoords;
 
 void main()
 {
-	fragmentColor = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 reflectColour = texture(reflectionTexture, texCoords);
+	vec4 refractColour = texture(refractionTexture, texCoords);
+	
+	fragmentColor = mix(reflectColour, refractColour, 0.5);
 }

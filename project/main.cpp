@@ -153,9 +153,9 @@ void initialize()
 
 	perlinDisplay.setGpuData(config);
 	proceduralTerrain.setGpuData(config);
-	water.setGpuData(config);
 
 	waterFBOs.initialise();
+	water.setGpuData(config, waterFBOs);
 	waterFBOs.setGpuData(waterFBOs.getReflectionTexture());
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
@@ -531,7 +531,7 @@ void gui()
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
-		water.setGpuData(config);
+		water.setGpuData(config, waterFBOs);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
@@ -539,7 +539,7 @@ void gui()
 
 		perlinDisplay.setGpuData(config);
 		proceduralTerrain.setGpuData(config);
-		water.setGpuData(config);
+		water.setGpuData(config, waterFBOs);
 	}
 
 	if (ImGui::Button("Enter world")) {

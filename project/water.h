@@ -4,11 +4,12 @@
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
+#include "waterFrameBuffers.h"
 
 class Water {
 public:
 	void loadShader(bool is_reload);
-	void setGpuData(const ProceduralConfig& config);
+	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
 
 private:
@@ -20,4 +21,7 @@ private:
 	GLuint waterVertexArrayObject = 0;
 	GLuint waterVertexBufferObject = 0;
 	GLuint waterIndexBufferObject = 0;
+
+	GLuint reflectionTexture = 0;
+	GLuint refractionTexture = 0;
 };
