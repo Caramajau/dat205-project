@@ -303,9 +303,8 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s( "Scene" );
-		// Terrain is at -100, but more importantly that is the lowest anything is,
-		// as here nothing should be culled.
-		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0, 1, 0, 100) );
+		// Nothing should be culled so a 0 vector is sent, the dot product will be 0.
+		drawScene( shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, vec4(0) );
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
