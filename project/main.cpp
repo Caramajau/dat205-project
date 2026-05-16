@@ -307,18 +307,25 @@ void display(void)
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Water is at -80
+	float distance = 2 * (cameraPosition.y + 80);
+	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
+	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
+	// Assuming you probably also want to invert world direction?
+	mat4 reflectionViewMatrix = lookAt(reflectionCameraPosition, reflectionCameraPosition + invertedPitchCameraDirection, vec3(0, -1, 0));
+
 	// Render scene to reflection frame buffer
 	{
 		labhelper::perf::Scope s("Background");
-		drawBackground(viewMatrix, projMatrix);
+		drawBackground(reflectionViewMatrix, projMatrix);
 	}
 	{
 		labhelper::perf::Scope s("Scene");
 		// Water is at -80
 		auto waterPlane = glm::vec4(0, 1, 0, 80);
-		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
+		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
-	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
+	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
