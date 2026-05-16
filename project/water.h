@@ -5,6 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
 #include "waterFrameBuffers.h"
+#include <stb_image.h>
 
 class Water {
 public:
@@ -24,4 +25,8 @@ private:
 
 	GLuint reflectionTexture = 0;
 	GLuint refractionTexture = 0;
+
+	GLuint dudvTexture = 0;
+
+	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
 };
