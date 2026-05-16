@@ -3,7 +3,8 @@
 #include <GL/glew.h>
 #include <labhelper.h>
 
-// Class based on: https://www.dropbox.com/scl/fo/x651re40kl35x0wacurgm/AAlMZSHg8DSlzBqnHUVeNQk?rlkey=jmdh3k6ibjgi9o8eq5nev628r&e=1&dl=0
+// In general, many parts of the water implementation are based on: https://www.youtube.com/watch?v=HusvGeEDU_U&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh
+// Specifically, this class is based on: https://www.dropbox.com/scl/fo/x651re40kl35x0wacurgm/AAlMZSHg8DSlzBqnHUVeNQk?rlkey=jmdh3k6ibjgi9o8eq5nev628r&e=1&dl=0
 
 class WaterFrameBuffers {
 public:

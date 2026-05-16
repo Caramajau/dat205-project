@@ -239,6 +239,8 @@ void drawScene(GLuint currentShaderProgram,
 	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
 }
 
+// The camera for the reflection should be 2*d lower, where d is distance to water,
+// and also have inverted pitch.
 mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection) {
 	// Water is at -80
 	float distance = 2 * (cameraPosition.y + 80);
