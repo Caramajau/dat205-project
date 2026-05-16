@@ -30,7 +30,10 @@ void main()
 	vec2 firstDistortion = (texture(dudvMap, vec2(texCoords.x, texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
 
 	refractTexCoords += firstDistortion;
+	// clamp to avoid wrap around glitch
+	refractTexCoords = clamp(refractTexCoords, 0.001, 0.999);
 	reflectTexCoords += firstDistortion;
+	reflectTexCoords = clamp(reflectTexCoords, 0.001, 0.999);
 
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
