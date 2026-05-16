@@ -13,9 +13,9 @@ in vec4 clipSpace;
 void main()
 {
 	// Gives screen space points in [-1, 1]
-	vec2 normalizedDeviceSpace = clipSpace.xy/clipSpace.w;
+	vec2 normalizedDeviceSpace = clipSpace.xy / clipSpace.w;
 	// Change to [0, 1]
-	normalizedDeviceSpace = normalizedDeviceSpace/2.0 + 0.5;
+	normalizedDeviceSpace = normalizedDeviceSpace / 2.0 + 0.5;
 
 	// Y needs to be inverted for reflection
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);

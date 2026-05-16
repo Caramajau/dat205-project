@@ -14,8 +14,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	refractionTexture = waterFBOs.getRefractionTexture();
 
 	float vertices[] = {
-		0.0f,			0.0f, 0.0f,			0.0f, 0.0f,
-		terrainWidth,	0.0f, 0.0f,			1.0f, 0.0f,
+		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
+		terrainWidth,	0.0f, 0.0f,			 1.0f, 0.0f,
 		terrainWidth,	0.0f, terrainHeight, 1.0f, 1.0f,
 		0.0f,			0.0f, terrainHeight, 0.0f, 1.0f
 	};
