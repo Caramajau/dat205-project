@@ -11,7 +11,7 @@ class Water {
 public:
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix) const;
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime);
 
 private:
 	// TODO make height customisable?
@@ -29,4 +29,8 @@ private:
 	GLuint dudvTexture = 0;
 
 	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
+
+	// TODO: make customsiable?
+	float waveSpeed = 0.03f;
+	float moveFactor = 0.0f;
 };

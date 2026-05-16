@@ -12,6 +12,8 @@ uniform sampler2D dudvMap;
 in vec4 clipSpace;
 in vec2 texCoords;
 
+uniform float moveFactor;
+
 // TODO: make customisable?
 const float waveStrength = 0.02;
 
@@ -27,7 +29,7 @@ void main()
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
 
 	// Distortion only in red and green and also stored in [0, 1], converted to [-1, 1]
-	vec2 firstDistortion = (texture(dudvMap, vec2(texCoords.x, texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
+	vec2 firstDistortion = (texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 2.0 - 1.0) * waveStrength;
 
 	refractTexCoords += firstDistortion;
 	// clamp to avoid wrap around glitch
