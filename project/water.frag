@@ -9,10 +9,11 @@ uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
 
+uniform float moveFactor;
+
 in vec4 clipSpace;
 in vec2 texCoords;
-
-uniform float moveFactor;
+in vec3 toCameraVector;
 
 // TODO: make customisable?
 const float waveStrength = 0.02;
@@ -42,7 +43,13 @@ void main()
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 	
-	fragmentColor = mix(reflectColour, refractColour, 0.5);
+	vec3 viewVector = normalize(toCameraVector);
+	// Assumes water normal is point up
+	float refractiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0));
+	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
+	refractiveFactor = pow(refractiveFactor, 2);
+
+	fragmentColor = mix(reflectColour, refractColour, refractiveFactor);
 	// Tint slightly blue
 	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05);
 }
