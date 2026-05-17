@@ -33,6 +33,7 @@ void main()
 	// Y needs to be inverted for reflection
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
 
+	// First sample to get distortion value to use as texture coords for actual distortion (and normal later)
 	// Distortion only in red and green
 	vec2 distortedTexCoords = texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 0.1;
 	distortedTexCoords = texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
@@ -55,11 +56,13 @@ void main()
 	refractiveFactor = pow(refractiveFactor, 2);
 
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
+	// Okay to not convert b, since you want normal pointing up to some extent anyways.
 	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0);
 	normal = normalize(normal);
 
 	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
-	// When similar: more light into the camera, brighter specular highlight.
+	// Dot product to see if similar, and when they are:
+	// that means more light into the camera thus brighter specular highlight.
 	float specular = max(dot(reflectedLight, viewVector), 0.0);
 	specular = pow(specular, shineDamper);
 	// vec3(1.0) could be changed to different light colours
