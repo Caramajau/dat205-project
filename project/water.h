@@ -27,10 +27,13 @@ private:
 	GLuint refractionTexture = 0;
 
 	GLuint dudvTexture = 0;
+	GLuint normalMap = 0;
 
 	// TODO: make customsiable?
 	float waveSpeed = 0.03f;
 	float moveFactor = 0.0f;
+
+	glm::vec3 sunDirection;
 
 	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
 };
