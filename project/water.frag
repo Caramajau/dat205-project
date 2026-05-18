@@ -88,5 +88,6 @@ void main()
 	// Tint slightly blue
 	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
 
-	fragmentColor.a = waterDepth;
+	// TODO: make depth value, 5.0, customisable?
+	fragmentColor.a = clamp(waterDepth / 5.0, 0.0, 1.0);
 }
