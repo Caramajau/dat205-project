@@ -72,7 +72,6 @@ void main()
 	normal = normalize(normal);
 
 	vec3 viewVector = normalize(toCameraVector);
-	// Assumes water normal is point up
 	float refractiveFactor = dot(viewVector, normal);
 	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
 	refractiveFactor = pow(refractiveFactor, 2);
