@@ -53,8 +53,8 @@ void main()
 	// Distortion only in red and green
 	vec2 distortedTexCoords = texture(dudvMap, vec2(texCoords.x + moveFactor, texCoords.y)).rg * 0.1;
 	distortedTexCoords = texCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
-	// Distortion is also stored as [0, 1], convert to [-1, 1]
-	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
+	// Distortion is also stored as [0, 1], convert to [-1, 1], TODO: make distortion dampening value, 2.0, customisable?
+	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 2.0, 0.0, 1.0);
 
 	refractTexCoords += totalDistortion;
 	// clamp to avoid wrap around glitch
@@ -81,13 +81,13 @@ void main()
 	// that means more light into the camera thus brighter specular highlight.
 	float specular = max(dot(reflectedLight, viewVector), 0.0);
 	specular = pow(specular, shineDamper);
-	// vec3(1.0) could be changed to different light colours
-	vec3 specularHighlights = vec3(1.0) * specular * reflectivity;
+	// vec3(1.0) could be changed to different light colours, TODO: make specular highlights dampening value, 2.0, customisable?
+	vec3 specularHighlights = vec3(1.0) * specular * reflectivity * clamp(waterDepth / 2.0, 0.0, 1.0);
 
 	fragmentColor = mix(reflectColour, refractColour, refractiveFactor);
 	// Tint slightly blue
 	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
 
-	// TODO: make depth value, 5.0, customisable?
-	fragmentColor.a = clamp(waterDepth / 5.0, 0.0, 1.0);
+	// TODO: make depth value, 2.0, customisable?
+	fragmentColor.a = clamp(waterDepth / 2.0, 0.0, 1.0);
 }
