@@ -18,9 +18,9 @@ in vec2 texCoords;
 in vec3 toCameraVector;
 
 // TODO: make customisable?
-const float waveStrength = 0.02;
+const float waveStrength = 0.04;
 const float shineDamper = 20.0;
-const float reflectivity = 0.6;
+const float reflectivity = 0.5;
 
 void main()
 {
