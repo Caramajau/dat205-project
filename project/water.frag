@@ -65,16 +65,17 @@ void main()
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 	
-	vec3 viewVector = normalize(toCameraVector);
-	// Assumes water normal is point up
-	float refractiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0));
-	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
-	refractiveFactor = pow(refractiveFactor, 2);
-
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 	// Okay to not convert b, since you want normal pointing up to some extent anyways.
-	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0);
+	// The 3.0 is used to make the normals point more up, making the water appear flatter. TODO: customise?
+	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b * 3.0, normalMapColour.g * 2.0 - 1.0);
 	normal = normalize(normal);
+
+	vec3 viewVector = normalize(toCameraVector);
+	// Assumes water normal is point up
+	float refractiveFactor = dot(viewVector, normal);
+	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
+	refractiveFactor = pow(refractiveFactor, 2);
 
 	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
 	// Dot product to see if similar, and when they are:
