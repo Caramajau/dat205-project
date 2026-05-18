@@ -9,6 +9,7 @@ uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
 uniform sampler2D normalMap;
+uniform sampler2D depthMap;
 uniform vec3 sunDirection;
 
 uniform float moveFactor;
@@ -32,6 +33,21 @@ void main()
 	vec2 refractTexCoords = vec2(normalizedDeviceSpace.x, normalizedDeviceSpace.y);
 	// Y needs to be inverted for reflection
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
+
+	// TODO: should be uniforms
+	float near = 0.1;
+	float far = 2000.0;
+
+	// Important to sample before the coords get distorted
+	float depth = texture(depthMap, refractTexCoords).r;
+
+	// Need to convert in order to get true depth
+	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+
+	depth = gl_FragCoord.z;
+	float waterDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+
+	float waterDepth = floorDistance - waterDistance;
 
 	// First sample to get distortion value to use as texture coords for actual distortion (and normal later)
 	// Distortion only in red and green
@@ -71,4 +87,6 @@ void main()
 	fragmentColor = mix(reflectColour, refractColour, refractiveFactor);
 	// Tint slightly blue
 	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
+
+	fragmentColor.a = waterDepth;
 }

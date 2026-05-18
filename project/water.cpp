@@ -36,6 +36,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	int terrainHeight = config.height;
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
+	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
 	sunDirection = config.sunDirection;
 
 	float vertices[] = {
@@ -96,11 +97,18 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindTexture(GL_TEXTURE_2D, normalMap);
 	glUniform1i(glGetUniformLocation(waterShader, "normalMap"), 17);
 
+	glActiveTexture(GL_TEXTURE18);
+	glBindTexture(GL_TEXTURE_2D, refractionDepthTexture);
+	glUniform1i(glGetUniformLocation(waterShader, "depthMap"), 18);
+
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
