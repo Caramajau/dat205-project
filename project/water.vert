@@ -11,7 +11,7 @@ out vec4 clipSpace;
 out vec2 texCoords;
 out vec3 toCameraVector;
 
-const float tiling = 6.0;
+const float tiling = 4.0;
 
 void main()
 {

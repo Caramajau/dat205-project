@@ -325,8 +325,11 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Water is at -80
-		auto waterPlane = glm::vec4(0, 1, 0, 80);
+		// Water is at -80, 
+		// tiny offset (1.0f) to remove potential distortion artefacts near edges.
+		// Offset can cause things that shouldn't be to not reflected to show
+		// TODO: make customisable?
+		auto waterPlane = glm::vec4(0, 1, 0, 80 + 1.0f);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));

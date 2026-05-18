@@ -25,6 +25,7 @@ private:
 
 	GLuint reflectionTexture = 0;
 	GLuint refractionTexture = 0;
+	GLuint refractionDepthTexture = 0;
 
 	GLuint dudvTexture = 0;
 	GLuint normalMap = 0;
