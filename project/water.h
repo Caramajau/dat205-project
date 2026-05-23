@@ -33,6 +33,8 @@ private:
 	GLuint dudvTexture = 0;
 	GLuint normalMap = 0;
 
+	float tiling;
+
 	// TODO: make customsiable?
 	float waveSpeed = 0.03f;
 	float moveFactor = 0.0f;

@@ -6,12 +6,11 @@ layout(location = 1) in vec2 texCoordsIn;
 uniform mat4 modelMatrix;
 uniform mat4 modelViewProjectionMatrix;
 uniform vec3 cameraPosition;
+uniform float tiling;
 
 out vec4 clipSpace;
 out vec2 texCoords;
 out vec3 toCameraVector;
-
-const float tiling = 4.0;
 
 void main()
 {

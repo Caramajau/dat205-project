@@ -30,6 +30,7 @@ struct ProceduralConfig {
 
 	// Water configs
 	float waterHeight = -58.0f;
+	float waterTiling = 4.0f;
 
 	void reset() { *this = ProceduralConfig{}; }
 };
