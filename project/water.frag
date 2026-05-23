@@ -36,6 +36,9 @@ in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
 
+const vec4 murkyColour = vec4(0.29, 0.33, 0.22, 1.0);
+const vec4 blueColour = vec4(0.0, 0.3, 0.5, 1.0);
+
 float calcTrueDepth(float depth)
 {
 	// Need to convert in order to get true depth
@@ -101,11 +104,11 @@ void main()
 	vec3 specularHighlights = vec3(1.0) * specular * reflectivity * clamp(waterDepth / highlightDampening, 0.0, 1.0);
 
 	// Murky colour effect
-	refractColour = mix(refractColour, vec4(0.29, 0.33, 0.22, 1.0), clamp(waterDepth / murkyColourFactor, 0.0, 1.0));
+	refractColour = mix(refractColour, murkyColour, clamp(waterDepth / murkyColourFactor, 0.0, 1.0));
 
 	fragmentColor = mix(reflectColour, refractColour, fresnel);
 	// Tint slightly blue
-	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), blueTintFactor) + vec4(specularHighlights, 0.0);
+	fragmentColor = mix(fragmentColor, blueColour, blueTintFactor) + vec4(specularHighlights, 0.0);
 
 	fragmentColor.a = clamp(waterDepth / borderTransparencyFactor, 0.0, 1.0);
 }
