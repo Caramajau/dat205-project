@@ -73,7 +73,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	glBindVertexArray(0);
 }
 
-void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition) {
+void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far) {
 	moveFactor += waveSpeed * deltaTime;
 	// Loop back
 	if (moveFactor > 1.0f)
@@ -107,6 +107,8 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
+	labhelper::setUniformSlow(waterShader, "near", near);
+	labhelper::setUniformSlow(waterShader, "far", far);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -14,6 +14,9 @@ uniform vec3 sunDirection;
 
 uniform float moveFactor;
 
+uniform float near;
+uniform float far;
+
 in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
@@ -25,9 +28,6 @@ const float reflectivity = 0.5;
 
 float calcTrueDepth(float depth)
 {
-	// TODO: should be uniforms
-	float near = 0.1;
-	float far = 2000.0;
 	// Need to convert in order to get true depth
 	// Explanation: https://stackoverflow.com/questions/6652253/getting-the-true-z-value-from-the-depth-buffer
 	return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));

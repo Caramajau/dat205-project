@@ -79,6 +79,9 @@ vec3 worldUp(0.0f, 1.0f, 0.0f);
 bool hasEntered;
 const float terrainOffset = 5.0f;
 
+const float near = 1.0f;
+const float far = 2000.0f;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Models
 ///////////////////////////////////////////////////////////////////////////////
@@ -274,7 +277,7 @@ void display(void)
 	///////////////////////////////////////////////////////////////////////////
 	// setup matrices
 	///////////////////////////////////////////////////////////////////////////
-	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 1.0f, 2000.0f);
+	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), near, far);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
 	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
@@ -352,7 +355,7 @@ void display(void)
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition);
+	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far);
 	waterFBOs.submitToGpu();
 }
 
