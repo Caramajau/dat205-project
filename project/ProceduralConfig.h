@@ -46,5 +46,7 @@ struct ProceduralConfig {
 
 	float waterNormalFlattenFactor = 3.0f;
 
+	float waterBlueTintFactor = 0.05f;
+
 	void reset() { *this = ProceduralConfig{}; }
 };

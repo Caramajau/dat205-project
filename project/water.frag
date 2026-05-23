@@ -26,6 +26,8 @@ uniform float fresnelModifier;
 
 uniform float normalFlattenFactor;
 
+uniform float blueTintFactor;
+
 uniform float near;
 uniform float far;
 
@@ -99,7 +101,7 @@ void main()
 
 	fragmentColor = mix(reflectColour, refractColour, fresnel);
 	// Tint slightly blue
-	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
+	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), blueTintFactor) + vec4(specularHighlights, 0.0);
 
 	fragmentColor.a = clamp(waterDepth / borderTransparencyFactor, 0.0, 1.0);
 }

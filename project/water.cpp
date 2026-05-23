@@ -58,6 +58,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 
 	normalFlattenFactor = config.waterNormalFlattenFactor;
 
+	blueTintFactor = config.waterBlueTintFactor;
+
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
 		terrainWidth,	0.0f, 0.0f,			 1.0f, 0.0f,
@@ -144,6 +146,8 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	labhelper::setUniformSlow(waterShader, "fresnelModifier", fresnelModifier);
 
 	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", normalFlattenFactor);
+
+	labhelper::setUniformSlow(waterShader, "blueTintFactor", blueTintFactor);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
