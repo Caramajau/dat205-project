@@ -540,6 +540,9 @@ void gui()
 	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
 	ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
 	ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+	ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
+	ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
+	ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);

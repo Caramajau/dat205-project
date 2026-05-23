@@ -42,6 +42,10 @@ private:
 	float shineDamper;
 	float reflectivity;
 
+	float distortionDampening;
+	float highlightDampening;
+	float borderTransparencyFactor;
+
 	glm::vec3 sunDirection;
 
 	void loadTexture(GLuint& texture, const char* filepath) const;

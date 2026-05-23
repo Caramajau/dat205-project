@@ -50,6 +50,10 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	shineDamper = config.waterShineDamper;
 	reflectivity = config.waterReflectivity;
 
+	borderTransparencyFactor = config.waterBorderTransparencyFactor;
+	distortionDampening = config.waterDistortionDampening;
+	highlightDampening = config.waterHighlightDampening;
+
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
 		terrainWidth,	0.0f, 0.0f,			 1.0f, 0.0f,
@@ -123,6 +127,10 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 
 	labhelper::setUniformSlow(waterShader, "shineDamper", shineDamper);
 	labhelper::setUniformSlow(waterShader, "reflectivity", reflectivity);
+
+	labhelper::setUniformSlow(waterShader, "borderTransparencyFactor", borderTransparencyFactor);
+	labhelper::setUniformSlow(waterShader, "distortionDampening", distortionDampening);
+	labhelper::setUniformSlow(waterShader, "highlightDampening", highlightDampening);
 
 	labhelper::setUniformSlow(waterShader, "near", near);
 	labhelper::setUniformSlow(waterShader, "far", far);

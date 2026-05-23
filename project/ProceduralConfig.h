@@ -38,5 +38,9 @@ struct ProceduralConfig {
 	float waterShineDamper = 20.0f;
 	float waterReflectivity = 0.5f;
 
+	float waterBorderTransparencyFactor = 5.0f;
+	float waterDistortionDampening = 20.0f;
+	float waterHighlightDampening = 5.0f;
+
 	void reset() { *this = ProceduralConfig{}; }
 };

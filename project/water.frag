@@ -18,16 +18,16 @@ uniform float waveStrength;
 uniform float shineDamper;
 uniform float reflectivity;
 
+uniform float distortionDampening;
+uniform float highlightDampening;
+uniform float borderTransparencyFactor;
+
 uniform float near;
 uniform float far;
 
 in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
-
-const float distortionDampening = 2.0f;
-const float highlightDampening = 2.0f;
-const float borderTransparencyFactor = 2.0f;
 
 float calcTrueDepth(float depth)
 {
