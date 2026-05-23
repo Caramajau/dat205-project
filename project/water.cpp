@@ -6,11 +6,11 @@ void Water::loadShader(bool is_reload) {
 		waterShader = shader;
 	}
 
-	loadDuDvTexture(dudvTexture, "../scenes/textures/waterDuDv.png");
-	loadDuDvTexture(normalMap, "../scenes/textures/waterNormal.png");
+	loadTexture(dudvTexture, "../scenes/textures/waterDuDv.png");
+	loadTexture(normalMap, "../scenes/textures/waterNormal.png");
 }
 
-void Water::loadDuDvTexture(GLuint& texture, const char* filepath) const {
+void Water::loadTexture(GLuint& texture, const char* filepath) const {
 	int w;
 	int h;
 	int comp;
@@ -34,10 +34,32 @@ void Water::loadDuDvTexture(GLuint& texture, const char* filepath) const {
 void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
 	int terrainWidth = config.width;
 	int terrainHeight = config.height;
+
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
 	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
+
 	sunDirection = config.sunDirection;
+
+	setHeight(config.waterHeight);
+
+	tiling = config.waterTiling;
+	waveSpeed = config.waterWaveSpeed;
+	waveStrength = config.waterWaveStrength;
+
+	shineDamper = config.waterShineDamper;
+	reflectivity = config.waterReflectivity;
+
+	borderTransparencyFactor = config.waterBorderTransparencyFactor;
+	distortionDampening = config.waterDistortionDampening;
+	highlightDampening = config.waterHighlightDampening;
+
+	fresnelModifier = config.waterFresnelModifier;
+
+	normalFlattenFactor = config.waterNormalFlattenFactor;
+
+	murkyColourFactor = config.waterMurkyColourFactor;
+	blueTintFactor = config.waterBlueTintFactor;
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
@@ -72,7 +94,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	glBindVertexArray(0);
 }
 
-void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition) {
+void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far) {
 	moveFactor += waveSpeed * deltaTime;
 	// Loop back
 	if (moveFactor > 1.0f)
@@ -103,9 +125,31 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
-	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
+
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
+
+	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
+	labhelper::setUniformSlow(waterShader, "waveStrength", waveStrength);
+
+	labhelper::setUniformSlow(waterShader, "shineDamper", shineDamper);
+	labhelper::setUniformSlow(waterShader, "reflectivity", reflectivity);
+
+	labhelper::setUniformSlow(waterShader, "borderTransparencyFactor", borderTransparencyFactor);
+	labhelper::setUniformSlow(waterShader, "distortionDampening", distortionDampening);
+	labhelper::setUniformSlow(waterShader, "highlightDampening", highlightDampening);
+
+	labhelper::setUniformSlow(waterShader, "near", near);
+	labhelper::setUniformSlow(waterShader, "far", far);
+
+	labhelper::setUniformSlow(waterShader, "tiling", tiling);
+
+	labhelper::setUniformSlow(waterShader, "fresnelModifier", fresnelModifier);
+
+	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", normalFlattenFactor);
+
+	labhelper::setUniformSlow(waterShader, "murkyColourFactor", murkyColourFactor);
+	labhelper::setUniformSlow(waterShader, "blueTintFactor", blueTintFactor);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -113,4 +157,13 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
+}
+
+float Water::getHeight() const {
+	return height;
+}
+
+void Water::setHeight(float newHeight) {
+	height = newHeight;
+	waterModelMatrix = translate(height * glm::vec3(0.0f, 1.0f, 0.0f));
 }

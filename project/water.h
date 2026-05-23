@@ -11,11 +11,14 @@ class Water {
 public:
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition);
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far);
+	
+	float getHeight() const;
+	void setHeight(float newHeight);
 
 private:
-	// TODO make height customisable?
-	glm::mat4 waterModelMatrix = translate(-80.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+	float height;
+	glm::mat4 waterModelMatrix;
 
 	GLuint waterShader = 0;
 
@@ -30,11 +33,27 @@ private:
 	GLuint dudvTexture = 0;
 	GLuint normalMap = 0;
 
-	// TODO: make customsiable?
-	float waveSpeed = 0.03f;
+	float tiling;
+
+	float waveSpeed;
 	float moveFactor = 0.0f;
+	float waveStrength;
+
+	float shineDamper;
+	float reflectivity;
+
+	float distortionDampening;
+	float highlightDampening;
+	float borderTransparencyFactor;
+
+	float fresnelModifier;
+
+	float normalFlattenFactor;
+
+	float murkyColourFactor;
+	float blueTintFactor;
 
 	glm::vec3 sunDirection;
 
-	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
+	void loadTexture(GLuint& texture, const char* filepath) const;
 };

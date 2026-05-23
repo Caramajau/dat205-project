@@ -79,6 +79,9 @@ vec3 worldUp(0.0f, 1.0f, 0.0f);
 bool hasEntered;
 const float terrainOffset = 5.0f;
 
+const float near = 1.0f;
+const float far = 2000.0f;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Models
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,6 +99,10 @@ ProceduralConfig config{};
 
 Water water;
 WaterFrameBuffers waterFBOs;
+
+// Tiny offset to remove potential distortion artefacts near edges.
+// NOTE: If the offset is too high, it can cause things that shouldn't be to not reflected to show.
+float waterOffset = 1.0f;
 
 void loadShaders(bool is_reload)
 {
@@ -241,9 +248,8 @@ void drawScene(GLuint currentShaderProgram,
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
 // and also have inverted pitch.
-mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection) {
-	// Water is at -80
-	float distance = 2 * (cameraPosition.y + 80);
+mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterHeight) {
+	float distance = 2 * (cameraPosition.y - waterHeight);
 	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
 	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
 	// NOTE: y is inverted in the shader
@@ -275,7 +281,7 @@ void display(void)
 	///////////////////////////////////////////////////////////////////////////
 	// setup matrices
 	///////////////////////////////////////////////////////////////////////////
-	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 1.0f, 2000.0f);
+	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), near, far);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
 	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
@@ -316,7 +322,7 @@ void display(void)
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection);
+	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, water.getHeight());
 
 	// Render scene to reflection frame buffer
 	{
@@ -325,11 +331,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Water is at -80, 
-		// tiny offset (1.0f) to remove potential distortion artefacts near edges.
-		// Offset can cause things that shouldn't be to not reflected to show
-		// TODO: make customisable?
-		auto waterPlane = glm::vec4(0, 1, 0, 80 + 1.0f);
+		auto waterPlane = glm::vec4(0, 1, 0, -water.getHeight() + waterOffset);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
@@ -347,15 +349,14 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Water is at -80
-		auto waterPlane = glm::vec4(0, -1, 0, -80);
+		auto waterPlane = glm::vec4(0, -1, 0, water.getHeight());
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition);
+	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far);
 	waterFBOs.submitToGpu();
 }
 
@@ -532,6 +533,22 @@ void gui()
 	ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
 	ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
 	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+
+	ImGui::Text("Water options");
+	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
+	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 1.0f, 16.0f);
+	ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
+	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
+	ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
+	ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+	ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
+	ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
+	ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+	ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+	ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+	ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
+	ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+	ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
