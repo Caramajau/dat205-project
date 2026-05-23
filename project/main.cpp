@@ -544,6 +544,7 @@ void gui()
 	ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
 	ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
 	ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+	ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);

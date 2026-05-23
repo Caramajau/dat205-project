@@ -48,6 +48,8 @@ private:
 
 	float fresnelModifier;
 
+	float normalFlattenFactor;
+
 	glm::vec3 sunDirection;
 
 	void loadTexture(GLuint& texture, const char* filepath) const;

@@ -24,6 +24,8 @@ uniform float borderTransparencyFactor;
 
 uniform float fresnelModifier;
 
+uniform float normalFlattenFactor;
+
 uniform float near;
 uniform float far;
 
@@ -76,14 +78,16 @@ void main()
 	
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 	// Okay to not convert b, since you want normal pointing up to some extent anyways.
-	// The 3.0 is used to make the normals point more up, making the water appear flatter. TODO: customise?
-	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b * 3.0, normalMapColour.g * 2.0 - 1.0);
+	// The normal flatten factor is used to make the normals point more up, making the water appear flatter.
+	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b * normalFlattenFactor, normalMapColour.g * 2.0 - 1.0);
 	normal = normalize(normal);
 
 	vec3 viewVector = normalize(toCameraVector);
 	float fresnel = dot(viewVector, normal);
 	// Can increase/decrease the reflectiveness of the water
 	fresnel = pow(fresnel, fresnelModifier);
+	// Clamp to avoid black artefacts
+	fresnel = clamp(fresnel, 0.001, 0.999);
 
 	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
 	// Dot product to see if similar, and when they are:

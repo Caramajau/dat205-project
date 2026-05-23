@@ -56,6 +56,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 
 	fresnelModifier = config.waterFresnelModifier;
 
+	normalFlattenFactor = config.waterNormalFlattenFactor;
+
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
 		terrainWidth,	0.0f, 0.0f,			 1.0f, 0.0f,
@@ -140,6 +142,8 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	labhelper::setUniformSlow(waterShader, "tiling", tiling);
 
 	labhelper::setUniformSlow(waterShader, "fresnelModifier", fresnelModifier);
+
+	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", normalFlattenFactor);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
