@@ -50,6 +50,7 @@ private:
 
 	float normalFlattenFactor;
 
+	float murkyColourFactor;
 	float blueTintFactor;
 
 	glm::vec3 sunDirection;

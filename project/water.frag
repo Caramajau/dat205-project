@@ -26,6 +26,7 @@ uniform float fresnelModifier;
 
 uniform float normalFlattenFactor;
 
+uniform float murkyColourFactor;
 uniform float blueTintFactor;
 
 uniform float near;
@@ -98,6 +99,9 @@ void main()
 	specular = pow(specular, shineDamper);
 	// vec3(1.0) could be changed to different light colours
 	vec3 specularHighlights = vec3(1.0) * specular * reflectivity * clamp(waterDepth / highlightDampening, 0.0, 1.0);
+
+	// Murky colour effect
+	refractColour = mix(refractColour, vec4(0.29, 0.33, 0.22, 1.0), clamp(waterDepth / murkyColourFactor, 0.0, 1.0));
 
 	fragmentColor = mix(reflectColour, refractColour, fresnel);
 	// Tint slightly blue

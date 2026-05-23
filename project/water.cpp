@@ -58,6 +58,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 
 	normalFlattenFactor = config.waterNormalFlattenFactor;
 
+	murkyColourFactor = config.waterMurkyColourFactor;
 	blueTintFactor = config.waterBlueTintFactor;
 
 	float vertices[] = {
@@ -147,6 +148,7 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 
 	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", normalFlattenFactor);
 
+	labhelper::setUniformSlow(waterShader, "murkyColourFactor", murkyColourFactor);
 	labhelper::setUniformSlow(waterShader, "blueTintFactor", blueTintFactor);
 
 	glEnable(GL_BLEND);
