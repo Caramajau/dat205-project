@@ -100,6 +100,10 @@ ProceduralConfig config{};
 Water water;
 WaterFrameBuffers waterFBOs;
 
+// Tiny offset to remove potential distortion artefacts near edges.
+// NOTE: If the offset is too high, it can cause things that shouldn't be to not reflected to show.
+float waterOffset = 1.0f;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -327,10 +331,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Tiny offset (1.0f) to remove potential distortion artefacts near edges.
-		// Offset can cause things that shouldn't be to not reflected to show
-		// TODO: make customisable?
-		auto waterPlane = glm::vec4(0, 1, 0, -water.getHeight() + 1.0f);
+		auto waterPlane = glm::vec4(0, 1, 0, -water.getHeight() + waterOffset);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
@@ -547,6 +548,7 @@ void gui()
 	ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
 	ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
 	ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+	ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
