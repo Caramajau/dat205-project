@@ -23,6 +23,16 @@ const float waveStrength = 0.04;
 const float shineDamper = 20.0;
 const float reflectivity = 0.5;
 
+float calcTrueDepth(float depth)
+{
+	// TODO: should be uniforms
+	float near = 0.1;
+	float far = 2000.0;
+	// Need to convert in order to get true depth
+	// Explanation: https://stackoverflow.com/questions/6652253/getting-the-true-z-value-from-the-depth-buffer
+	return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+}
+
 void main()
 {
 	// Gives screen space points in [-1, 1]
@@ -34,18 +44,12 @@ void main()
 	// Y needs to be inverted for reflection
 	vec2 reflectTexCoords = vec2(normalizedDeviceSpace.x, 1.0 - normalizedDeviceSpace.y);
 
-	// TODO: should be uniforms
-	float near = 0.1;
-	float far = 2000.0;
-
 	// Important to sample before the coords get distorted
 	float depth = texture(depthMap, refractTexCoords).r;
 
-	// Need to convert in order to get true depth
-	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+	float floorDistance = calcTrueDepth(depth);
 
-	depth = gl_FragCoord.z;
-	float waterDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+	float waterDistance = calcTrueDepth(gl_FragCoord.z);
 
 	float waterDepth = floorDistance - waterDistance;
 
