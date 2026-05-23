@@ -159,13 +159,11 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(0);
 }
 
-float Water::getHeight() const
-{
+float Water::getHeight() const {
 	return height;
 }
 
-void Water::setHeight(float newHeight)
-{
+void Water::setHeight(float newHeight) {
 	height = newHeight;
 	waterModelMatrix = translate(height * glm::vec3(0.0f, 1.0f, 0.0f));
 }
