@@ -6,11 +6,11 @@ void Water::loadShader(bool is_reload) {
 		waterShader = shader;
 	}
 
-	loadDuDvTexture(dudvTexture, "../scenes/textures/waterDuDv.png");
-	loadDuDvTexture(normalMap, "../scenes/textures/waterNormal.png");
+	loadTexture(dudvTexture, "../scenes/textures/waterDuDv.png");
+	loadTexture(normalMap, "../scenes/textures/waterNormal.png");
 }
 
-void Water::loadDuDvTexture(GLuint& texture, const char* filepath) const {
+void Water::loadTexture(GLuint& texture, const char* filepath) const {
 	int w;
 	int h;
 	int comp;

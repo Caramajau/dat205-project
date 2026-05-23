@@ -39,5 +39,5 @@ private:
 
 	glm::vec3 sunDirection;
 
-	void loadDuDvTexture(GLuint& texture, const char* filepath) const;
+	void loadTexture(GLuint& texture, const char* filepath) const;
 };
