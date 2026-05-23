@@ -34,13 +34,21 @@ void Water::loadTexture(GLuint& texture, const char* filepath) const {
 void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
 	int terrainWidth = config.width;
 	int terrainHeight = config.height;
+
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
 	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
+
 	sunDirection = config.sunDirection;
+
 	setHeight(config.waterHeight);
+
 	tiling = config.waterTiling;
 	waveSpeed = config.waterWaveSpeed;
+	waveStrength = config.waterWaveStrength;
+
+	shineDamper = config.waterShineDamper;
+	reflectivity = config.waterReflectivity;
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
@@ -106,9 +114,15 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
-	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
+
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
+
+	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
+	labhelper::setUniformSlow(waterShader, "waveStrength", waveStrength);
+
+	labhelper::setUniformSlow(waterShader, "shineDamper", shineDamper);
+	labhelper::setUniformSlow(waterShader, "reflectivity", reflectivity);
 
 	labhelper::setUniformSlow(waterShader, "near", near);
 	labhelper::setUniformSlow(waterShader, "far", far);

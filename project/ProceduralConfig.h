@@ -31,7 +31,12 @@ struct ProceduralConfig {
 	// Water configs
 	float waterHeight = -58.0f;
 	float waterTiling = 4.0f;
+
 	float waterWaveSpeed = 0.03f;
+	float waterWaveStrength = 0.04f;
+
+	float waterShineDamper = 20.0f;
+	float waterReflectivity = 0.5f;
 
 	void reset() { *this = ProceduralConfig{}; }
 };

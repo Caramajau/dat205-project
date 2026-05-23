@@ -13,6 +13,10 @@ uniform sampler2D depthMap;
 uniform vec3 sunDirection;
 
 uniform float moveFactor;
+uniform float waveStrength;
+
+uniform float shineDamper;
+uniform float reflectivity;
 
 uniform float near;
 uniform float far;
@@ -20,11 +24,6 @@ uniform float far;
 in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
-
-// TODO: make customisable?
-const float waveStrength = 0.04;
-const float shineDamper = 20.0;
-const float reflectivity = 0.5;
 
 float calcTrueDepth(float depth)
 {

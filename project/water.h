@@ -37,6 +37,10 @@ private:
 
 	float waveSpeed;
 	float moveFactor = 0.0f;
+	float waveStrength;
+
+	float shineDamper;
+	float reflectivity;
 
 	glm::vec3 sunDirection;
 
