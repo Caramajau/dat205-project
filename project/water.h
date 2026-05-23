@@ -12,10 +12,13 @@ public:
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition);
+	
+	float getHeight() const;
+	void setHeight(float newHeight);
 
 private:
-	// TODO make height customisable?
-	glm::mat4 waterModelMatrix = translate(-80.0f * glm::vec3(0.0f, 1.0f, 0.0f));
+	float height;
+	glm::mat4 waterModelMatrix;
 
 	GLuint waterShader = 0;
 

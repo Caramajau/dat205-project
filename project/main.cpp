@@ -241,9 +241,8 @@ void drawScene(GLuint currentShaderProgram,
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
 // and also have inverted pitch.
-mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection) {
-	// Water is at -80
-	float distance = 2 * (cameraPosition.y + 80);
+mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterHeight) {
+	float distance = 2 * (cameraPosition.y - waterHeight);
 	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
 	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
 	// NOTE: y is inverted in the shader
@@ -316,7 +315,7 @@ void display(void)
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection);
+	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, water.getHeight());
 
 	// Render scene to reflection frame buffer
 	{
@@ -325,11 +324,10 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Water is at -80, 
-		// tiny offset (1.0f) to remove potential distortion artefacts near edges.
+		// Tiny offset (1.0f) to remove potential distortion artefacts near edges.
 		// Offset can cause things that shouldn't be to not reflected to show
 		// TODO: make customisable?
-		auto waterPlane = glm::vec4(0, 1, 0, 80 + 1.0f);
+		auto waterPlane = glm::vec4(0, 1, 0, -water.getHeight() + 1.0f);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
@@ -347,8 +345,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		// Water is at -80
-		auto waterPlane = glm::vec4(0, -1, 0, -80);
+		auto waterPlane = glm::vec4(0, -1, 0, water.getHeight());
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
@@ -532,6 +529,9 @@ void gui()
 	ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
 	ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
 	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+
+	ImGui::Text("Water options");
+	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);

@@ -38,6 +38,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	refractionTexture = waterFBOs.getRefractionTexture();
 	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
 	sunDirection = config.sunDirection;
+	setHeight(config.waterHeight);
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
@@ -113,4 +114,15 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
+}
+
+float Water::getHeight() const
+{
+	return height;
+}
+
+void Water::setHeight(float newHeight)
+{
+	height = newHeight;
+	waterModelMatrix = translate(height * glm::vec3(0.0f, 1.0f, 0.0f));
 }
