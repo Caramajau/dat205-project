@@ -22,6 +22,8 @@ uniform float distortionDampening;
 uniform float highlightDampening;
 uniform float borderTransparencyFactor;
 
+uniform float fresnelModifier;
+
 uniform float near;
 uniform float far;
 
@@ -79,9 +81,9 @@ void main()
 	normal = normalize(normal);
 
 	vec3 viewVector = normalize(toCameraVector);
-	float refractiveFactor = dot(viewVector, normal);
-	// Can increase/decrease the reflectiveness of the water, TODO: make customisable?
-	refractiveFactor = pow(refractiveFactor, 2);
+	float fresnel = dot(viewVector, normal);
+	// Can increase/decrease the reflectiveness of the water
+	fresnel = pow(fresnel, fresnelModifier);
 
 	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
 	// Dot product to see if similar, and when they are:
@@ -91,7 +93,7 @@ void main()
 	// vec3(1.0) could be changed to different light colours
 	vec3 specularHighlights = vec3(1.0) * specular * reflectivity * clamp(waterDepth / highlightDampening, 0.0, 1.0);
 
-	fragmentColor = mix(reflectColour, refractColour, refractiveFactor);
+	fragmentColor = mix(reflectColour, refractColour, fresnel);
 	// Tint slightly blue
 	fragmentColor = mix(fragmentColor, vec4(0.0, 0.3, 0.5, 1.0), 0.05) + vec4(specularHighlights, 0.0);
 

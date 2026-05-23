@@ -46,6 +46,8 @@ private:
 	float highlightDampening;
 	float borderTransparencyFactor;
 
+	float fresnelModifier;
+
 	glm::vec3 sunDirection;
 
 	void loadTexture(GLuint& texture, const char* filepath) const;
