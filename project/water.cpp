@@ -40,6 +40,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	sunDirection = config.sunDirection;
 	setHeight(config.waterHeight);
 	tiling = config.waterTiling;
+	waveSpeed = config.waterWaveSpeed;
 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,

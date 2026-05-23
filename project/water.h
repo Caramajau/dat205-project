@@ -35,8 +35,7 @@ private:
 
 	float tiling;
 
-	// TODO: make customsiable?
-	float waveSpeed = 0.03f;
+	float waveSpeed;
 	float moveFactor = 0.0f;
 
 	glm::vec3 sunDirection;

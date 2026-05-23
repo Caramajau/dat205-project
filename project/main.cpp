@@ -536,6 +536,7 @@ void gui()
 	ImGui::Text("Water options");
 	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
 	ImGui::SliderFloat("Water tiling", &config.waterTiling, 1.0f, 16.0f);
+	ImGui::SliderFloat("Wave speed", &config.waterWaveSpeed, 0.0f, 1.0f);
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
