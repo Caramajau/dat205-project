@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
+#include <stb_image.h>
 #include "height.h"
 #include "interpolations.h"
 #include "ProceduralConfig.h"

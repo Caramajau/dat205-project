@@ -1,5 +1,4 @@
 #include "proceduralTerrain.h"
-#include <stb_image.h>
 
 ProceduralTerrain::ProceduralTerrain() = default;
 ProceduralTerrain::~ProceduralTerrain() = default;
