@@ -71,6 +71,21 @@ vec3 unpackNormal(sampler2D map, vec2 uv)
     return texture(map, uv).rgb * 2.0 - 1.0;
 }
 
+vec3 triplanarNormal(sampler2D map, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights, vec3 terrainNormal)
+{
+    vec3 nX = unpackNormal(map, uvX);
+    vec3 nY = unpackNormal(map, uvY);
+    vec3 nZ = unpackNormal(map, uvZ);
+
+    // Whiteout blend each slab with the terrain normal swizzled into that slab's tangent space,
+    // then swizzle the result back to world space
+    vec3 worldX = vec3(nX.xy + terrainNormal.zy, abs(nX.z) * terrainNormal.x).zyx;
+    vec3 worldY = vec3(nY.xy + terrainNormal.xz, abs(nY.z) * terrainNormal.y).xzy;
+    vec3 worldZ = vec3(nZ.xy + terrainNormal.xy, abs(nZ.z) * terrainNormal.z).xyz;
+
+    return normalize(worldX * weights.x + worldY * weights.y + worldZ * weights.z);
+}
+
 void main()
 {
     ivec2 terrainSize = textureSize(heightMap, 0);
@@ -79,29 +94,39 @@ void main()
 
     float slope = 1.0 - terrainNormal.y;
 
-    // 32 seemed like a good "zoom".
-    vec2 textureUV = 32.0 * texCoord;
+    vec3 absNormal = abs(terrainNormal);
+    // Higher values give sharper transitions
+    vec3 blendWeights = pow(absNormal, vec3(4.0));
+    // normalize the sum to 1 (not the actual vector).
+    // Using dot products works as an optimisation
+    blendWeights /= dot(blendWeights, vec3(1.0));
+
+    // 0.1 felt like a good "zoom".
+    float scale = 0.1;
+    vec2 uvX = positionWithHeight.zy * scale;
+    vec2 uvY = positionWithHeight.xz * scale;
+    vec2 uvZ = positionWithHeight.xy * scale;
 
     // Texture from https://ambientcg.com/a/Grass005
-    vec3 grass = texture(grassTexture, textureUV).rgb;
+    vec3 grassX = texture(grassTexture, uvX).rgb;
+    vec3 grassY = texture(grassTexture, uvY).rgb;
+    vec3 grassZ = texture(grassTexture, uvZ).rgb;
+    vec3 grass = grassX * blendWeights.x + grassY * blendWeights.y + grassZ * blendWeights.z;
+
     // Texture from https://ambientcg.com/a/Ground067
-    vec3 rock = texture(rockTexture, textureUV).rgb;
+    vec3 rockX = texture(rockTexture, uvX).rgb;
+    vec3 rockY = texture(rockTexture, uvY).rgb;
+    vec3 rockZ = texture(rockTexture, uvZ).rgb;
+    vec3 rock = rockX * blendWeights.x + rockY * blendWeights.y + rockZ * blendWeights.z;
 
     float rockBlend = smoothstep(0.2, 0.4, slope);
     vec3 colour = mix(grass, rock, rockBlend);
 
-    // Normals from textures, given in tangent space, z is up (which is why they are blueish).
-    vec3 grassNormal = unpackNormal(grassNormalMap, textureUV);
-    vec3 rockNormal = unpackNormal(rockNormalMap, textureUV);
+    vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);
+    vec3 rockNormal  = triplanarNormal(rockNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
 
     // Make sure they are blended like the colour textures.
-    vec3 detailNormal = normalize(mix(grassNormal, rockNormal, rockBlend));
-
-    // Construct TBN via terrain normal so can convert back.
-    mat3 TBN = buildTBN(terrainNormal);
-    // NOTE: In tangent space the terrain normal is just (0,0,1).
-    vec3 blended = blendNormals(vec3(0.0, 0.0, 1.0), detailNormal);
-    vec3 finalNormal = normalize(TBN * blended);
+    vec3 finalNormal = normalize(mix(grassNormal, rockNormal, rockBlend));
 
     // Simple shading with some ambient and mostly diffuse
     float diffuse = max(dot(finalNormal, normalize(sunDirection)), 0.0);
