@@ -61,15 +61,20 @@ vec3 triplanarNormal(sampler2D map, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights, 
     vec3 nY = unpackNormal(map, uvY);
     vec3 nZ = unpackNormal(map, uvZ);
 
-    // Whiteout blend each slab with the terrain normal swizzled into that slab's tangent space...
+    // Different blending approaches explained in: https://blog.selfshadow.com/publications/blending-in-detail/
+    // - "Normally" whiteout blend is done in tangent space (z up): normalize(vec3(n1.xy + n2.xy, n1.z * n2.z));
+    // Here, it is done per axis so that the terrain normal is swizzled into that tangent space...
+    // (Unsure why abs is used, from what I could see I got the same regardless, 
+    // but I kept it as the bgolus article used it)
+
     vec3 tangentX = vec3(nX.xy + terrainNormal.zy, abs(nX.z) * terrainNormal.x);
     vec3 tangentY = vec3(nY.xy + terrainNormal.xz, abs(nY.z) * terrainNormal.y);
     vec3 tangentZ = vec3(nZ.xy + terrainNormal.xy, abs(nZ.z) * terrainNormal.z);
 
-    // ...then swizzle the result back to world space
+    // ...then the result is swizzled back to world space.
     vec3 worldX = tangentX.zyx;
     vec3 worldY = tangentY.xzy;
-    // NOTE: .xyz is mostly here just for consistency.
+    // NOTE: .xyz is just here for consistency.
     vec3 worldZ = tangentZ.xyz;
 
     return normalize(worldX * weights.x + worldY * weights.y + worldZ * weights.z);
@@ -85,7 +90,7 @@ void main()
 
     vec3 absNormal = abs(terrainNormal);
     // Higher values give sharper transitions
-    vec3 blendWeights = pow(absNormal, vec3(4.0));
+    vec3 blendWeights = pow(absNormal, vec3(3.0));
     // normalize the sum to 1 (not the actual vector).
     // Using dot products works as an optimisation
     blendWeights /= dot(blendWeights, vec3(1.0));
