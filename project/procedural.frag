@@ -71,6 +71,15 @@ vec3 unpackNormal(sampler2D map, vec2 uv)
     return texture(map, uv).rgb * 2.0 - 1.0;
 }
 
+vec3 triplanarTexture(sampler2D tex, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights)
+{
+    vec3 texX = texture(tex, uvX).rgb;
+    vec3 texY = texture(tex, uvY).rgb;
+    vec3 texZ = texture(tex, uvZ).rgb;
+
+    return texX * weights.x + texY * weights.y + texZ * weights.z;
+}
+
 vec3 triplanarNormal(sampler2D map, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights, vec3 terrainNormal)
 {
     vec3 nX = unpackNormal(map, uvX);
@@ -108,16 +117,10 @@ void main()
     vec2 uvZ = positionWithHeight.xy * scale;
 
     // Texture from https://ambientcg.com/a/Grass005
-    vec3 grassX = texture(grassTexture, uvX).rgb;
-    vec3 grassY = texture(grassTexture, uvY).rgb;
-    vec3 grassZ = texture(grassTexture, uvZ).rgb;
-    vec3 grass = grassX * blendWeights.x + grassY * blendWeights.y + grassZ * blendWeights.z;
+    vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
 
     // Texture from https://ambientcg.com/a/Ground067
-    vec3 rockX = texture(rockTexture, uvX).rgb;
-    vec3 rockY = texture(rockTexture, uvY).rgb;
-    vec3 rockZ = texture(rockTexture, uvZ).rgb;
-    vec3 rock = rockX * blendWeights.x + rockY * blendWeights.y + rockZ * blendWeights.z;
+    vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
 
     float rockBlend = smoothstep(0.2, 0.4, slope);
     vec3 colour = mix(grass, rock, rockBlend);
