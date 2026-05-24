@@ -80,17 +80,23 @@ vec3 triplanarTexture(sampler2D tex, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights)
     return texX * weights.x + texY * weights.y + texZ * weights.z;
 }
 
+// Based on: https://bgolus.medium.com/normal-mapping-for-a-triplanar-shader-10bf39dca05a#da52
 vec3 triplanarNormal(sampler2D map, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights, vec3 terrainNormal)
 {
     vec3 nX = unpackNormal(map, uvX);
     vec3 nY = unpackNormal(map, uvY);
     vec3 nZ = unpackNormal(map, uvZ);
 
-    // Whiteout blend each slab with the terrain normal swizzled into that slab's tangent space,
-    // then swizzle the result back to world space
-    vec3 worldX = vec3(nX.xy + terrainNormal.zy, abs(nX.z) * terrainNormal.x).zyx;
-    vec3 worldY = vec3(nY.xy + terrainNormal.xz, abs(nY.z) * terrainNormal.y).xzy;
-    vec3 worldZ = vec3(nZ.xy + terrainNormal.xy, abs(nZ.z) * terrainNormal.z).xyz;
+    // Whiteout blend each slab with the terrain normal swizzled into that slab's tangent space...
+    vec3 tangentX = vec3(nX.xy + terrainNormal.zy, abs(nX.z) * terrainNormal.x);
+    vec3 tangentY = vec3(nY.xy + terrainNormal.xz, abs(nY.z) * terrainNormal.y);
+    vec3 tangentZ = vec3(nZ.xy + terrainNormal.xy, abs(nZ.z) * terrainNormal.z);
+
+    // ...then swizzle the result back to world space
+    vec3 worldX = tangentX.zyx;
+    vec3 worldY = tangentY.xzy;
+    // NOTE: this is mostly here just for clarity.
+    vec3 worldZ = tangentZ.xyz;
 
     return normalize(worldX * weights.x + worldY * weights.y + worldZ * weights.z);
 }
