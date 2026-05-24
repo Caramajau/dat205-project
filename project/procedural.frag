@@ -69,7 +69,7 @@ vec3 triplanarNormal(sampler2D map, vec2 uvX, vec2 uvY, vec2 uvZ, vec3 weights, 
     // ...then swizzle the result back to world space
     vec3 worldX = tangentX.zyx;
     vec3 worldY = tangentY.xzy;
-    // NOTE: this is mostly here just for clarity.
+    // NOTE: .xyz is mostly here just for consistency.
     vec3 worldZ = tangentZ.xyz;
 
     return normalize(worldX * weights.x + worldY * weights.y + worldZ * weights.z);
