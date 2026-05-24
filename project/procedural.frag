@@ -39,32 +39,6 @@ vec3 neighbourNormal(vec2 uv, float texelWidth, float texelHeight, float texelAs
     return normalize(normal);
 }
 
-// Build a TBN matrix to rotate tangent space normals into world space.
-mat3 buildTBN(vec3 terrainNormal)
-{
-    // For a heightmap terrain the tangent is just positive X
-    vec3 T = vec3(1.0, 0.0, 0.0);
-    // Performing Gram-Schmidt to re-orthogonalise.
-    // T = normalize(T - dot(T, N) * N)
-    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    T = normalize(T - terrainNormal.x * terrainNormal);
-
-    // Can get the bitangent with cross product.
-    // Although, unlike in the article linked above this is the correct order.
-    // They might be dealing with reversed x axis or something.
-    vec3 B = cross(T, terrainNormal);
-
-    return mat3(T, B, terrainNormal);
-}
-
-// Whiteout blend (e.g. shouldn't do it linearly)
-// Different approaches explained in: https://blog.selfshadow.com/publications/blending-in-detail/
-// NOTE: the blending is done in tangent space
-vec3 blendNormals(vec3 base, vec3 detail)
-{
-    return normalize(vec3(base.xy + detail.xy, base.z * detail.z));
-}
-
 // Unpack into a [-1,1] tangent space vector.
 vec3 unpackNormal(sampler2D map, vec2 uv)
 {
