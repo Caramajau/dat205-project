@@ -25,6 +25,9 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
 }
 
 // Domain warping based on: https://iquilezles.org/articles/warp/
+// NOTE: Offsets are directly taking from the article, as mentioned in the article:
+// They are used to get "different fBM values by using one single fbm() implementation", and
+// don't have any special meaning.
 void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel, float warpAmplitude)
 {
     // First warping
