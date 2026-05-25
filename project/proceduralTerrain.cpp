@@ -41,6 +41,7 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightScale = config.heightScale;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
+	triplanarBlendFactor = config.triplanarBlendFactor;
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -152,6 +153,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "sunDirection", sunDirection);
 	glUniform4f(glGetUniformLocation(terrainShader, "waterPlane"), 
 		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
+	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", triplanarBlendFactor);
 
 	glBindVertexArray(terrainVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);

@@ -29,6 +29,8 @@ struct ProceduralConfig {
 	bool useNeighbours = true;
 	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);
 
+	float triplanarBlendFactor = 4.0f;
+
 	// Water configs
 	float waterHeight = -58.0f;
 	float waterTiling = 0.04f;

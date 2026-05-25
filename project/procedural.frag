@@ -13,12 +13,13 @@ uniform sampler2D rockTexture;
 uniform sampler2D grassNormalMap;
 uniform sampler2D rockNormalMap;
 
-in vec2 texCoord;
-
-in vec3 positionWithHeight;
-
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
+
+uniform float triplanarBlendFactor;
+
+in vec2 texCoord;
+in vec3 positionWithHeight;
 
 // Idea from https://www.youtube.com/shorts/gc7rT3sF1S8
 vec3 positionNormal(vec3 position)
@@ -90,11 +91,12 @@ void main()
 
     vec3 absNormal = abs(terrainNormal);
     // Higher values give sharper transitions
-    vec3 blendWeights = pow(absNormal, vec3(3.0));
+    vec3 blendWeights = pow(absNormal, vec3(triplanarBlendFactor));
     // normalize the sum to 1 (not the actual vector).
     // Using dot products works as an optimisation
     blendWeights /= dot(blendWeights, vec3(1.0));
 
+    // TODO: Customise?
     // 0.1 felt like a good "zoom".
     float scale = 0.1;
     vec2 uvX = positionWithHeight.zy * scale;
