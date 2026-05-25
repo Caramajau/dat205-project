@@ -15,7 +15,7 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
             float fy = (float)y / config.gridSize;
 
             if (config.warpLevel != 0) {
-                domainWarp(fbm, fx, fy, config.warpLevel);
+                domainWarp(fbm, fx, fy, config.warpLevel, config.warpAmplitude);
             }
 
             grid[y * config.width + x] = fbm.sample(fx, fy);
@@ -25,11 +25,14 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
 }
 
 // Domain warping based on: https://iquilezles.org/articles/warp/
-void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel)
+// NOTE: Offsets are directly taking from the article, as mentioned in the article:
+// They are used to get "different fBM values by using one single fbm() implementation", and
+// don't have any special meaning.
+void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel, float warpAmplitude)
 {
     // First warping
-    float qx = 4 * fbm.sample(fx, fy);
-    float qy = 4 * fbm.sample(fx + 5.2f, fy + 1.3f);
+    float qx = warpAmplitude * fbm.sample(fx, fy);
+    float qy = warpAmplitude * fbm.sample(fx + 5.2f, fy + 1.3f);
 
     if (warpLevel == 1) {
         fx += qx;
@@ -37,8 +40,8 @@ void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel)
     }
     else if (warpLevel == 2) {
         // Second warping
-        float rx = 4 * fbm.sample(qx + 1.7f, qy + 9.2f);
-        float ry = 4 * fbm.sample(qx + 8.3f, qy + 2.8f);
+        float rx = warpAmplitude * fbm.sample(qx + 1.7f, qy + 9.2f);
+        float ry = warpAmplitude * fbm.sample(qx + 8.3f, qy + 2.8f);
 
         fx += rx;
         fy += ry;

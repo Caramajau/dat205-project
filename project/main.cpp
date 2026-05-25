@@ -507,7 +507,7 @@ void gui()
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
 	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 
-	ImGui::Text("fBm options");
+	ImGui::Text("fBM options");
 	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
 	ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
 	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 10.0f);
@@ -526,6 +526,7 @@ void gui()
 
 	ImGui::Text("Domain warping options");
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
+	ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
 
 	ImGui::Text("Lighting options");
 	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
