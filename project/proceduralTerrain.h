@@ -51,6 +51,8 @@ private:
 	glm::vec3 sunDirection;
 
 	float textureZoom;
+	float grassThreshold;
+	float rockThreshold;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int height) const;

@@ -17,6 +17,8 @@ uniform bool useNeighbours;
 uniform vec3 sunDirection;
 
 uniform float textureZoom;
+uniform float grassThreshold;
+uniform float rockThreshold;
 uniform float triplanarBlendFactor;
 
 in vec2 texCoord;
@@ -107,7 +109,7 @@ void main()
     // Texture from https://ambientcg.com/a/Ground067
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
 
-    float rockBlend = smoothstep(0.2, 0.4, slope);
+    float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
 
     vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);

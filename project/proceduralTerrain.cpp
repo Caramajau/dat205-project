@@ -42,6 +42,8 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
 	textureZoom = config.textureZoom;
+	grassThreshold = config.grassThreshold;
+	rockThreshold = config.rockThreshold;
 	triplanarBlendFactor = config.triplanarBlendFactor;
 
 	glGenTextures(1, &perlinTexture);
@@ -155,6 +157,8 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glUniform4f(glGetUniformLocation(terrainShader, "waterPlane"), 
 		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
 	labhelper::setUniformSlow(terrainShader, "textureZoom", textureZoom);
+	labhelper::setUniformSlow(terrainShader, "grassThreshold", grassThreshold);
+	labhelper::setUniformSlow(terrainShader, "rockThreshold", rockThreshold);
 	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", triplanarBlendFactor);
 
 	glBindVertexArray(terrainVertexArrayObject);

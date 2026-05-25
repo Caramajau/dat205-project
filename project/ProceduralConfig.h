@@ -30,6 +30,8 @@ struct ProceduralConfig {
 	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);
 
 	float textureZoom = 0.1f;
+	float grassThreshold = 0.2f;
+	float rockThreshold = 0.4f;
 	float triplanarBlendFactor = 4.0f;
 
 	// Water configs
