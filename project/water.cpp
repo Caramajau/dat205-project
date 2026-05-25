@@ -62,10 +62,10 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	blueTintFactor = config.waterBlueTintFactor;
 
 	float vertices[] = {
-		0.0f,			0.0f, 0.0f,			 0.0f, 0.0f,
-		terrainWidth,	0.0f, 0.0f,			 1.0f, 0.0f,
-		terrainWidth,	0.0f, terrainHeight, 1.0f, 1.0f,
-		0.0f,			0.0f, terrainHeight, 0.0f, 1.0f
+		0.0f,			0.0f, 0.0f,			 0.0f,			0.0f,
+		terrainWidth,	0.0f, 0.0f,			 terrainWidth,	0.0f,
+		terrainWidth,	0.0f, terrainHeight, terrainWidth,	terrainHeight,
+		0.0f,			0.0f, terrainHeight, 0.0f,			terrainHeight
 	};
 
 	unsigned int indices[] = {
