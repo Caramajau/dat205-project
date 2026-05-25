@@ -50,6 +50,11 @@ private:
 	bool useNeighbours = false;
 	glm::vec3 sunDirection;
 
+	float textureZoom;
+	float grassThreshold;
+	float rockThreshold;
+	float triplanarBlendFactor;
+
 	std::vector<float> createVertices(int width, int height) const;
 	std::vector<unsigned int> createIndices(int width, int height) const;
 };

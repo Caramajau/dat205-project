@@ -535,6 +535,12 @@ void gui()
 	ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
 	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
 
+	ImGui::Text("Texture options");
+	ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
+	ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
+	ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+	ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+
 	ImGui::Text("Water options");
 	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
 	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);

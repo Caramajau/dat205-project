@@ -13,12 +13,16 @@ uniform sampler2D rockTexture;
 uniform sampler2D grassNormalMap;
 uniform sampler2D rockNormalMap;
 
-in vec2 texCoord;
-
-in vec3 positionWithHeight;
-
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
+
+uniform float textureZoom;
+uniform float grassThreshold;
+uniform float rockThreshold;
+uniform float triplanarBlendFactor;
+
+in vec2 texCoord;
+in vec3 positionWithHeight;
 
 // Idea from https://www.youtube.com/shorts/gc7rT3sF1S8
 vec3 positionNormal(vec3 position)
@@ -90,16 +94,14 @@ void main()
 
     vec3 absNormal = abs(terrainNormal);
     // Higher values give sharper transitions
-    vec3 blendWeights = pow(absNormal, vec3(3.0));
+    vec3 blendWeights = pow(absNormal, vec3(triplanarBlendFactor));
     // normalize the sum to 1 (not the actual vector).
     // Using dot products works as an optimisation
     blendWeights /= dot(blendWeights, vec3(1.0));
 
-    // 0.1 felt like a good "zoom".
-    float scale = 0.1;
-    vec2 uvX = positionWithHeight.zy * scale;
-    vec2 uvY = positionWithHeight.xz * scale;
-    vec2 uvZ = positionWithHeight.xy * scale;
+    vec2 uvX = positionWithHeight.zy * textureZoom;
+    vec2 uvY = positionWithHeight.xz * textureZoom;
+    vec2 uvZ = positionWithHeight.xy * textureZoom;
 
     // Texture from https://ambientcg.com/a/Grass005
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
@@ -107,7 +109,7 @@ void main()
     // Texture from https://ambientcg.com/a/Ground067
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
 
-    float rockBlend = smoothstep(0.2, 0.4, slope);
+    float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
 
     vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);
