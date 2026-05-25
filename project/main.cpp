@@ -536,7 +536,7 @@ void gui()
 
 	ImGui::Text("Water options");
 	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
-	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 1.0f, 16.0f);
+	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
 	ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
 	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
 	ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
