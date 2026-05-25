@@ -8,4 +8,4 @@
 
 std::vector<float> createHeightMap(const ProceduralConfig& config);
 
-void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel);
+void domainWarp(const FbmNoise& fbm, float& fx, float& fy, int warpLevel, float warpAmplitude);

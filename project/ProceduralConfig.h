@@ -22,6 +22,7 @@ struct ProceduralConfig {
 	float erosionStrength = 1.0f;
 
 	int warpLevel = 2;
+	float warpAmplitude = 4.0f;
 
 	// Configs used only by terrain and not display
 	float heightScale = 100.0f;

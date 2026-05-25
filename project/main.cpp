@@ -526,6 +526,7 @@ void gui()
 
 	ImGui::Text("Domain warping options");
 	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
+	ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
 
 	ImGui::Text("Lighting options");
 	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
