@@ -16,6 +16,7 @@ uniform sampler2D rockNormalMap;
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
 
+uniform float textureZoom;
 uniform float triplanarBlendFactor;
 
 in vec2 texCoord;
@@ -96,12 +97,9 @@ void main()
     // Using dot products works as an optimisation
     blendWeights /= dot(blendWeights, vec3(1.0));
 
-    // TODO: Customise?
-    // 0.1 felt like a good "zoom".
-    float scale = 0.1;
-    vec2 uvX = positionWithHeight.zy * scale;
-    vec2 uvY = positionWithHeight.xz * scale;
-    vec2 uvZ = positionWithHeight.xy * scale;
+    vec2 uvX = positionWithHeight.zy * textureZoom;
+    vec2 uvY = positionWithHeight.xz * textureZoom;
+    vec2 uvZ = positionWithHeight.xy * textureZoom;
 
     // Texture from https://ambientcg.com/a/Grass005
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);

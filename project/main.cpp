@@ -536,6 +536,7 @@ void gui()
 	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
 
 	ImGui::Text("Texture options");
+	ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
 	ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 
 	ImGui::Text("Water options");

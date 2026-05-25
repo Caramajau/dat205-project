@@ -50,6 +50,7 @@ private:
 	bool useNeighbours = false;
 	glm::vec3 sunDirection;
 
+	float textureZoom;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int height) const;
