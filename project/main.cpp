@@ -507,7 +507,7 @@ void gui()
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
 	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 
-	ImGui::Text("fBm options");
+	ImGui::Text("fBM options");
 	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
 	ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
 	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 10.0f);
