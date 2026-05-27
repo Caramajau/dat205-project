@@ -166,5 +166,7 @@ float Water::getHeight() const {
 
 void Water::setHeight(float newHeight) {
 	height = newHeight;
+	// NOTE: If world up is changed from 0, 1, 0 this should match.
+	// (probably won't in this project)
 	waterModelMatrix = translate(height * glm::vec3(0.0f, 1.0f, 0.0f));
 }

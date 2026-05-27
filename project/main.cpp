@@ -479,7 +479,7 @@ bool handleEvents(void)
 			cameraPosition.z, 
 			proceduralTerrain.getHeightMapGrid(), 
 			config.width
-		) * config.heightScale + proceduralTerrain.yOffset + terrainOffset;
+		) * config.heightScale + proceduralTerrain.getLevel() + terrainOffset;
 	}
 
 	if (state[SDL_SCANCODE_Z]) {
@@ -503,6 +503,7 @@ void gui()
 	ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
 	ImGui::Text("Terrain size options");
+	ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
 	ImGui::SliderInt("Width", &config.width, 2, 1000);
 	ImGui::SliderInt("Height", &config.height, 2, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
@@ -574,7 +575,7 @@ void gui()
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
-		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.yOffset + terrainOffset, 0);
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.getLevel() + terrainOffset, 0);
 		cameraSpeed = 10.0f;
 	}
 

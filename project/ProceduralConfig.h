@@ -25,6 +25,7 @@ struct ProceduralConfig {
 	float warpAmplitude = 4.0f;
 
 	// Configs used only by terrain and not display
+	float terrainLevel = -100.0f;
 	float heightScale = 100.0f;
 	bool useNeighbours = true;
 	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);

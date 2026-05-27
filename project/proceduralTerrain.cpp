@@ -38,6 +38,7 @@ void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightMapGrid = createHeightMap(config);
+	setLevel(config.terrainLevel);
 	heightScale = config.heightScale;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
@@ -165,3 +166,13 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
+
+float ProceduralTerrain::getLevel() const {
+	return terrainLevel;
+}
+
+void ProceduralTerrain::setLevel(float newLevel) {
+	terrainLevel = newLevel;
+	terrainModelMatrix = translate(terrainLevel * glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
