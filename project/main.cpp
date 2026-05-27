@@ -469,6 +469,7 @@ bool handleEvents(void)
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
 	}
 
+	// Account for the terrain being [0, width) and [0, height)
 	if (hasEntered
 		&& 0 <= cameraPosition.x && cameraPosition.x < config.width - 1
 		&& 0 <= cameraPosition.z && cameraPosition.z < config.height - 1) {

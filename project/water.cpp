@@ -32,8 +32,9 @@ void Water::loadTexture(GLuint& texture, const char* filepath) const {
 }
 
 void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
-	int terrainWidth = config.width;
-	int terrainHeight = config.height;
+	// Account for the terrain being [0, width) and [0, height)
+	int terrainWidth = config.width - 1;
+	int terrainHeight = config.height - 1;
 
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
