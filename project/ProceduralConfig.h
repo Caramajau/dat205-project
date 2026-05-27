@@ -8,7 +8,7 @@ struct ProceduralConfig {
 	int seed = 0;
 
 	int width = 256;
-	int height = 256;
+	int length = 256;
 	int gridSize = 256;
 
 	int octaveCount = 8;

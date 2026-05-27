@@ -469,10 +469,10 @@ bool handleEvents(void)
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
 	}
 
-	// Account for the terrain being [0, width) and [0, height)
+	// Account for the terrain being [0, width) and [0, length)
 	if (hasEntered
 		&& 0 <= cameraPosition.x && cameraPosition.x < config.width - 1
-		&& 0 <= cameraPosition.z && cameraPosition.z < config.height - 1) {
+		&& 0 <= cameraPosition.z && cameraPosition.z < config.length - 1) {
 		
 		cameraPosition.y = getTerrainHeight(
 			cameraPosition.x, 
@@ -505,7 +505,7 @@ void gui()
 	ImGui::Text("Terrain size options");
 	ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
 	ImGui::SliderInt("Width", &config.width, 2, 1000);
-	ImGui::SliderInt("Height", &config.height, 2, 1000);
+	ImGui::SliderInt("Length", &config.length, 2, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
 	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 

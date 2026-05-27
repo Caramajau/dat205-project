@@ -32,9 +32,9 @@ void Water::loadTexture(GLuint& texture, const char* filepath) const {
 }
 
 void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
-	// Account for the terrain being [0, width) and [0, height)
+	// Account for the terrain being [0, width) and [0, length)
 	int terrainWidth = config.width - 1;
-	int terrainHeight = config.height - 1;
+	int terrainLength = config.length - 1;
 
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
@@ -65,8 +65,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f,			0.0f,
 		terrainWidth,	0.0f, 0.0f,			 terrainWidth,	0.0f,
-		terrainWidth,	0.0f, terrainHeight, terrainWidth,	terrainHeight,
-		0.0f,			0.0f, terrainHeight, 0.0f,			terrainHeight
+		terrainWidth,	0.0f, terrainLength, terrainWidth,	terrainLength,
+		0.0f,			0.0f, terrainLength, 0.0f,			terrainLength
 	};
 
 	unsigned int indices[] = {

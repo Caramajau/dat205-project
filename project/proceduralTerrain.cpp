@@ -49,16 +49,16 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.height, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.length, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	std::vector<float> vertices = createVertices(config.width, config.height);
+	std::vector<float> vertices = createVertices(config.width, config.length);
 
-	std::vector<unsigned int> indices = createIndices(config.width, config.height);
+	std::vector<unsigned int> indices = createIndices(config.width, config.length);
 
 	triangleCount = indices.size();
 
@@ -82,13 +82,13 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	glBindVertexArray(0);
 }
 
-std::vector<float> ProceduralTerrain::createVertices(int width, int height) const {
+std::vector<float> ProceduralTerrain::createVertices(int width, int length) const {
 	std::vector<float> vertices;
 
-	for (int z = 0; z < height; z++) {
+	for (int z = 0; z < length; z++) {
 		for (int x = 0; x < width; x++) {
 			float fx = (float)x / width;
-			float fz = (float)z / height;
+			float fz = (float)z / length;
 
 			// The terrain starts flat at y = 0
 			vertices.push_back(x);
@@ -102,11 +102,11 @@ std::vector<float> ProceduralTerrain::createVertices(int width, int height) cons
 	return vertices;
 }
 
-std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int height) const {
+std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length) const {
 	std::vector<unsigned int> indices;
 
 	// Then there should be two triangles per quad.
-	for (int z = 0; z < height - 1; z++) {
+	for (int z = 0; z < length - 1; z++) {
 		for (int x = 0; x < width - 1; x++) {
 			unsigned int topLeft = x + z * width;
 			unsigned int topRight = (x + 1) + z * width;
