@@ -33,7 +33,8 @@ struct ProceduralConfig {
 	float textureZoom = 0.1f;
 	float grassThreshold = 0.2f;
 	float rockThreshold = 0.4f;
-	float sandThreshold = 0.5f;
+	float sandThreshold = 1.0f;
+	float sandLevelOffset = 0.5f;
 	float triplanarBlendFactor = 4.0f;
 
 	// Water configs

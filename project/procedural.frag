@@ -9,6 +9,7 @@ uniform float heightScale;
 uniform sampler2D heightMap;
 
 uniform float waterLevel;
+uniform float sandLevelOffset;
 
 uniform sampler2D grassTexture;
 uniform sampler2D grassNormalMap;
@@ -112,12 +113,14 @@ void main()
     vec2 uvY = positionWithHeight.xz * textureZoom;
     vec2 uvZ = positionWithHeight.xy * textureZoom;
 
-
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
     vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
 
-    float sandBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandThreshold, positionWithHeight.y);
+    float heightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
+    float slopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float sandBlend = heightBlend * slopeFactor;
+
     float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
     colour = mix(colour, sand, sandBlend);
