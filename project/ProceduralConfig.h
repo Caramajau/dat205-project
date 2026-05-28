@@ -8,7 +8,7 @@ struct ProceduralConfig {
 	int seed = 0;
 
 	int width = 256;
-	int height = 256;
+	int length = 256;
 	int gridSize = 256;
 
 	int octaveCount = 8;
@@ -25,6 +25,7 @@ struct ProceduralConfig {
 	float warpAmplitude = 4.0f;
 
 	// Configs used only by terrain and not display
+	float terrainLevel = -100.0f;
 	float heightScale = 100.0f;
 	bool useNeighbours = true;
 	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);
@@ -35,7 +36,7 @@ struct ProceduralConfig {
 	float triplanarBlendFactor = 4.0f;
 
 	// Water configs
-	float waterHeight = -58.0f;
+	float waterLevel = -58.0f;
 	float waterTiling = 0.04f;
 
 	float waterWaveSpeed = 0.03f;

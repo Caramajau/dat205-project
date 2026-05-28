@@ -9,35 +9,15 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 		terrainShader = shader;
 	}
 
-	loadTerrainTexture(grassTexture, "../scenes/textures/grass.jpg");
-	loadTerrainTexture(rockTexture, "../scenes/textures/rock.jpg");
-	loadTerrainTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
-	loadTerrainTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
-}
-
-void ProceduralTerrain::loadTerrainTexture(GLuint& texture, const char* filepath) const {
-	int w;
-	int h;
-	int comp;
-	unsigned char* image = stbi_load(filepath, &w, &h, &comp, STBI_rgb_alpha);
-
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	stbi_image_free(image);
+	loadTexture(grassTexture, "../scenes/textures/grass.jpg");
+	loadTexture(rockTexture, "../scenes/textures/rock.jpg");
+	loadTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
+	loadTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightMapGrid = createHeightMap(config);
+	setLevel(config.terrainLevel);
 	heightScale = config.heightScale;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
@@ -48,16 +28,16 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.height, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.length, 0, GL_RED, GL_FLOAT, heightMapGrid.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	std::vector<float> vertices = createVertices(config.width, config.height);
+	std::vector<float> vertices = createVertices(config.width, config.length);
 
-	std::vector<unsigned int> indices = createIndices(config.width, config.height);
+	std::vector<unsigned int> indices = createIndices(config.width, config.length);
 
 	triangleCount = indices.size();
 
@@ -81,13 +61,13 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	glBindVertexArray(0);
 }
 
-std::vector<float> ProceduralTerrain::createVertices(int width, int height) const {
+std::vector<float> ProceduralTerrain::createVertices(int width, int length) const {
 	std::vector<float> vertices;
 
-	for (int z = 0; z < height; z++) {
+	for (int z = 0; z < length; z++) {
 		for (int x = 0; x < width; x++) {
 			float fx = (float)x / width;
-			float fz = (float)z / height;
+			float fz = (float)z / length;
 
 			// The terrain starts flat at y = 0
 			vertices.push_back(x);
@@ -101,11 +81,11 @@ std::vector<float> ProceduralTerrain::createVertices(int width, int height) cons
 	return vertices;
 }
 
-std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int height) const {
+std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length) const {
 	std::vector<unsigned int> indices;
 
 	// Then there should be two triangles per quad.
-	for (int z = 0; z < height - 1; z++) {
+	for (int z = 0; z < length - 1; z++) {
 		for (int x = 0; x < width - 1; x++) {
 			unsigned int topLeft = x + z * width;
 			unsigned int topRight = (x + 1) + z * width;
@@ -165,3 +145,13 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
+
+float ProceduralTerrain::getLevel() const {
+	return terrainLevel;
+}
+
+void ProceduralTerrain::setLevel(float newLevel) {
+	terrainLevel = newLevel;
+	terrainModelMatrix = translate(terrainLevel * glm::vec3(0.0f, 1.0f, 0.0f));
+}
+

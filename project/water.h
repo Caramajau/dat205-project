@@ -5,7 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
 #include "waterFrameBuffers.h"
-#include <stb_image.h>
+#include "textureUtils.h"
 
 class Water {
 public:
@@ -17,7 +17,7 @@ public:
 	void setHeight(float newHeight);
 
 private:
-	float height;
+	float level;
 	glm::mat4 waterModelMatrix;
 
 	GLuint waterShader = 0;
@@ -54,6 +54,4 @@ private:
 	float blueTintFactor;
 
 	glm::vec3 sunDirection;
-
-	void loadTexture(GLuint& texture, const char* filepath) const;
 };

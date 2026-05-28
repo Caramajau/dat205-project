@@ -1,7 +1,7 @@
 #include "height.h"
 
 std::vector<float> createHeightMap(const ProceduralConfig& config) {
-    std::vector<float> grid(config.width * config.height);
+    std::vector<float> grid(config.width * config.length);
 
     InterpolateFunc interpolate = convertTypeToMethodInterpolationType(config.interpolationType);
     InterpolateFunc interpolateDerivative = convertTypeToMethodDerivativeType(config.interpolationType);
@@ -9,7 +9,7 @@ std::vector<float> createHeightMap(const ProceduralConfig& config) {
 
     auto fbm = FbmNoise(config.seed, config.octaveCount, config.lacunarity, config.persistence, interpolate, interpolateDerivative, config.useIncorrectBlending, erosion, config.erosionStrength);
 
-    for (int y = 0; y < config.height; y++) {
+    for (int y = 0; y < config.length; y++) {
         for (int x = 0; x < config.width; x++) {
             float fx = (float)x / config.gridSize;
             float fy = (float)y / config.gridSize;

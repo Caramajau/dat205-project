@@ -248,8 +248,8 @@ void drawScene(GLuint currentShaderProgram,
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
 // and also have inverted pitch.
-mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterHeight) {
-	float distance = 2 * (cameraPosition.y - waterHeight);
+mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterLevel) {
+	float distance = 2 * (cameraPosition.y - waterLevel);
 	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
 	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
 	// NOTE: y is inverted in the shader
@@ -469,17 +469,17 @@ bool handleEvents(void)
 		cameraPosition += cameraSpeed * deltaTime * worldUp;
 	}
 
-	// Account for the terrain being [0, width) and [0, height)
+	// Account for the terrain being [0, width) and [0, length)
 	if (hasEntered
 		&& 0 <= cameraPosition.x && cameraPosition.x < config.width - 1
-		&& 0 <= cameraPosition.z && cameraPosition.z < config.height - 1) {
+		&& 0 <= cameraPosition.z && cameraPosition.z < config.length - 1) {
 		
 		cameraPosition.y = getTerrainHeight(
 			cameraPosition.x, 
 			cameraPosition.z, 
 			proceduralTerrain.getHeightMapGrid(), 
 			config.width
-		) * config.heightScale + proceduralTerrain.yOffset + terrainOffset;
+		) * config.heightScale + proceduralTerrain.getLevel() + terrainOffset;
 	}
 
 	if (state[SDL_SCANCODE_Z]) {
@@ -503,8 +503,9 @@ void gui()
 	ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
 	ImGui::Text("Terrain size options");
+	ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
 	ImGui::SliderInt("Width", &config.width, 2, 1000);
-	ImGui::SliderInt("Height", &config.height, 2, 1000);
+	ImGui::SliderInt("Length", &config.length, 2, 1000);
 	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
 	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 
@@ -543,7 +544,7 @@ void gui()
 	ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 
 	ImGui::Text("Water options");
-	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
+	ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
 	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
 	ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
 	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
@@ -574,7 +575,7 @@ void gui()
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
-		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.yOffset + terrainOffset, 0);
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.getLevel() + terrainOffset, 0);
 		cameraSpeed = 10.0f;
 	}
 

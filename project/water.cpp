@@ -10,31 +10,10 @@ void Water::loadShader(bool is_reload) {
 	loadTexture(normalMap, "../scenes/textures/waterNormal.png");
 }
 
-void Water::loadTexture(GLuint& texture, const char* filepath) const {
-	int w;
-	int h;
-	int comp;
-	unsigned char* image = stbi_load(filepath, &w, &h, &comp, STBI_rgb_alpha);
-
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	stbi_image_free(image);
-}
-
 void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs) {
-	// Account for the terrain being [0, width) and [0, height)
+	// Account for the terrain being [0, width) and [0, length)
 	int terrainWidth = config.width - 1;
-	int terrainHeight = config.height - 1;
+	int terrainLength = config.length - 1;
 
 	reflectionTexture = waterFBOs.getReflectionTexture();
 	refractionTexture = waterFBOs.getRefractionTexture();
@@ -42,7 +21,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 
 	sunDirection = config.sunDirection;
 
-	setHeight(config.waterHeight);
+	setHeight(config.waterLevel);
 
 	tiling = config.waterTiling;
 	waveSpeed = config.waterWaveSpeed;
@@ -65,8 +44,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f,			0.0f,
 		terrainWidth,	0.0f, 0.0f,			 terrainWidth,	0.0f,
-		terrainWidth,	0.0f, terrainHeight, terrainWidth,	terrainHeight,
-		0.0f,			0.0f, terrainHeight, 0.0f,			terrainHeight
+		terrainWidth,	0.0f, terrainLength, terrainWidth,	terrainLength,
+		0.0f,			0.0f, terrainLength, 0.0f,			terrainLength
 	};
 
 	unsigned int indices[] = {
@@ -161,10 +140,12 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 }
 
 float Water::getHeight() const {
-	return height;
+	return level;
 }
 
 void Water::setHeight(float newHeight) {
-	height = newHeight;
-	waterModelMatrix = translate(height * glm::vec3(0.0f, 1.0f, 0.0f));
+	level = newHeight;
+	// NOTE: If world up is changed from 0, 1, 0 this should match.
+	// (probably won't in this project)
+	waterModelMatrix = translate(level * glm::vec3(0.0f, 1.0f, 0.0f));
 }
