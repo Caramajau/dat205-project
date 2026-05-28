@@ -13,7 +13,7 @@ struct ProceduralConfig {
 
 	int octaveCount = 8;
 	float lacunarity = 2.0f;
-	float persistence = 2.0f;
+	float persistence = 0.5f;
 
 	InterpolationType interpolationType = InterpolationType::Quintic;
 	bool useIncorrectBlending = false;

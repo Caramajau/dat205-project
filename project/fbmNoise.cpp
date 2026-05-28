@@ -41,7 +41,11 @@ float FbmNoise::sample(float fx, float fy) const
         d.y += amplitude * dy;
 
         frequency *= lacunarity;
-        amplitude /= persistence;
+        // NOTE: Tutorial originally divided, but is more standard to multiply,
+        // since then it is more intuitive of how much of the amplitude is
+        // left for the following octaves.
+        // I.e. How much of the amplitude should persist.
+        amplitude *= persistence;
     }
 
     // "Contrast"

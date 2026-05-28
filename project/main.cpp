@@ -512,7 +512,7 @@ void gui()
 	ImGui::Text("fBM options");
 	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
 	ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
-	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 10.0f);
+	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	ImGui::Text("Interpolation options");
