@@ -43,7 +43,7 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     // I.e.: interpolate between the two previously interpolated values, now in y.
     float finalInterpolation = interpolate(sy);
     float finalBlending = useIncorrectBlending ?
-        incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation) : blending(topBlending, bottomBlending, finalInterpolation);
+        incorrectBlending(topBlending, bottomBlending, finalInterpolation) : blending(topBlending, bottomBlending, finalInterpolation);
 
     // Derivative of chosen interpolation
     float dx = interpolateDerivative(sx);
