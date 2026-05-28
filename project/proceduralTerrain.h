@@ -17,12 +17,11 @@ public:
 
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const;
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel) const;
 
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
 	float getLevel() const;
-	void setLevel(float newLevel);
 
 private:
 	float terrainLevel;
@@ -32,8 +31,12 @@ private:
 
 	GLuint grassTexture = 0;
 	GLuint grassNormalMap = 0;
+
 	GLuint rockTexture = 0;
 	GLuint rockNormalMap = 0;
+
+	GLuint sandTexture = 0;
+	GLuint sandNormalMap = 0;
 
 	GLuint terrainShader = 0;
 
@@ -52,8 +55,12 @@ private:
 	float textureZoom;
 	float grassThreshold;
 	float rockThreshold;
+	float sandThreshold;
+	float sandLevelOffset;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int length) const;
 	std::vector<unsigned int> createIndices(int width, int length) const;
+
+	void setLevel(float newLevel);
 };

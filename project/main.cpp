@@ -247,7 +247,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel());
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
@@ -326,7 +326,7 @@ void display(void)
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, water.getHeight());
+	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, water.getLevel());
 
 	// Render scene to reflection frame buffer
 	{
@@ -335,7 +335,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		auto waterPlane = glm::vec4(0, 1, 0, -water.getHeight() + waterOffset);
+		auto waterPlane = glm::vec4(0, 1, 0, -water.getLevel() + waterOffset);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
@@ -353,7 +353,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		auto waterPlane = glm::vec4(0, -1, 0, water.getHeight());
+		auto waterPlane = glm::vec4(0, -1, 0, water.getLevel());
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
@@ -553,6 +553,8 @@ void gui()
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Sand Level Offset", &config.sandLevelOffset, 0.0f, 5.0f);
 		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 	}
 

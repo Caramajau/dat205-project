@@ -8,17 +8,27 @@ layout(location = 0) out vec4 fragmentColor;
 uniform float heightScale;
 uniform sampler2D heightMap;
 
+uniform float waterLevel;
+uniform float sandLevelOffset;
+
 uniform sampler2D grassTexture;
-uniform sampler2D rockTexture;
 uniform sampler2D grassNormalMap;
+
+uniform sampler2D rockTexture;
 uniform sampler2D rockNormalMap;
+
+uniform sampler2D sandTexture;
+uniform sampler2D sandNormalMap;
 
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
 
 uniform float textureZoom;
+
 uniform float grassThreshold;
 uniform float rockThreshold;
+uniform float sandThreshold;
+
 uniform float triplanarBlendFactor;
 
 in vec2 texCoord;
@@ -103,20 +113,25 @@ void main()
     vec2 uvY = positionWithHeight.xz * textureZoom;
     vec2 uvZ = positionWithHeight.xy * textureZoom;
 
-    // Texture from https://ambientcg.com/a/Grass005
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
-
-    // Texture from https://ambientcg.com/a/Ground067
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
+    vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
+
+    float heightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
+    float slopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float sandBlend = heightBlend * slopeFactor;
 
     float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
+    colour = mix(colour, sand, sandBlend);
 
     vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);
     vec3 rockNormal  = triplanarNormal(rockNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
+    vec3 sandNormal  = triplanarNormal(sandNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
 
     // Make sure they are blended like the colour textures.
     vec3 finalNormal = normalize(mix(grassNormal, rockNormal, rockBlend));
+    finalNormal = normalize(mix(finalNormal, sandNormal, sandBlend));
 
     // Simple shading with some ambient and mostly diffuse
     float diffuse = max(dot(finalNormal, normalize(sunDirection)), 0.0);
