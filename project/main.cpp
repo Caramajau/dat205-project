@@ -499,65 +499,73 @@ void gui()
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
 
-	// Slider int seems to only support half the range (still gives many seed options anyways)
-	ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
+	if (ImGui::CollapsingHeader("General Terrain Options")) {
+		// Slider int seems to only support half the range (still gives many seed options anyways)
+		ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
-	ImGui::Text("Terrain size options");
-	ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
-	ImGui::SliderInt("Width", &config.width, 2, 1000);
-	ImGui::SliderInt("Length", &config.length, 2, 1000);
-	ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
-	ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
+		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
+		ImGui::SliderInt("Width", &config.width, 2, 1000);
+		ImGui::SliderInt("Length", &config.length, 2, 1000);
+		ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
+		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
+	}
 
-	ImGui::Text("fBM options");
-	ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
-	ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
-	ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
+	if (ImGui::CollapsingHeader("fBM Options")) {
+		ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
+		ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
+		ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
+	}
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
-	ImGui::Text("Interpolation options");
-	ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
-	ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
-	ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
-	ImGui::Checkbox("Use incorrect blending?", &config.useIncorrectBlending);
+	if (ImGui::CollapsingHeader("Interpolation Options")) {
+		ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
+		ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
+		ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
+		ImGui::Checkbox("Use incorrect blending?", &config.useIncorrectBlending);
+	}
 
-	ImGui::Text("Erosion options");
-	ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
-	ImGui::RadioButton("Rational", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Rational));
-	ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Exponential));
+	if (ImGui::CollapsingHeader("Erosion Options")) {
+		ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
+		ImGui::RadioButton("Rational", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Rational));
+		ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Exponential));
+	}
 
-	ImGui::Text("Domain warping options");
-	ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
-	ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
+	if (ImGui::CollapsingHeader("Domain Warping Options")) {
+		ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
+		ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
+	}
 
-	ImGui::Text("Lighting options");
-	ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
+	if (ImGui::CollapsingHeader("Lighting Options")) {
+		ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
 
-	ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
-	ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
-	ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+		ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
+		ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+	}
 
-	ImGui::Text("Texture options");
-	ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
-	ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
-	ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
-	ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+	if (ImGui::CollapsingHeader("Texture Options")) {
+		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
+		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+	}
 
-	ImGui::Text("Water options");
-	ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
-	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
-	ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
-	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
-	ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
-	ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
-	ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
-	ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
-	ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
-	ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
-	ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
-	ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
-	ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
-	ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
+	if (ImGui::CollapsingHeader("Water Options")) {
+		ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
+		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
+		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
+		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
+		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
+		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
+		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+		ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
+		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
+	}
 
 	if (ImGui::Button("Reload texture")) {
 		perlinDisplay.setGpuData(config);
