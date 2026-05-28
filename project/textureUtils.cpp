@@ -6,6 +6,12 @@ void loadTexture(GLuint& texture, const char* filepath) {
 	int comp;
 	unsigned char* image = stbi_load(filepath, &w, &h, &comp, STBI_rgb_alpha);
 
+	if (image != nullptr) {
+		std::cout << "Loaded image: " << filepath << "\n";
+	} else {
+		std::cout << "Failed to load image: " << filepath << "\n";
+	}
+
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
