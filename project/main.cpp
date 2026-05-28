@@ -248,8 +248,8 @@ void drawScene(GLuint currentShaderProgram,
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
 // and also have inverted pitch.
-mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterHeight) {
-	float distance = 2 * (cameraPosition.y - waterHeight);
+mat4 getReflectionViewMatrix(const vec3& cameraPosition, const vec3& cameraDirection, float waterLevel) {
+	float distance = 2 * (cameraPosition.y - waterLevel);
 	auto reflectionCameraPosition = vec3(cameraPosition.x, cameraPosition.y - distance, cameraPosition.z);
 	auto invertedPitchCameraDirection = vec3(cameraDirection.x, -cameraDirection.y, cameraDirection.z);
 	// NOTE: y is inverted in the shader
@@ -544,7 +544,7 @@ void gui()
 	ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 
 	ImGui::Text("Water options");
-	ImGui::SliderFloat("Water Height", &config.waterHeight, -100.0f, 10.0f);
+	ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
 	ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
 	ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
 	ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);

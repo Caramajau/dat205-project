@@ -17,7 +17,7 @@ public:
 	void setHeight(float newHeight);
 
 private:
-	float height;
+	float level;
 	glm::mat4 waterModelMatrix;
 
 	GLuint waterShader = 0;

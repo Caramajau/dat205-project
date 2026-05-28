@@ -36,7 +36,7 @@ struct ProceduralConfig {
 	float triplanarBlendFactor = 4.0f;
 
 	// Water configs
-	float waterHeight = -58.0f;
+	float waterLevel = -58.0f;
 	float waterTiling = 0.04f;
 
 	float waterWaveSpeed = 0.03f;
