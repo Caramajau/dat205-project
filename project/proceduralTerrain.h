@@ -5,10 +5,10 @@
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include <labhelper.h>
-#include <stb_image.h>
 #include "height.h"
 #include "interpolations.h"
 #include "ProceduralConfig.h"
+#include "textureUtils.h"
 
 class ProceduralTerrain {
 public:
@@ -16,7 +16,6 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
-	void loadTerrainTexture(GLuint& texture, const char* filepath) const;
 	void setGpuData(const ProceduralConfig& config);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const;
 
