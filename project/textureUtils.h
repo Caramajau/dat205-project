@@ -4,4 +4,4 @@
 #include <stb_image.h>
 #include <iostream>
 
-void loadTexture(GLuint& texture, const char* filepath);
+void loadTexture(GLuint& texture, const char* filepath, float anisotropyLevel = 16.0f);
