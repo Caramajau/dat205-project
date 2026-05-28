@@ -104,6 +104,9 @@ WaterFrameBuffers waterFBOs;
 // NOTE: If the offset is too high, it can cause things that shouldn't be to not reflected to show.
 float waterOffset = 1.0f;
 
+bool displayWaterDebug = true;
+GLuint activeWaterDebugTexture;
+
 void loadShaders(bool is_reload)
 {
 	GLuint shader = labhelper::loadShaderProgram("../project/simple.vert", "../project/simple.frag", is_reload);
@@ -163,7 +166,8 @@ void initialize()
 
 	waterFBOs.initialise();
 	water.setGpuData(config, waterFBOs);
-	waterFBOs.setGpuData(waterFBOs.getReflectionTexture());
+	activeWaterDebugTexture = waterFBOs.getReflectionTexture();
+	waterFBOs.setGpuData(activeWaterDebugTexture);
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
 	glEnable(GL_CULL_FACE);  // enables backface culling
@@ -357,7 +361,9 @@ void display(void)
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
 	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far);
-	waterFBOs.submitToGpu();
+	if (displayWaterDebug) {
+		waterFBOs.submitToGpu();
+	}
 }
 
 // Get terrain height for the camera, does interpolation similar to how it was done for the perlin noise.
@@ -561,7 +567,7 @@ void gui()
 		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
 		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
 		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
-		ImGui::SliderFloat("normalFlattenFactor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
 		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
@@ -585,6 +591,19 @@ void gui()
 		hasEntered = true;
 		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.getLevel() + terrainOffset, 0);
 		cameraSpeed = 10.0f;
+	}
+
+	ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
+
+	if (displayWaterDebug) {
+		bool shouldDebugDisplayUpdate = 
+			ImGui::RadioButton("Reflection Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getReflectionTexture()))
+			|| ImGui::RadioButton("Refraction Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionTexture()))
+			|| ImGui::RadioButton("Refraction Depth Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionDepthTexture()));
+
+		if (shouldDebugDisplayUpdate) {
+			waterFBOs.setGpuData(activeWaterDebugTexture);
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
