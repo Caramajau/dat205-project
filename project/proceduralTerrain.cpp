@@ -18,7 +18,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	loadTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
 
 	// Texture from https://ambientcg.com/a/Ground033
-	loadTexture(sandtexture, "../scenes/textures/sand.jpg");
+	loadTexture(sandTexture, "../scenes/textures/sand.jpg");
 	loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
 }
 
@@ -139,7 +139,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glUniform1i(glGetUniformLocation(terrainShader, "rockNormalMap"), 12);
 
 	glActiveTexture(GL_TEXTURE19);
-	glBindTexture(GL_TEXTURE_2D, sandtexture);
+	glBindTexture(GL_TEXTURE_2D, sandTexture);
 	glUniform1i(glGetUniformLocation(terrainShader, "sandTexture"), 19);
 
 	glActiveTexture(GL_TEXTURE20);

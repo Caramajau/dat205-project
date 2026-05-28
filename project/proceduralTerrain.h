@@ -35,7 +35,7 @@ private:
 	GLuint rockTexture = 0;
 	GLuint rockNormalMap = 0;
 
-	GLuint sandtexture = 0;
+	GLuint sandTexture = 0;
 	GLuint sandNormalMap = 0;
 
 	GLuint terrainShader = 0;
