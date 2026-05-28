@@ -21,7 +21,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 
 	sunDirection = config.sunDirection;
 
-	setHeight(config.waterLevel);
+	setLevel(config.waterLevel);
 
 	tiling = config.waterTiling;
 	waveSpeed = config.waterWaveSpeed;
@@ -139,13 +139,12 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(0);
 }
 
-// TODO: change to level
-float Water::getHeight() const {
+float Water::getLevel() const {
 	return level;
 }
 
-void Water::setHeight(float newHeight) {
-	level = newHeight;
+void Water::setLevel(float newLevel) {
+	level = newLevel;
 	// NOTE: If world up is changed from 0, 1, 0 this should match.
 	// (probably won't in this project)
 	waterModelMatrix = translate(level * glm::vec3(0.0f, 1.0f, 0.0f));

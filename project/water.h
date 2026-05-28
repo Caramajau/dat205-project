@@ -13,8 +13,8 @@ public:
 	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far);
 	
-	float getHeight() const;
-	void setHeight(float newHeight);
+	float getLevel() const;
+	void setLevel(float newHeight);
 
 private:
 	float level;
