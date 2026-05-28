@@ -22,7 +22,6 @@ public:
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
 	float getLevel() const;
-	void setLevel(float newLevel);
 
 private:
 	float terrainLevel;
@@ -62,4 +61,6 @@ private:
 
 	std::vector<float> createVertices(int width, int length) const;
 	std::vector<unsigned int> createIndices(int width, int length) const;
+
+	void setLevel(float newLevel);
 };

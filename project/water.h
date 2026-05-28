@@ -14,7 +14,6 @@ public:
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far);
 	
 	float getLevel() const;
-	void setLevel(float newHeight);
 
 private:
 	float level;
@@ -54,4 +53,6 @@ private:
 	float blueTintFactor;
 
 	glm::vec3 sunDirection;
+
+	void setLevel(float newHeight);
 };
