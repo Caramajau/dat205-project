@@ -20,6 +20,10 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	// Texture from https://ambientcg.com/a/Ground033
 	loadTexture(sandTexture, "../scenes/textures/sand.jpg");
 	loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
+
+	// Texture from https://ambientcg.com/a/Snow010A
+	loadTexture(snowTexture, "../scenes/textures/snow.jpg");
+	loadTexture(snowNormalMap, "../scenes/textures/snowNormal.jpg");
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
@@ -145,6 +149,14 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_2D, sandNormalMap);
 	glUniform1i(glGetUniformLocation(terrainShader, "sandNormalMap"), 20);
+
+	glActiveTexture(GL_TEXTURE21);
+	glBindTexture(GL_TEXTURE_2D, snowTexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "snowTexture"), 21);
+
+	glActiveTexture(GL_TEXTURE22);
+	glBindTexture(GL_TEXTURE_2D, snowNormalMap);
+	glUniform1i(glGetUniformLocation(terrainShader, "snowNormalMap"), 22);
 
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);

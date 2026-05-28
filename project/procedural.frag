@@ -20,6 +20,9 @@ uniform sampler2D rockNormalMap;
 uniform sampler2D sandTexture;
 uniform sampler2D sandNormalMap;
 
+uniform sampler2D snowTexture;
+uniform sampler2D snowNormalMap;
+
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
 
@@ -116,21 +119,32 @@ void main()
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
     vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
+    vec3 snow = triplanarTexture(snowTexture, uvX, uvY, uvZ, blendWeights);
 
+    // TODO: make dependent on water level (in a relative way)
+    // TODO: customise
+    float snowHeightBlend = smoothstep(70.0, 70.0 + 5.0, positionWithHeight.y);
+    float snowSlopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float snowBlend = snowHeightBlend * snowSlopeFactor;
+
+    // TODO: update name
     float heightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
     float slopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
     float sandBlend = heightBlend * slopeFactor;
 
     float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
+    colour = mix(colour, snow, snowBlend);
     colour = mix(colour, sand, sandBlend);
 
     vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);
     vec3 rockNormal  = triplanarNormal(rockNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
     vec3 sandNormal  = triplanarNormal(sandNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
+    vec3 snowNormal  = triplanarNormal(snowNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
 
     // Make sure they are blended like the colour textures.
     vec3 finalNormal = normalize(mix(grassNormal, rockNormal, rockBlend));
+    finalNormal = normalize(mix(finalNormal, snowNormal, snowBlend));
     finalNormal = normalize(mix(finalNormal, sandNormal, sandBlend));
 
     // Simple shading with some ambient and mostly diffuse
