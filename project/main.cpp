@@ -247,7 +247,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getHeight());
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,

@@ -9,10 +9,17 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 		terrainShader = shader;
 	}
 
+	// Texture from https://ambientcg.com/a/Grass005
 	loadTexture(grassTexture, "../scenes/textures/grass.jpg");
-	loadTexture(rockTexture, "../scenes/textures/rock.jpg");
 	loadTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
+
+	// Texture from https://ambientcg.com/a/Ground067
+	loadTexture(rockTexture, "../scenes/textures/rock.jpg");
 	loadTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
+
+	// Texture from https://ambientcg.com/a/Ground033
+	loadTexture(sandtexture, "../scenes/textures/sand.jpg");
+	loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
@@ -107,7 +114,7 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length
 	return indices;
 }
 
-void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const {
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel) const {
 	glUseProgram(terrainShader);
 	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -117,17 +124,25 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glBindTexture(GL_TEXTURE_2D, grassTexture);
 	glUniform1i(glGetUniformLocation(terrainShader, "grassTexture"), 9);
 
-	glActiveTexture(GL_TEXTURE10);
-	glBindTexture(GL_TEXTURE_2D, rockTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "rockTexture"), 10);
-
 	glActiveTexture(GL_TEXTURE11);
 	glBindTexture(GL_TEXTURE_2D, grassNormalMap);
 	glUniform1i(glGetUniformLocation(terrainShader, "grassNormalMap"), 11);
 
+	glActiveTexture(GL_TEXTURE10);
+	glBindTexture(GL_TEXTURE_2D, rockTexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "rockTexture"), 10);
+
 	glActiveTexture(GL_TEXTURE12);
 	glBindTexture(GL_TEXTURE_2D, rockNormalMap);
 	glUniform1i(glGetUniformLocation(terrainShader, "rockNormalMap"), 12);
+
+	glActiveTexture(GL_TEXTURE19);
+	glBindTexture(GL_TEXTURE_2D, sandtexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "sandTexture"), 19);
+
+	glActiveTexture(GL_TEXTURE20);
+	glBindTexture(GL_TEXTURE_2D, sandNormalMap);
+	glUniform1i(glGetUniformLocation(terrainShader, "sandNormalMap"), 20);
 
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
@@ -139,6 +154,9 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "textureZoom", textureZoom);
 	labhelper::setUniformSlow(terrainShader, "grassThreshold", grassThreshold);
 	labhelper::setUniformSlow(terrainShader, "rockThreshold", rockThreshold);
+	// TODO: make customisable
+	labhelper::setUniformSlow(terrainShader, "sandThreshold", 0.5f);
+	labhelper::setUniformSlow(terrainShader, "waterLevel", waterLevel - terrainLevel);
 	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", triplanarBlendFactor);
 
 	glBindVertexArray(terrainVertexArrayObject);

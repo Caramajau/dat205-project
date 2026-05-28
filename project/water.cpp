@@ -139,6 +139,7 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(0);
 }
 
+// TODO: change to level
 float Water::getHeight() const {
 	return level;
 }
