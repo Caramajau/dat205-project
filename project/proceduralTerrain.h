@@ -56,6 +56,7 @@ private:
 	float textureZoom;
 	float grassThreshold;
 	float rockThreshold;
+	float sandThreshold;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int length) const;

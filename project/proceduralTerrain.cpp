@@ -31,6 +31,7 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	textureZoom = config.textureZoom;
 	grassThreshold = config.grassThreshold;
 	rockThreshold = config.rockThreshold;
+	sandThreshold = config.sandThreshold;
 	triplanarBlendFactor = config.triplanarBlendFactor;
 
 	glGenTextures(1, &perlinTexture);
@@ -146,17 +147,23 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
+
 	labhelper::setUniformSlow(terrainShader, "heightScale", heightScale);
+
 	labhelper::setUniformSlow(terrainShader, "useNeighbours", useNeighbours);
 	labhelper::setUniformSlow(terrainShader, "sunDirection", sunDirection);
+
 	glUniform4f(glGetUniformLocation(terrainShader, "waterPlane"), 
 		waterPlane.x, waterPlane.y, waterPlane.z, waterPlane.w);
+
 	labhelper::setUniformSlow(terrainShader, "textureZoom", textureZoom);
+
 	labhelper::setUniformSlow(terrainShader, "grassThreshold", grassThreshold);
 	labhelper::setUniformSlow(terrainShader, "rockThreshold", rockThreshold);
-	// TODO: make customisable
-	labhelper::setUniformSlow(terrainShader, "sandThreshold", 0.5f);
+	labhelper::setUniformSlow(terrainShader, "sandThreshold", sandThreshold);
+
 	labhelper::setUniformSlow(terrainShader, "waterLevel", waterLevel - terrainLevel);
+
 	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", triplanarBlendFactor);
 
 	glBindVertexArray(terrainVertexArrayObject);

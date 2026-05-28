@@ -553,6 +553,7 @@ void gui()
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 	}
 
