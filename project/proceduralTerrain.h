@@ -17,8 +17,7 @@ public:
 
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel) const;
-
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel, glm::vec3 lightPosition, const ProceduralConfig& config) const;
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
 	float getLevel() const;

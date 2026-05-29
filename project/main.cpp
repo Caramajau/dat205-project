@@ -61,11 +61,13 @@ const std::string envmap_base_name = "001";
 ///////////////////////////////////////////////////////////////////////////////
 // Light source
 ///////////////////////////////////////////////////////////////////////////////
-vec3 lightPosition;
+vec4 lightStationaryPosition = vec4(200.0f, 80.0f, 200.0f, 1.0f);
+vec3 lightPosition = lightStationaryPosition;
 vec3 point_light_color = vec3(1.f, 1.f, 1.f);
 
 float point_light_intensity_multiplier = 10000.0f;
 
+bool rotatePointLight = false;
 
 
 
@@ -175,10 +177,15 @@ void initialize()
 	glEnable(GL_CULL_FACE);  // enables backface culling
 }
 
+// NOTE: won't draw the light if it is unused.
 void debugDrawLight(const glm::mat4& viewMatrix,
                     const glm::mat4& projectionMatrix,
                     const glm::vec3& worldSpaceLightPos)
 {
+	if (!config.usePointLight) {
+		return;
+	}
+
 	mat4 modelMatrix = glm::translate(worldSpaceLightPos);
 	glUseProgram(shaderProgram);
 	labhelper::setUniformSlow(shaderProgram, "modelViewProjectionMatrix",
@@ -258,7 +265,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel());
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel(), lightPosition, config);
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
@@ -299,8 +306,7 @@ void display(void)
 	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), near, far);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
-	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
-	lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
+	lightPosition = rotatePointLight ? vec3(rotate(currentTime, worldUp) * lightStationaryPosition) : lightStationaryPosition;
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
 
@@ -363,7 +369,7 @@ void display(void)
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far);
+	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far, lightPosition, config);
 	if (displayWaterDebug) {
 		waterFBOs.submitToGpu();
 	}
@@ -530,7 +536,7 @@ void gui()
 		ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
 		ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
 		ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
-		ImGui::Checkbox("Use incorrect blending?", &config.useIncorrectBlending);
+		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectBlending);
 	}
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {
@@ -545,11 +551,24 @@ void gui()
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
-		ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
+		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
 
-		ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
-		ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
-		ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
+
+		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
+		// quite difficult with the ImGUI version this uses. Now it hides them instead
+		// as a workaround.
+		if (config.usePointLight) {
+			ImGui::Checkbox("Rotate Point Light?", &rotatePointLight);
+			ImGui::SliderFloat("X Point Light", &lightStationaryPosition.x, 0.0f, 300.0f);
+			ImGui::SliderFloat("Y Point Light", &lightStationaryPosition.y, 0.0f, 100.0f);
+			ImGui::SliderFloat("Z Point Light", &lightStationaryPosition.z, 0.0f, 300.0f);
+		}
+		else {
+			ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
+			ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
+			ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Texture Options")) {
