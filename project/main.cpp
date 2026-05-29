@@ -61,11 +61,13 @@ const std::string envmap_base_name = "001";
 ///////////////////////////////////////////////////////////////////////////////
 // Light source
 ///////////////////////////////////////////////////////////////////////////////
-vec3 lightPosition;
+vec4 lightStationaryPosition = vec4(200.0f, 80.0f, 200.0f, 1.0f);
+vec3 lightPosition = lightStationaryPosition;
 vec3 point_light_color = vec3(1.f, 1.f, 1.f);
 
 float point_light_intensity_multiplier = 10000.0f;
 
+bool rotatePointLight = false;
 
 
 
@@ -304,8 +306,7 @@ void display(void)
 	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), near, far);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
-	auto lightStartPosition = vec4(200.0f, 80.0f, 200.0f, 1.0f);
-	lightPosition = config.rotatePointLight ? vec3(rotate(currentTime, worldUp) * lightStartPosition) : lightStartPosition;
+	lightPosition = rotatePointLight ? vec3(rotate(currentTime, worldUp) * lightStationaryPosition) : lightStationaryPosition;
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
 
@@ -558,7 +559,10 @@ void gui()
 		// quite difficult with the ImGUI version this uses. Now it hides them instead
 		// as a work around.
 		if (config.usePointLight) {
-			ImGui::Checkbox("Rotate Point Light?", &config.rotatePointLight);
+			ImGui::Checkbox("Rotate Point Light?", &rotatePointLight);
+			ImGui::SliderFloat("X Point Light", &lightStationaryPosition.x, 0.0f, 300.0f);
+			ImGui::SliderFloat("Y Point Light", &lightStationaryPosition.y, 0.0f, 100.0f);
+			ImGui::SliderFloat("Z Point Light", &lightStationaryPosition.z, 0.0f, 300.0f);
 		}
 		else {
 			ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
