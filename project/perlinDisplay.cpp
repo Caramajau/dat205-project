@@ -63,9 +63,8 @@ void PerlinDisplay::setGpuData(const ProceduralConfig& config)
 void PerlinDisplay::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const
 {
 	glUseProgram(perlinShader);
-	glActiveTexture(GL_TEXTURE7);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glUniform1i(glGetUniformLocation(perlinShader, "perlinTex"), 7);
 
 	labhelper::setUniformSlow(perlinShader, "modelMatrix", perlinNoiseModelMatrix);
 	labhelper::setUniformSlow(perlinShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * perlinNoiseModelMatrix);
