@@ -364,7 +364,7 @@ void display(void)
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far, lightPosition);
+	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far, lightPosition, config);
 	if (displayWaterDebug) {
 		waterFBOs.submitToGpu();
 	}
