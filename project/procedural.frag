@@ -128,10 +128,9 @@ void main()
     float snowSlopeFactor = 1.0 - smoothstep(0.0, snowThreshold, slope);
     float snowBlend = snowHeightBlend * snowSlopeFactor;
 
-    // TODO: update name
-    float heightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
-    float slopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
-    float sandBlend = heightBlend * slopeFactor;
+    float sandHeightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
+    float sandSlopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float sandBlend = sandHeightBlend * sandSlopeFactor;
 
     float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
