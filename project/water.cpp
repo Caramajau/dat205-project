@@ -19,8 +19,6 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	refractionTexture = waterFBOs.getRefractionTexture();
 	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
 
-	setLevel(config.waterLevel);
-
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f,			0.0f,
 		terrainWidth,	0.0f, 0.0f,			 terrainWidth,	0.0f,
@@ -78,6 +76,7 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, refractionDepthTexture);
 
+	waterModelMatrix = translate(config.waterLevel * glm::vec3(0.0f, 1.0f, 0.0f));
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 
@@ -122,15 +121,4 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
-}
-
-float Water::getLevel() const {
-	return level;
-}
-
-void Water::setLevel(float newLevel) {
-	level = newLevel;
-	// NOTE: If world up is changed from 0, 1, 0 this should match.
-	// (probably won't in this project)
-	waterModelMatrix = translate(level * glm::vec3(0.0f, 1.0f, 0.0f));
 }

@@ -12,10 +12,8 @@ public:
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& waterFBOs);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far, glm::vec3 lightPosition, const ProceduralConfig& config);
-	float getLevel() const;
 
 private:
-	float level;
 	glm::mat4 waterModelMatrix;
 
 	GLuint waterShader = 0;
@@ -32,6 +30,4 @@ private:
 	GLuint normalMap = 0;
 
 	float moveFactor = 0.0f;
-
-	void setLevel(float newHeight);
 };

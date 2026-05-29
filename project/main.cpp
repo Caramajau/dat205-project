@@ -265,7 +265,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel(), lightPosition, config);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, config.waterLevel, lightPosition, config);
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
@@ -335,7 +335,7 @@ void display(void)
 	waterFBOs.bindReflectionFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, water.getLevel());
+	mat4 reflectionViewMatrix = getReflectionViewMatrix(cameraPosition, cameraDirection, config.waterLevel);
 
 	// Render scene to reflection frame buffer
 	{
@@ -344,7 +344,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		auto waterPlane = glm::vec4(0, 1, 0, -water.getLevel() + waterOffset);
+		auto waterPlane = glm::vec4(0, 1, 0, -config.waterLevel + waterOffset);
 		drawScene(shaderProgram, reflectionViewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(reflectionViewMatrix, projMatrix, vec3(lightPosition));
@@ -362,7 +362,7 @@ void display(void)
 	}
 	{
 		labhelper::perf::Scope s("Scene");
-		auto waterPlane = glm::vec4(0, -1, 0, water.getLevel());
+		auto waterPlane = glm::vec4(0, -1, 0, config.waterLevel);
 		drawScene(shaderProgram, viewMatrix, projMatrix, lightViewMatrix, lightProjMatrix, waterPlane);
 	}
 	debugDrawLight(viewMatrix, projMatrix, vec3(lightPosition));
