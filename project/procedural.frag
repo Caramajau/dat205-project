@@ -121,9 +121,8 @@ void main()
     vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
     vec3 snow = triplanarTexture(snowTexture, uvX, uvY, uvZ, blendWeights);
 
-    // TODO: make dependent on water level (in a relative way)
     // TODO: customise
-    float snowHeightBlend = smoothstep(70.0, 70.0 + 5.0, positionWithHeight.y);
+    float snowHeightBlend = smoothstep(waterLevel + 20, waterLevel + 20.0 + 5.0, positionWithHeight.y);
     float snowSlopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
     float snowBlend = snowHeightBlend * snowSlopeFactor;
 
