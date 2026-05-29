@@ -10,6 +10,8 @@ uniform sampler2D heightMap;
 
 uniform float waterLevel;
 uniform float sandLevelOffset;
+uniform float snowStartLevelOffset;
+uniform float snowEndLevelOffset;
 
 uniform sampler2D grassTexture;
 uniform sampler2D grassNormalMap;
@@ -31,6 +33,7 @@ uniform float textureZoom;
 uniform float grassThreshold;
 uniform float rockThreshold;
 uniform float sandThreshold;
+uniform float snowThreshold;
 
 uniform float triplanarBlendFactor;
 
@@ -121,9 +124,8 @@ void main()
     vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
     vec3 snow = triplanarTexture(snowTexture, uvX, uvY, uvZ, blendWeights);
 
-    // TODO: customise
-    float snowHeightBlend = smoothstep(waterLevel + 20, waterLevel + 20.0 + 5.0, positionWithHeight.y);
-    float snowSlopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float snowHeightBlend = smoothstep(waterLevel + snowStartLevelOffset, waterLevel + snowStartLevelOffset + snowEndLevelOffset, positionWithHeight.y);
+    float snowSlopeFactor = 1.0 - smoothstep(0.0, snowThreshold, slope);
     float snowBlend = snowHeightBlend * snowSlopeFactor;
 
     // TODO: update name

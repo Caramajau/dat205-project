@@ -32,11 +32,15 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightScale = config.heightScale;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
+
 	textureZoom = config.textureZoom;
 	grassThreshold = config.grassThreshold;
 	rockThreshold = config.rockThreshold;
 	sandThreshold = config.sandThreshold;
 	sandLevelOffset = config.sandLevelOffset;
+	snowThreshold = config.snowThreshold;
+	snowStartLevelOffset = config.snowStartLevelOffset;
+	snowEndLevelOffset = config.snowEndLevelOffset;
 	triplanarBlendFactor = config.triplanarBlendFactor;
 
 	glGenTextures(1, &perlinTexture);
@@ -175,6 +179,9 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "rockThreshold", rockThreshold);
 	labhelper::setUniformSlow(terrainShader, "sandThreshold", sandThreshold);
 	labhelper::setUniformSlow(terrainShader, "sandLevelOffset", sandLevelOffset);
+	labhelper::setUniformSlow(terrainShader, "snowThreshold", snowThreshold);
+	labhelper::setUniformSlow(terrainShader, "snowStartLevelOffset", snowStartLevelOffset);
+	labhelper::setUniformSlow(terrainShader, "snowEndLevelOffset", snowEndLevelOffset);
 
 	labhelper::setUniformSlow(terrainShader, "waterLevel", waterLevel - terrainLevel);
 

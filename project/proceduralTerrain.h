@@ -60,6 +60,9 @@ private:
 	float rockThreshold;
 	float sandThreshold;
 	float sandLevelOffset;
+	float snowThreshold;
+	float snowStartLevelOffset;
+	float snowEndLevelOffset;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int length) const;
