@@ -5,11 +5,12 @@ precision highp float;
 
 layout(location = 0) out vec4 fragmentColor;
 
-uniform sampler2D reflectionTexture;
-uniform sampler2D refractionTexture;
-uniform sampler2D dudvMap;
-uniform sampler2D normalMap;
-uniform sampler2D depthMap;
+layout(binding = 14) uniform sampler2D reflectionTexture;
+layout(binding = 15) uniform sampler2D refractionTexture;
+layout(binding = 16) uniform sampler2D dudvMap;
+layout(binding = 17) uniform sampler2D normalMap;
+layout(binding = 18) uniform sampler2D depthMap;
+
 uniform vec3 sunDirection;
 
 uniform float moveFactor;
