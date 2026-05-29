@@ -20,6 +20,10 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	// Texture from https://ambientcg.com/a/Ground033
 	loadTexture(sandTexture, "../scenes/textures/sand.jpg");
 	loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
+
+	// Texture from https://ambientcg.com/a/Snow010A
+	loadTexture(snowTexture, "../scenes/textures/snow.jpg");
+	loadTexture(snowNormalMap, "../scenes/textures/snowNormal.jpg");
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
@@ -28,11 +32,15 @@ void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightScale = config.heightScale;
 	useNeighbours = config.useNeighbours;
 	sunDirection = config.sunDirection;
+
 	textureZoom = config.textureZoom;
 	grassThreshold = config.grassThreshold;
 	rockThreshold = config.rockThreshold;
 	sandThreshold = config.sandThreshold;
 	sandLevelOffset = config.sandLevelOffset;
+	snowThreshold = config.snowThreshold;
+	snowStartLevelOffset = config.snowStartLevelOffset;
+	snowEndLevelOffset = config.snowEndLevelOffset;
 	triplanarBlendFactor = config.triplanarBlendFactor;
 
 	glGenTextures(1, &perlinTexture);
@@ -146,6 +154,14 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glBindTexture(GL_TEXTURE_2D, sandNormalMap);
 	glUniform1i(glGetUniformLocation(terrainShader, "sandNormalMap"), 20);
 
+	glActiveTexture(GL_TEXTURE21);
+	glBindTexture(GL_TEXTURE_2D, snowTexture);
+	glUniform1i(glGetUniformLocation(terrainShader, "snowTexture"), 21);
+
+	glActiveTexture(GL_TEXTURE22);
+	glBindTexture(GL_TEXTURE_2D, snowNormalMap);
+	glUniform1i(glGetUniformLocation(terrainShader, "snowNormalMap"), 22);
+
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 
@@ -163,6 +179,9 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "rockThreshold", rockThreshold);
 	labhelper::setUniformSlow(terrainShader, "sandThreshold", sandThreshold);
 	labhelper::setUniformSlow(terrainShader, "sandLevelOffset", sandLevelOffset);
+	labhelper::setUniformSlow(terrainShader, "snowThreshold", snowThreshold);
+	labhelper::setUniformSlow(terrainShader, "snowStartLevelOffset", snowStartLevelOffset);
+	labhelper::setUniformSlow(terrainShader, "snowEndLevelOffset", snowEndLevelOffset);
 
 	labhelper::setUniformSlow(terrainShader, "waterLevel", waterLevel - terrainLevel);
 

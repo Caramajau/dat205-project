@@ -10,6 +10,8 @@ uniform sampler2D heightMap;
 
 uniform float waterLevel;
 uniform float sandLevelOffset;
+uniform float snowStartLevelOffset;
+uniform float snowEndLevelOffset;
 
 uniform sampler2D grassTexture;
 uniform sampler2D grassNormalMap;
@@ -20,6 +22,9 @@ uniform sampler2D rockNormalMap;
 uniform sampler2D sandTexture;
 uniform sampler2D sandNormalMap;
 
+uniform sampler2D snowTexture;
+uniform sampler2D snowNormalMap;
+
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
 
@@ -28,6 +33,7 @@ uniform float textureZoom;
 uniform float grassThreshold;
 uniform float rockThreshold;
 uniform float sandThreshold;
+uniform float snowThreshold;
 
 uniform float triplanarBlendFactor;
 
@@ -116,21 +122,29 @@ void main()
     vec3 grass = triplanarTexture(grassTexture, uvX, uvY, uvZ, blendWeights);
     vec3 rock = triplanarTexture(rockTexture, uvX, uvY, uvZ, blendWeights);
     vec3 sand = triplanarTexture(sandTexture, uvX, uvY, uvZ, blendWeights);
+    vec3 snow = triplanarTexture(snowTexture, uvX, uvY, uvZ, blendWeights);
 
-    float heightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
-    float slopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
-    float sandBlend = heightBlend * slopeFactor;
+    float snowHeightBlend = smoothstep(waterLevel + snowStartLevelOffset, waterLevel + snowStartLevelOffset + snowEndLevelOffset, positionWithHeight.y);
+    float snowSlopeFactor = 1.0 - smoothstep(0.0, snowThreshold, slope);
+    float snowBlend = snowHeightBlend * snowSlopeFactor;
+
+    float sandHeightBlend = 1.0 - smoothstep(waterLevel, waterLevel + sandLevelOffset, positionWithHeight.y);
+    float sandSlopeFactor = 1.0 - smoothstep(0.0, sandThreshold, slope);
+    float sandBlend = sandHeightBlend * sandSlopeFactor;
 
     float rockBlend = smoothstep(grassThreshold, rockThreshold, slope);
     vec3 colour = mix(grass, rock, rockBlend);
+    colour = mix(colour, snow, snowBlend);
     colour = mix(colour, sand, sandBlend);
 
     vec3 grassNormal = triplanarNormal(grassNormalMap, uvX, uvY, uvZ, blendWeights, terrainNormal);
     vec3 rockNormal  = triplanarNormal(rockNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
     vec3 sandNormal  = triplanarNormal(sandNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
+    vec3 snowNormal  = triplanarNormal(snowNormalMap,  uvX, uvY, uvZ, blendWeights, terrainNormal);
 
     // Make sure they are blended like the colour textures.
     vec3 finalNormal = normalize(mix(grassNormal, rockNormal, rockBlend));
+    finalNormal = normalize(mix(finalNormal, snowNormal, snowBlend));
     finalNormal = normalize(mix(finalNormal, sandNormal, sandBlend));
 
     // Simple shading with some ambient and mostly diffuse

@@ -35,6 +35,9 @@ struct ProceduralConfig {
 	float rockThreshold = 0.4f;
 	float sandThreshold = 1.0f;
 	float sandLevelOffset = 0.5f;
+	float snowThreshold = 1.0f;
+	float snowStartLevelOffset = 20.0f;
+	float snowEndLevelOffset = 5.0f;
 	float triplanarBlendFactor = 4.0f;
 
 	// Water configs

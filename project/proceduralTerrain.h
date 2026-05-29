@@ -38,6 +38,9 @@ private:
 	GLuint sandTexture = 0;
 	GLuint sandNormalMap = 0;
 
+	GLuint snowTexture = 0;
+	GLuint snowNormalMap = 0;
+
 	GLuint terrainShader = 0;
 
 	GLuint terrainVertexArrayObject = 0;
@@ -57,6 +60,9 @@ private:
 	float rockThreshold;
 	float sandThreshold;
 	float sandLevelOffset;
+	float snowThreshold;
+	float snowStartLevelOffset;
+	float snowEndLevelOffset;
 	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int length) const;
