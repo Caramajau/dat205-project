@@ -28,7 +28,6 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
 	heightMapGrid = createHeightMap(config);
-	setLevel(config.terrainLevel);
 
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -111,7 +110,7 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length
 	return indices;
 }
 
-void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config) const {
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config) {
 	glUseProgram(terrainShader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -140,6 +139,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, snowNormalMap);
 
+	terrainModelMatrix = translate(config.terrainLevel * glm::vec3(0.0f, 1.0f, 0.0f));
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);
 
@@ -163,7 +163,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "snowStartLevelOffset", config.snowStartLevelOffset);
 	labhelper::setUniformSlow(terrainShader, "snowEndLevelOffset", config.snowEndLevelOffset);
 
-	labhelper::setUniformSlow(terrainShader, "waterLevel", config.waterLevel - terrainLevel);
+	labhelper::setUniformSlow(terrainShader, "waterLevel", config.waterLevel - config.terrainLevel);
 
 	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", config.triplanarBlendFactor);
 
@@ -171,13 +171,3 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
-
-float ProceduralTerrain::getLevel() const {
-	return terrainLevel;
-}
-
-void ProceduralTerrain::setLevel(float newLevel) {
-	terrainLevel = newLevel;
-	terrainModelMatrix = translate(terrainLevel * glm::vec3(0.0f, 1.0f, 0.0f));
-}
-

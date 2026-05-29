@@ -17,13 +17,10 @@ public:
 
 	void loadShader(bool is_reload);
 	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config) const;
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config);
 	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
-	float getLevel() const;
-
 private:
-	float terrainLevel;
 	glm::mat4 terrainModelMatrix;
 
 	GLuint perlinTexture = 0;
@@ -52,6 +49,4 @@ private:
 
 	std::vector<float> createVertices(int width, int length) const;
 	std::vector<unsigned int> createIndices(int width, int length) const;
-
-	void setLevel(float newLevel);
 };

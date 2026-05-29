@@ -494,7 +494,7 @@ bool handleEvents(void)
 			cameraPosition.z, 
 			proceduralTerrain.getHeightMapGrid(), 
 			config.width
-		) * config.heightScale + proceduralTerrain.getLevel() + terrainOffset;
+		) * config.heightScale + config.terrainLevel + terrainOffset;
 	}
 
 	if (state[SDL_SCANCODE_Z]) {
@@ -626,7 +626,7 @@ void gui()
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
-		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + proceduralTerrain.getLevel() + terrainOffset, 0);
+		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
 		cameraSpeed = 10.0f;
 	}
 
