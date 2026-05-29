@@ -166,9 +166,8 @@ void WaterFrameBuffers::setGpuData(GLuint texture) {
 
 void WaterFrameBuffers::submitToGpu() const {
 	glUseProgram(waterDebugShader);
-	glActiveTexture(GL_TEXTURE13);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, debugTexture);
-	glUniform1i(glGetUniformLocation(waterDebugShader, "debugTexture"), 13);
 
 	glBindVertexArray(debugVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

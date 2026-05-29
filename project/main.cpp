@@ -189,6 +189,15 @@ void debugDrawLight(const glm::mat4& viewMatrix,
 
 void drawBackground(const mat4& viewMatrix, const mat4& projectionMatrix)
 {
+	///////////////////////////////////////////////////////////////////////////
+	// Bind the environment map(s) to unused texture units
+	///////////////////////////////////////////////////////////////////////////
+	// NOTE: Texture unit 6 is now used by other shaders, so environment map is
+	// now set every time the background is drawn rather than just once before.
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, environmentMap);
+	glActiveTexture(GL_TEXTURE0);
+
 	glUseProgram(backgroundProgram);
 	labhelper::setUniformSlow(backgroundProgram, "environment_multiplier", environment_multiplier);
 	labhelper::setUniformSlow(backgroundProgram, "inv_PV", inverse(projectionMatrix * viewMatrix));
@@ -294,14 +303,6 @@ void display(void)
 	lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
-
-	///////////////////////////////////////////////////////////////////////////
-	// Bind the environment map(s) to unused texture units
-	///////////////////////////////////////////////////////////////////////////
-	glActiveTexture(GL_TEXTURE6);
-	glBindTexture(GL_TEXTURE_2D, environmentMap);
-	glActiveTexture(GL_TEXTURE0);
-
 
 	///////////////////////////////////////////////////////////////////////////
 	// Draw from camera

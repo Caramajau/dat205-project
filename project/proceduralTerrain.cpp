@@ -126,41 +126,32 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length
 
 void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel) const {
 	glUseProgram(terrainShader);
-	glActiveTexture(GL_TEXTURE8);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "heightMap"), 8);
 
-	glActiveTexture(GL_TEXTURE9);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, grassTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "grassTexture"), 9);
 
-	glActiveTexture(GL_TEXTURE11);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, grassNormalMap);
-	glUniform1i(glGetUniformLocation(terrainShader, "grassNormalMap"), 11);
 
-	glActiveTexture(GL_TEXTURE10);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, rockTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "rockTexture"), 10);
 
-	glActiveTexture(GL_TEXTURE12);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, rockNormalMap);
-	glUniform1i(glGetUniformLocation(terrainShader, "rockNormalMap"), 12);
 
-	glActiveTexture(GL_TEXTURE19);
+	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, sandTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "sandTexture"), 19);
 
-	glActiveTexture(GL_TEXTURE20);
+	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, sandNormalMap);
-	glUniform1i(glGetUniformLocation(terrainShader, "sandNormalMap"), 20);
 
-	glActiveTexture(GL_TEXTURE21);
+	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, snowTexture);
-	glUniform1i(glGetUniformLocation(terrainShader, "snowTexture"), 21);
 
-	glActiveTexture(GL_TEXTURE22);
+	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, snowNormalMap);
-	glUniform1i(glGetUniformLocation(terrainShader, "snowNormalMap"), 22);
 
 	labhelper::setUniformSlow(terrainShader, "modelMatrix", terrainModelMatrix);
 	labhelper::setUniformSlow(terrainShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * terrainModelMatrix);

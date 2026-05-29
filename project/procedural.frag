@@ -6,24 +6,24 @@ precision highp float;
 layout(location = 0) out vec4 fragmentColor;
 
 uniform float heightScale;
-uniform sampler2D heightMap;
+layout(binding = 0) uniform sampler2D heightMap;
 
 uniform float waterLevel;
 uniform float sandLevelOffset;
 uniform float snowStartLevelOffset;
 uniform float snowEndLevelOffset;
 
-uniform sampler2D grassTexture;
-uniform sampler2D grassNormalMap;
+layout(binding = 1) uniform sampler2D grassTexture;
+layout(binding = 2) uniform sampler2D grassNormalMap;
 
-uniform sampler2D rockTexture;
-uniform sampler2D rockNormalMap;
+layout(binding = 3) uniform sampler2D rockTexture;
+layout(binding = 4) uniform sampler2D rockNormalMap;
 
-uniform sampler2D sandTexture;
-uniform sampler2D sandNormalMap;
+layout(binding = 5) uniform sampler2D sandTexture;
+layout(binding = 6) uniform sampler2D sandNormalMap;
 
-uniform sampler2D snowTexture;
-uniform sampler2D snowNormalMap;
+layout(binding = 7) uniform sampler2D snowTexture;
+layout(binding = 8) uniform sampler2D snowNormalMap;
 
 uniform bool useNeighbours;
 uniform vec3 sunDirection;
