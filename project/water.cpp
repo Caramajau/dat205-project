@@ -85,19 +85,19 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	}
 
 	glUseProgram(waterShader);
-	glActiveTexture(GL_TEXTURE14);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, reflectionTexture);
 
-	glActiveTexture(GL_TEXTURE15);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, refractionTexture);
 
-	glActiveTexture(GL_TEXTURE16);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, dudvTexture);
 
-	glActiveTexture(GL_TEXTURE17);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, normalMap);
 
-	glActiveTexture(GL_TEXTURE18);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, refractionDepthTexture);
 
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
