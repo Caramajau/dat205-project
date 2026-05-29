@@ -28,6 +28,7 @@ struct ProceduralConfig {
 	float terrainLevel = -100.0f;
 	float heightScale = 100.0f;
 	bool useNeighbours = true;
+	bool usePointLight = false;
 	glm::vec3 sunDirection = glm::vec3(0.8, 1.0, 0.6);
 
 	float textureZoom = 0.1f;

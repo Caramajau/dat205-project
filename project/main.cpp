@@ -258,7 +258,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel(), lightPosition);
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel(), lightPosition, config);
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
@@ -531,7 +531,7 @@ void gui()
 		ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
 		ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
 		ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
-		ImGui::Checkbox("Use incorrect blending?", &config.useIncorrectBlending);
+		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectBlending);
 	}
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {
@@ -546,7 +546,9 @@ void gui()
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
-		ImGui::Checkbox("Use neighbours for normals?", &config.useNeighbours);
+		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
+
+		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
 
 		ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
 		ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);

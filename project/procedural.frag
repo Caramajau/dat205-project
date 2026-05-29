@@ -26,6 +26,8 @@ layout(binding = 7) uniform sampler2D snowTexture;
 layout(binding = 8) uniform sampler2D snowNormalMap;
 
 uniform bool useNeighbours;
+
+uniform bool usePointLight;
 uniform vec3 sunDirection;
 
 uniform float textureZoom;
@@ -149,8 +151,8 @@ void main()
     finalNormal = normalize(mix(finalNormal, sandNormal, sandBlend));
 
     // Simple shading with some ambient and mostly diffuse
-    // float diffuse = max(dot(finalNormal, normalize(sunDirection)), 0.0);
-    float diffuse = max(dot(finalNormal, normalize(-fromLightVector)), 0.0);
+    vec3 lightSource = usePointLight ? -fromLightVector : sunDirection;
+    float diffuse = max(dot(finalNormal, normalize(lightSource)), 0.0);
     float light = 0.1 + 0.9 * diffuse;
 
     fragmentColor = vec4(colour * light, 1.0);
