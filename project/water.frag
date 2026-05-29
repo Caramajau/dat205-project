@@ -27,7 +27,10 @@ uniform float fresnelModifier;
 uniform float normalFlattenFactor;
 
 uniform float murkyColourFactor;
+uniform vec4 murkyColour;
+
 uniform float blueTintFactor;
+uniform vec4 blueColour;
 
 uniform float near;
 uniform float far;
@@ -35,9 +38,6 @@ uniform float far;
 in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
-
-const vec4 murkyColour = vec4(0.29, 0.33, 0.22, 1.0);
-const vec4 blueColour = vec4(0.0, 0.3, 0.5, 1.0);
 
 float calcTrueDepth(float depth)
 {
