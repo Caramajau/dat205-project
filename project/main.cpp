@@ -557,7 +557,7 @@ void gui()
 
 		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
 		// quite difficult with the ImGUI version this uses. Now it hides them instead
-		// as a work around.
+		// as a workaround.
 		if (config.usePointLight) {
 			ImGui::Checkbox("Rotate Point Light?", &rotatePointLight);
 			ImGui::SliderFloat("X Point Light", &lightStationaryPosition.x, 0.0f, 300.0f);
