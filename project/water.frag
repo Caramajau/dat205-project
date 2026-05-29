@@ -39,6 +39,7 @@ uniform float far;
 in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
+in vec3 fromLightVector;
 
 float calcTrueDepth(float depth)
 {
@@ -96,7 +97,8 @@ void main()
 	// Clamp to avoid black artefacts
 	fresnel = clamp(fresnel, 0.001, 0.999);
 
-	vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
+	// vec3 reflectedLight = reflect(normalize(-sunDirection), normal);
+	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	// Dot product to see if similar, and when they are:
 	// that means more light into the camera thus brighter specular highlight.
 	float specular = max(dot(reflectedLight, viewVector), 0.0);

@@ -258,7 +258,7 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::render(fighterModel);
 
 	perlinDisplay.submitToGpu(viewMatrix, projectionMatrix, waterPlane);
-	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel());
+	proceduralTerrain.submitToGpu(viewMatrix, projectionMatrix, waterPlane, water.getLevel(), lightPosition);
 }
 
 // The camera for the reflection should be 2*d lower, where d is distance to water,
@@ -299,8 +299,9 @@ void display(void)
 	mat4 projMatrix = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), near, far);
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
-	auto lightStartPosition = vec4(40.0f, 40.0f, 0.0f, 1.0f);
-	lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
+	auto lightStartPosition = vec4(200.0f, 80.0f, 200.0f, 1.0f);
+	// lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
+	lightPosition = lightStartPosition;
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
 
@@ -363,7 +364,7 @@ void display(void)
 
 	waterFBOs.unbindCurrentFrameBuffer(windowWidth, windowHeight);
 
-	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far);
+	water.submitToGpu(viewMatrix, projMatrix, deltaTime, cameraPosition, near, far, lightPosition);
 	if (displayWaterDebug) {
 		waterFBOs.submitToGpu();
 	}
