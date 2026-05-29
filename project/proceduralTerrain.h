@@ -50,20 +50,6 @@ private:
 
 	size_t triangleCount = 0;
 
-	float heightScale = 0;
-	bool useNeighbours = false;
-	glm::vec3 sunDirection;
-
-	float textureZoom;
-	float grassThreshold;
-	float rockThreshold;
-	float sandThreshold;
-	float sandLevelOffset;
-	float snowThreshold;
-	float snowStartLevelOffset;
-	float snowEndLevelOffset;
-	float triplanarBlendFactor;
-
 	std::vector<float> createVertices(int width, int length) const;
 	std::vector<unsigned int> createIndices(int width, int length) const;
 
