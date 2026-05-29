@@ -300,8 +300,7 @@ void display(void)
 	mat4 viewMatrix = lookAt(cameraPosition, cameraPosition + cameraDirection, worldUp);
 
 	auto lightStartPosition = vec4(200.0f, 80.0f, 200.0f, 1.0f);
-	// lightPosition = vec3(rotate(currentTime, worldUp) * lightStartPosition);
-	lightPosition = lightStartPosition;
+	lightPosition = config.rotatePointLight ? vec3(rotate(currentTime, worldUp) * lightStartPosition) : lightStartPosition;
 	mat4 lightViewMatrix = lookAt(lightPosition, vec3(0.0f), worldUp);
 	mat4 lightProjMatrix = perspective(radians(45.0f), 1.0f, 25.0f, 100.0f);
 
@@ -549,6 +548,7 @@ void gui()
 		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
 
 		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
+		ImGui::Checkbox("Rotate Point Light?", &config.rotatePointLight);
 
 		ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
 		ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
