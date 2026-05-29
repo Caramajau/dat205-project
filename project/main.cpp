@@ -175,10 +175,15 @@ void initialize()
 	glEnable(GL_CULL_FACE);  // enables backface culling
 }
 
+// NOTE: won't draw the light if it is unused.
 void debugDrawLight(const glm::mat4& viewMatrix,
                     const glm::mat4& projectionMatrix,
                     const glm::vec3& worldSpaceLightPos)
 {
+	if (!config.usePointLight) {
+		return;
+	}
+
 	mat4 modelMatrix = glm::translate(worldSpaceLightPos);
 	glUseProgram(shaderProgram);
 	labhelper::setUniformSlow(shaderProgram, "modelViewProjectionMatrix",
@@ -548,11 +553,18 @@ void gui()
 		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
 
 		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
-		ImGui::Checkbox("Rotate Point Light?", &config.rotatePointLight);
 
-		ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
-		ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
-		ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
+		// quite difficult with the ImGUI version this uses. Now it hides them instead
+		// as a work around.
+		if (config.usePointLight) {
+			ImGui::Checkbox("Rotate Point Light?", &config.rotatePointLight);
+		}
+		else {
+			ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
+			ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
+			ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Texture Options")) {
