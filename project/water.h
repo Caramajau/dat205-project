@@ -31,29 +31,7 @@ private:
 	GLuint dudvTexture = 0;
 	GLuint normalMap = 0;
 
-	float tiling;
-
-	float waveSpeed;
 	float moveFactor = 0.0f;
-	float waveStrength;
-
-	float shineDamper;
-	float reflectivity;
-
-	float distortionDampening;
-	float highlightDampening;
-	float borderTransparencyFactor;
-
-	float fresnelModifier;
-
-	float normalFlattenFactor;
-
-	float murkyColourFactor;
-	glm::vec4 murkyColour;
-	float blueTintFactor;
-	glm::vec4 blueColour;
-
-	glm::vec3 sunDirection;
 
 	void setLevel(float newHeight);
 };
