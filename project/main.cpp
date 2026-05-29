@@ -580,11 +580,12 @@ void gui()
 
 		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
 
+		// NOTE: ColorEdit3, since alpha is overridden in the shader.
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
-		ImGui::ColorEdit4("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
 
 		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
-		ImGui::ColorEdit4("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
 
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 	}
