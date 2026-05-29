@@ -111,7 +111,7 @@ std::vector<unsigned int> ProceduralTerrain::createIndices(int width, int length
 	return indices;
 }
 
-void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel, glm::vec3 lightPosition, const ProceduralConfig& config) const {
+void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config) const {
 	glUseProgram(terrainShader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
@@ -163,7 +163,7 @@ void ProceduralTerrain::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4
 	labhelper::setUniformSlow(terrainShader, "snowStartLevelOffset", config.snowStartLevelOffset);
 	labhelper::setUniformSlow(terrainShader, "snowEndLevelOffset", config.snowEndLevelOffset);
 
-	labhelper::setUniformSlow(terrainShader, "waterLevel", waterLevel - terrainLevel);
+	labhelper::setUniformSlow(terrainShader, "waterLevel", config.waterLevel - terrainLevel);
 
 	labhelper::setUniformSlow(terrainShader, "triplanarBlendFactor", config.triplanarBlendFactor);
 

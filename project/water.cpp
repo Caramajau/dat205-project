@@ -52,7 +52,7 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	glBindVertexArray(0);
 }
 
-void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far, glm::vec3 lightPosition, const ProceduralConfig& config) {
+void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far, const glm::vec3& lightPosition, const ProceduralConfig& config) {
 	moveFactor += config.waterWaveSpeed * deltaTime;
 	// Loop back
 	if (moveFactor > 1.0f)
