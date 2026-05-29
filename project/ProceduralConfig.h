@@ -59,7 +59,10 @@ struct ProceduralConfig {
 	float waterNormalFlattenFactor = 3.0f;
 
 	float waterMurkyColourFactor = 60.0f;
+	glm::vec4 waterMurkyColour = glm::vec4(0.29, 0.33, 0.22, 1.0);
+
 	float waterBlueTintFactor = 0.05f;
+	glm::vec4 waterBlueColour = glm::vec4(0.0, 0.3, 0.5, 1.0);
 
 	void reset() { *this = ProceduralConfig{}; }
 };

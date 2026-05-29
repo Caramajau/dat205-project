@@ -16,6 +16,8 @@ extern "C" _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 using namespace glm;
 
 #include <Model.h>
@@ -564,17 +566,27 @@ void gui()
 	if (ImGui::CollapsingHeader("Water Options")) {
 		ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
 		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+
 		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
 		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
+
 		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
 		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
 		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
 		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
 		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+
 		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+
 		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+
+		// NOTE: ColorEdit3, since alpha is overridden in the shader.
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
+		ImGui::ColorEdit3("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
+
 		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
+
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 	}
 
