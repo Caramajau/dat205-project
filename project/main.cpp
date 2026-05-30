@@ -553,8 +553,6 @@ void gui()
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
-		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
-
 		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
 
 		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
@@ -574,15 +572,20 @@ void gui()
 	}
 
 	if (ImGui::CollapsingHeader("Texture Options")) {
+		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
+
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
+		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+
 		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Sand Level Offset", &config.sandLevelOffset, 0.0f, 5.0f);
+
 		ImGui::SliderFloat("Snow Threshold", &config.snowThreshold, 0.0f, 1.0f);
 		ImGui::SliderFloat("Snow Level Start Offset", &config.snowStartLevelOffset, 0.0f, 80.0f);
 		ImGui::SliderFloat("Snow Level End Offset", &config.snowEndLevelOffset, 0.0f, 5.0f);
-		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 	}
 
 	if (ImGui::CollapsingHeader("Water Options")) {
@@ -612,7 +615,7 @@ void gui()
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 	}
 
-	if (ImGui::Button("Reload texture")) {
+	if (ImGui::Button("Reload Terrain")) {
 		heightMapGrid = createHeightMap(config);
 
 		perlinDisplay.setGpuData(config, heightMapGrid);
@@ -620,7 +623,7 @@ void gui()
 		water.setGpuData(config, waterFBOs);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Reset texture")) {
+	if (ImGui::Button("Reset Terrain")) {
 		config.reset();
 
 		heightMapGrid = createHeightMap(config);
@@ -630,7 +633,7 @@ void gui()
 		water.setGpuData(config, waterFBOs);
 	}
 
-	if (ImGui::Button("Enter world")) {
+	if (ImGui::Button("Enter Terrain")) {
 		hasEntered = true;
 		cameraPosition = vec3(0, heightMapGrid[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
 		cameraSpeed = 10.0f;
