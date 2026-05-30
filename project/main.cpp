@@ -515,16 +515,21 @@ void gui()
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
 	            ImGui::GetIO().Framerate);
 	// ----------------------------------------------------------
+	
+	if (ImGui::Button("Enter Terrain")) {
+		hasEntered = true;
+		cameraPosition = vec3(0, heightMapGrid[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
+		cameraSpeed = 10.0f;
+	}
 
+	ImGui::Text("The following options require a reload");
 	if (ImGui::CollapsingHeader("General Terrain Options")) {
 		// Slider int seems to only support half the range (still gives many seed options anyways)
 		ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
 
-		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
 		ImGui::SliderInt("Width", &config.width, 2, 1000);
 		ImGui::SliderInt("Length", &config.length, 2, 1000);
 		ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
-		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 	}
 
 	if (ImGui::CollapsingHeader("fBM Options")) {
@@ -550,6 +555,19 @@ void gui()
 	if (ImGui::CollapsingHeader("Domain Warping Options")) {
 		ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 		ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
+	}
+	if (ImGui::Button("Reload Terrain")) {
+		heightMapGrid = createHeightMap(config);
+
+		perlinDisplay.setGpuData(config, heightMapGrid);
+		proceduralTerrain.setGpuData(config, heightMapGrid);
+		water.setGpuData(config, waterFBOs);
+	}
+
+	ImGui::Text("The following options are updated immediately");
+	if (ImGui::CollapsingHeader("General Terrain Display Options")) {
+		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
+		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
@@ -613,16 +631,22 @@ void gui()
 		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
 
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
-	}
 
-	if (ImGui::Button("Reload Terrain")) {
-		heightMapGrid = createHeightMap(config);
+		ImGui::NewLine();
+		ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
 
-		perlinDisplay.setGpuData(config, heightMapGrid);
-		proceduralTerrain.setGpuData(config, heightMapGrid);
-		water.setGpuData(config, waterFBOs);
+		if (displayWaterDebug) {
+			bool shouldDebugDisplayUpdate =
+				ImGui::RadioButton("Reflection Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getReflectionTexture()))
+				|| ImGui::RadioButton("Refraction Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionTexture()))
+				|| ImGui::RadioButton("Refraction Depth Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionDepthTexture()));
+
+			if (shouldDebugDisplayUpdate) {
+				waterFBOs.setGpuData(activeWaterDebugTexture);
+			}
+		}
 	}
-	ImGui::SameLine();
+	ImGui::NewLine();
 	if (ImGui::Button("Reset Terrain")) {
 		config.reset();
 
@@ -631,25 +655,6 @@ void gui()
 		perlinDisplay.setGpuData(config, heightMapGrid);
 		proceduralTerrain.setGpuData(config, heightMapGrid);
 		water.setGpuData(config, waterFBOs);
-	}
-
-	if (ImGui::Button("Enter Terrain")) {
-		hasEntered = true;
-		cameraPosition = vec3(0, heightMapGrid[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
-		cameraSpeed = 10.0f;
-	}
-
-	ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
-
-	if (displayWaterDebug) {
-		bool shouldDebugDisplayUpdate = 
-			ImGui::RadioButton("Reflection Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getReflectionTexture()))
-			|| ImGui::RadioButton("Refraction Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionTexture()))
-			|| ImGui::RadioButton("Refraction Depth Texture", reinterpret_cast<int*>(&activeWaterDebugTexture), static_cast<int>(waterFBOs.getRefractionDepthTexture()));
-
-		if (shouldDebugDisplayUpdate) {
-			waterFBOs.setGpuData(activeWaterDebugTexture);
-		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
