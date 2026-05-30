@@ -633,20 +633,31 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
 		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
+		ImGui::SameLine();
+		HelpMarker("Use point light instead of default directional");
 
 		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
 		// quite difficult with the ImGUI version this uses. Now it hides them instead
 		// as a workaround.
 		if (config.usePointLight) {
 			ImGui::Checkbox("Rotate Point Light?", &rotatePointLight);
-			ImGui::SliderFloat("X Point Light", &lightStationaryPosition.x, 0.0f, 300.0f);
-			ImGui::SliderFloat("Y Point Light", &lightStationaryPosition.y, 0.0f, 100.0f);
-			ImGui::SliderFloat("Z Point Light", &lightStationaryPosition.z, 0.0f, 300.0f);
+			ImGui::SameLine();
+			HelpMarker("Rotate the light around");
+
+			ImGui::Text("Point Light Position");
+			ImGui::SameLine();
+			HelpMarker("Position for the point light");
+			ImGui::SliderFloat("X", &lightStationaryPosition.x, 0.0f, 300.0f);
+			ImGui::SliderFloat("Y", &lightStationaryPosition.y, 0.0f, 100.0f);
+			ImGui::SliderFloat("Z", &lightStationaryPosition.z, 0.0f, 300.0f);
 		}
 		else {
-			ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
-			ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
-			ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+			ImGui::Text("Sun Direction");
+			ImGui::SameLine();
+			HelpMarker("Direction for the directional light");
+			ImGui::SliderFloat("X", &config.sunDirection.x, -1.0f, 1.0f);
+			ImGui::SliderFloat("Y", &config.sunDirection.y, -1.0f, 1.0f);
+			ImGui::SliderFloat("Z", &config.sunDirection.z, -1.0f, 1.0f);
 		}
 	}
 
