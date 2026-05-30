@@ -557,7 +557,7 @@ void gui()
 
 		ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
 		ImGui::SameLine();
-		HelpMarker("Zoom at which to sample the noise");
+		HelpMarker("Zoom at which to sample the noise, increasing it means you sample over a smaller region thus zooming in and vice versa.");
 	}
 
 	if (ImGui::CollapsingHeader("fBM Options")) {
@@ -567,7 +567,7 @@ void gui()
 
 		ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
 		ImGui::SameLine();
-		HelpMarker("How much the frequency increase between octaves");
+		HelpMarker("How much the frequency increases between octaves");
 
 		ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
 		ImGui::SameLine();
@@ -576,7 +576,7 @@ void gui()
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	if (ImGui::CollapsingHeader("Interpolation Options")) {
-		ImGui::Text("Interpolation Method");
+		ImGui::Text("Smoothing Method");
 		ImGui::SameLine();
 		HelpMarker("Which method to use for smoothing before interpolating the dot products in the noise");
 		ImGui::RadioButton("No Smooth", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::NoSmooth));
