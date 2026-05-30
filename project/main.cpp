@@ -394,14 +394,14 @@ float getTerrainHeight(float worldX, float worldZ, const std::vector<float>& gri
 	float h01 = grid[z1 * gridWidth + x0];
 	float h11 = grid[z1 * gridWidth + x1];
 
-	float topHeight = linearInterpolate(sx);
-	topHeight = blending(h00, h10, topHeight);
+	float topHeight = noSmooth(sx);
+	topHeight = lerp(h00, h10, topHeight);
 
-	float bottomHeight = linearInterpolate(sx);
-	bottomHeight = blending(h01, h11, bottomHeight);
+	float bottomHeight = noSmooth(sx);
+	bottomHeight = lerp(h01, h11, bottomHeight);
 
-	float finalHeight = linearInterpolate(sz);
-	return blending(topHeight, bottomHeight, finalHeight);
+	float finalHeight = noSmooth(sz);
+	return lerp(topHeight, bottomHeight, finalHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -576,10 +576,16 @@ void gui()
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	if (ImGui::CollapsingHeader("Interpolation Options")) {
-		ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
-		ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
-		ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
-		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectBlending);
+		ImGui::Text("Interpolation Method");
+		ImGui::SameLine();
+		HelpMarker("Which method to use for interpolating the dot products in the noise");
+		ImGui::RadioButton("NoSmooth", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::NoSmooth));
+		ImGui::RadioButton("SmoothStep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmoothStep));
+		ImGui::RadioButton("SmootherStep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmootherStep));
+
+		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectLerp);
+		ImGui::SameLine();
+		HelpMarker("Incorrect lerp logic that leads to wacky generation");
 	}
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {

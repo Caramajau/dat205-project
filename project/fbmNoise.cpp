@@ -2,8 +2,8 @@
 
 // Using gradients to create an erosion look idea from: https://www.youtube.com/watch?v=gsJHzBTPG0Y
 
-FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, bool useIncorrectBlending, ErosionFunc erosion, float erosionStrength) 
-    : perlin(seed, interpolate, interpolateDerivative, useIncorrectBlending)
+FbmNoise::FbmNoise(int seed, int octaveCount, float lacunarity, float persistence, SmoothFunc smooth, SmoothFunc smoothDerivative, bool useIncorrectLerp, ErosionFunc erosion, float erosionStrength) 
+    : perlin(seed, smooth, smoothDerivative, useIncorrectLerp)
 {
     this->octaveCount = octaveCount;
     this->lacunarity = lacunarity;
