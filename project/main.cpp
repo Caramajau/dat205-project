@@ -562,8 +562,16 @@ void gui()
 
 	if (ImGui::CollapsingHeader("fBM Options")) {
 		ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
+		ImGui::SameLine();
+		HelpMarker("Layers of noise, more allows for more amount of detail");
+
 		ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("How much the frequency increase between octaves");
+
 		ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("How much of the amplitude that persists between octaves");
 	}
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
