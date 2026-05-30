@@ -4,11 +4,11 @@
 // https://www.youtube.com/watch?v=kCIaHqb60Cw
 // For instance, one difference is that this uses glm at various places.
 
-PerlinNoise::PerlinNoise(int seed, InterpolateFunc interpolate, InterpolateFunc interpolateDerivative, bool useIncorrectBlending) {
+PerlinNoise::PerlinNoise(int seed, SmoothFunc smooth, SmoothFunc smoothDerivative, bool useIncorrectLerp) {
     this->seed = seed;
-    this->interpolate = interpolate;
-    this->interpolateDerivative = interpolateDerivative;
-    this->useIncorrectBlending = useIncorrectBlending;
+    this->smooth = smooth;
+    this->smoothDerivative = smoothDerivative;
+    this->useIncorrectLerp = useIncorrectLerp;
 }
 
 PerlinNoise::~PerlinNoise() = default;
@@ -25,37 +25,37 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float sx = x - (float)x0;
     float sy = y - (float)y0;
 
-    // Compute and interpolate top two corners
+    // Smooth and interpolate top two corners
     float topLeftDot = dotGridGradient(x0, y0, x, y);
     float topRightDot = dotGridGradient(x1, y0, x, y);
-    float topInterpolation = interpolate(sx);
-    float topBlending = useIncorrectBlending ?
-        incorrectBlending(topLeftDot, topRightDot, topInterpolation) : blending(topLeftDot, topRightDot, topInterpolation);
+    float topSmooth = smooth(sx);
+    float topLerp = useIncorrectLerp ?
+        incorrectLerp(topLeftDot, topRightDot, topSmooth) : lerp(topLeftDot, topRightDot, topSmooth);
 
-    // Compute and interpolate bottom two corners
+    // Smooth and interpolate bottom two corners
     float bottomLeftDot = dotGridGradient(x0, y1, x, y);
     float bottomRightDot = dotGridGradient(x1, y1, x, y);
-    float bottomInterpolation = interpolate(sx);
-    float bottomBlending = useIncorrectBlending ?
-        incorrectBlending(bottomLeftDot, bottomRightDot, bottomInterpolation) : blending(bottomLeftDot, bottomRightDot, bottomInterpolation);
+    float bottomSmooth = smooth(sx);
+    float bottomLerp = useIncorrectLerp ?
+        incorrectLerp(bottomLeftDot, bottomRightDot, bottomSmooth) : lerp(bottomLeftDot, bottomRightDot, bottomSmooth);
 
-    // Then interpolate horizontal with vertical
-    // I.e.: interpolate between the two previously interpolated values, now in y.
-    float finalInterpolation = interpolate(sy);
-    float finalBlending = useIncorrectBlending ?
-        incorrectBlending(topBlending, bottomBlending, finalInterpolation) : blending(topBlending, bottomBlending, finalInterpolation);
+    // Then smooth horizontal with vertical
+    // I.e.: smooth between the two previously interpolated values, now in y.
+    float finalSmooth = smooth(sy);
+    float finalLerp = useIncorrectLerp ?
+        incorrectLerp(topLerp, bottomLerp, finalSmooth) : lerp(topLerp, bottomLerp, finalSmooth);
 
     // Derivative of chosen interpolation
-    float dx = interpolateDerivative(sx);
-    float dy = interpolateDerivative(sy);
+    float dx = smoothDerivative(sx);
+    float dy = smoothDerivative(sy);
 
     // Account for chain rule
     float topContribution = topRightDot - topLeftDot;
-    float bottomContribution = finalInterpolation * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
+    float bottomContribution = finalSmooth * (bottomRightDot - bottomLeftDot - topRightDot + topLeftDot);
     outDx = dx * (topContribution + bottomContribution);
-    outDy = dy * (bottomBlending - topBlending);
+    outDy = dy * (bottomLerp - topLerp);
 
-    return finalBlending;
+    return finalLerp;
 }
 
 // Computes the dot product of the distance and gradient vectors

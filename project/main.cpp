@@ -394,14 +394,14 @@ float getTerrainHeight(float worldX, float worldZ, const std::vector<float>& gri
 	float h01 = grid[z1 * gridWidth + x0];
 	float h11 = grid[z1 * gridWidth + x1];
 
-	float topHeight = linearInterpolate(sx);
-	topHeight = blending(h00, h10, topHeight);
+	float topHeight = noSmooth(sx);
+	topHeight = lerp(h00, h10, topHeight);
 
-	float bottomHeight = linearInterpolate(sx);
-	bottomHeight = blending(h01, h11, bottomHeight);
+	float bottomHeight = noSmooth(sx);
+	bottomHeight = lerp(h01, h11, bottomHeight);
 
-	float finalHeight = linearInterpolate(sz);
-	return blending(topHeight, bottomHeight, finalHeight);
+	float finalHeight = noSmooth(sz);
+	return lerp(topHeight, bottomHeight, finalHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -506,6 +506,24 @@ bool handleEvents(void)
 	return quitEvent;
 }
 
+// Helper function for the question mark GUI component
+// Directly taken from the ImGui demo:
+// https://github.com/pthom/imgui/blob/imgui_bundle/imgui_demo.cpp#L278
+// (Or just look in the imgui_demo.cpp)
+// (Chose to do this, since the ImGui version this project uses has limited tooltip support)
+static void HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is to hold the general GUI logic
 ///////////////////////////////////////////////////////////////////////////////
@@ -526,24 +544,48 @@ void gui()
 	if (ImGui::CollapsingHeader("General Terrain Options")) {
 		// Slider int seems to only support half the range (still gives many seed options anyways)
 		ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
+		ImGui::SameLine();
+		HelpMarker("An integer to create different terrains by using a XOR operation with it");
 
 		ImGui::SliderInt("Width", &config.width, 2, 1000);
+		ImGui::SameLine();
+		HelpMarker("Terrain size in the x-axis");
+
 		ImGui::SliderInt("Length", &config.length, 2, 1000);
+		ImGui::SameLine();
+		HelpMarker("Terrain size in the z-axis");
+
 		ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
+		ImGui::SameLine();
+		HelpMarker("Zoom at which to sample the noise, increasing it means you sample over a smaller region thus zooming in and vice versa.");
 	}
 
 	if (ImGui::CollapsingHeader("fBM Options")) {
 		ImGui::SliderInt("Octaves", &config.octaveCount, 1, 12);
+		ImGui::SameLine();
+		HelpMarker("Layers of noise, more allows for more amount of detail");
+
 		ImGui::SliderFloat("Lacunarity", &config.lacunarity, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("How much the frequency increases between octaves");
+
 		ImGui::SliderFloat("Peristence", &config.persistence, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("How much of the amplitude that persists between octaves");
 	}
 
 	// Have to convert temporarily to integer, (reinterpret_cast should be fine for enum).
 	if (ImGui::CollapsingHeader("Interpolation Options")) {
-		ImGui::RadioButton("Linear", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Linear));
-		ImGui::RadioButton("Cubic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Cubic));
-		ImGui::RadioButton("Quintic", reinterpret_cast<int*>(&config.interpolationType), static_cast<int>(InterpolationType::Quintic));
-		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectBlending);
+		ImGui::Text("Smoothing Method");
+		ImGui::SameLine();
+		HelpMarker("Which method to use for smoothing before interpolating the dot products in the noise");
+		ImGui::RadioButton("No Smooth", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::NoSmooth));
+		ImGui::RadioButton("Smoothstep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmoothStep));
+		ImGui::RadioButton("Smootherstep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmootherStep));
+
+		ImGui::Checkbox("Use Incorrect Interpolation?", &config.useIncorrectLerp);
+		ImGui::SameLine();
+		HelpMarker("Incorrect lerp logic that leads to wacky generation");
 	}
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {
@@ -563,6 +605,7 @@ void gui()
 		proceduralTerrain.setGpuData(config, heightMapGrid);
 		water.setGpuData(config, waterFBOs);
 	}
+	ImGui::NewLine();
 
 	ImGui::Text("The following options are updated immediately");
 	if (ImGui::CollapsingHeader("General Terrain Display Options")) {

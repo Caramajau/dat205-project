@@ -1,31 +1,31 @@
 #pragma once
 
-// Here are functions that can be used for the interpolations as well as the actual blending.
+// Here are functions that can be used for the smoothing as well as the lerp.
 
 // Here mostly to make it used similar to other methods.
-float linearInterpolate(float weight);
-float linearDerivative(float);
+float noSmooth(float weight);
+float noSmoothDerivative(float);
 
-float cubicInterpolate(float weight);
-float cubicDerivative(float weight);
+float smoothStep(float weight);
+float smoothStepDerivative(float weight);
 
-float quinticInterpolate(float weight);
-float quinticDerivative(float weight);
+float smootherStep(float weight);
+float smootherStepDerivative(float weight);
 
 // Will interpolate (blend) between the first and second value, blendingFactor between 0 and 1.
-float blending(float a, float b, float blendingFactor);
+float lerp(float a, float b, float blendingFactor);
 
-float incorrectBlending(float a, float b, float blendingFactor);
+float incorrectLerp(float a, float b, float blendingFactor);
 
-enum class InterpolationType
+enum class SmoothType
 {
-	Linear,
-	Cubic,
-	Quintic
+	NoSmooth,
+	SmoothStep,
+	SmootherStep
 };
 
 // Function pointer for what kind of interpolation function to use.
-using InterpolateFunc = float(*)(float);
+using SmoothFunc = float(*)(float);
 
-InterpolateFunc convertTypeToMethodInterpolationType(InterpolationType interpolationType);
-InterpolateFunc convertTypeToMethodDerivativeType(InterpolationType interpolationType);
+SmoothFunc convertTypeToMethodSmoothType(SmoothType smoothType);
+SmoothFunc convertTypeToMethodDerivativeType(SmoothType smoothType);
