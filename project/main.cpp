@@ -548,8 +548,16 @@ void gui()
 		HelpMarker("An integer to create different terrains by using a XOR operation with it");
 
 		ImGui::SliderInt("Width", &config.width, 2, 1000);
+		ImGui::SameLine();
+		HelpMarker("Terrain size in the x-axis");
+
 		ImGui::SliderInt("Length", &config.length, 2, 1000);
+		ImGui::SameLine();
+		HelpMarker("Terrain size in the z-axis");
+
 		ImGui::SliderInt("Grid Size", &config.gridSize, 1, 1000);
+		ImGui::SameLine();
+		HelpMarker("Zoom at which to sample the noise");
 	}
 
 	if (ImGui::CollapsingHeader("fBM Options")) {
@@ -583,6 +591,7 @@ void gui()
 		proceduralTerrain.setGpuData(config, heightMapGrid);
 		water.setGpuData(config, waterFBOs);
 	}
+	ImGui::NewLine();
 
 	ImGui::Text("The following options are updated immediately");
 	if (ImGui::CollapsingHeader("General Terrain Display Options")) {
