@@ -663,19 +663,39 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Texture Options")) {
 		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
+		ImGui::SameLine();
+		HelpMarker("Computes normals using a four-sample cross filter, rather than the cross product of derivatives");
 
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
+		ImGui::SameLine();
+		HelpMarker("Zoom level for the texture sampling");
 		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+		ImGui::SameLine();
+		HelpMarker("How sharp the blending should be between the triplanar textures");
 
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing grass");
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing rock");
 
 		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing sand compared to the base grass/rock");
 		ImGui::SliderFloat("Sand Level Offset", &config.sandLevelOffset, 0.0f, 5.0f);
+		ImGui::SameLine();
+		HelpMarker("How far the sand should go beyond the water level");
 
 		ImGui::SliderFloat("Snow Threshold", &config.snowThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing snow compared to the base grass/rock");
 		ImGui::SliderFloat("Snow Level Start Offset", &config.snowStartLevelOffset, 0.0f, 80.0f);
+		ImGui::SameLine();
+		HelpMarker("At what level the snow should start from (relative to the water level)");
 		ImGui::SliderFloat("Snow Level End Offset", &config.snowEndLevelOffset, 0.0f, 5.0f);
+		ImGui::SameLine();
+		HelpMarker("The level where the snow takes full effect on the terrain (the influence between is smoothen)");
 	}
 
 	if (ImGui::CollapsingHeader("Water Options")) {
