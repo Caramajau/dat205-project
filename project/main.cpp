@@ -624,7 +624,11 @@ void gui()
 	ImGui::Text("The following options are updated immediately");
 	if (ImGui::CollapsingHeader("General Terrain Display Options")) {
 		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
+		ImGui::SameLine();
+		HelpMarker("The level at which the height map offsets from");
 		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
+		ImGui::SameLine();
+		HelpMarker("How large the heights from the height map should be displayed as");
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
