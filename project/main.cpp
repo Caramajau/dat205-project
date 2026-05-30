@@ -578,12 +578,12 @@ void gui()
 	if (ImGui::CollapsingHeader("Interpolation Options")) {
 		ImGui::Text("Interpolation Method");
 		ImGui::SameLine();
-		HelpMarker("Which method to use for interpolating the dot products in the noise");
-		ImGui::RadioButton("NoSmooth", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::NoSmooth));
-		ImGui::RadioButton("SmoothStep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmoothStep));
-		ImGui::RadioButton("SmootherStep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmootherStep));
+		HelpMarker("Which method to use for smoothing before interpolating the dot products in the noise");
+		ImGui::RadioButton("No Smooth", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::NoSmooth));
+		ImGui::RadioButton("Smoothstep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmoothStep));
+		ImGui::RadioButton("Smootherstep", reinterpret_cast<int*>(&config.smoothType), static_cast<int>(SmoothType::SmootherStep));
 
-		ImGui::Checkbox("Use Incorrect Blending?", &config.useIncorrectLerp);
+		ImGui::Checkbox("Use Incorrect Interpolation?", &config.useIncorrectLerp);
 		ImGui::SameLine();
 		HelpMarker("Incorrect lerp logic that leads to wacky generation");
 	}
