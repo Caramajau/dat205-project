@@ -45,7 +45,7 @@ float PerlinNoise::sample(float x, float y, float& outDx, float& outDy) const {
     float finalLerp = useIncorrectLerp ?
         incorrectLerp(topLerp, bottomLerp, finalSmooth) : lerp(topLerp, bottomLerp, finalSmooth);
 
-    // Derivative of chosen interpolation
+    // Derivative of chosen smoothing function
     float dx = smoothDerivative(sx);
     float dy = smoothDerivative(sy);
 

@@ -51,7 +51,7 @@ float FbmNoise::sample(float fx, float fy) const
     // "Contrast"
     value *= 1.2f;
 
-    // Clamp values, since they can go beyond 1 / -1.
+    // Clamp values, since they can go beyond 1 or -1.
     if (value > 1.0f) {
         value = 1.0f;
     }

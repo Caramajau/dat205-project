@@ -590,8 +590,18 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {
 		ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("The erosion strength, higher values cause more detail suppression for slopes and vice versa");
+
+		ImGui::Text("Erosion Method");
+		ImGui::SameLine();
+		HelpMarker("Which method to use for erosion");
 		ImGui::RadioButton("Rational", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Rational));
+		ImGui::SameLine();
+		HelpMarker("1 / (1 + k * x), where k is erosion strength");
 		ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Exponential));
+		ImGui::SameLine();
+		HelpMarker("e^(-k * x), where k is erosion strength");
 	}
 
 	if (ImGui::CollapsingHeader("Domain Warping Options")) {
