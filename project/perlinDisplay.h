@@ -15,7 +15,7 @@ public:
 	~PerlinDisplay();
 
 	void loadShader(bool is_reload);
-	void setGpuData(const ProceduralConfig& config);
+	void setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane) const;
 
 private:
@@ -29,6 +29,4 @@ private:
 	GLuint quadVertexArrayObject = 0;
 	GLuint quadVertexBufferObject = 0;
 	GLuint quadIndexBufferObject = 0;
-
-	std::vector<float> grid;
 };

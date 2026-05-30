@@ -99,6 +99,7 @@ mat4 fighterModelMatrix;
 
 PerlinDisplay perlinDisplay;
 ProceduralTerrain proceduralTerrain;
+std::vector<float> heightMapGrid;
 ProceduralConfig config{};
 
 Water water;
@@ -165,8 +166,9 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
 
-	perlinDisplay.setGpuData(config);
-	proceduralTerrain.setGpuData(config);
+	heightMapGrid = createHeightMap(config);
+	perlinDisplay.setGpuData(config, heightMapGrid);
+	proceduralTerrain.setGpuData(config, heightMapGrid);
 
 	waterFBOs.initialise();
 	water.setGpuData(config, waterFBOs);
@@ -492,7 +494,7 @@ bool handleEvents(void)
 		cameraPosition.y = getTerrainHeight(
 			cameraPosition.x, 
 			cameraPosition.z, 
-			proceduralTerrain.getHeightMapGrid(), 
+			heightMapGrid, 
 			config.width
 		) * config.heightScale + config.terrainLevel + terrainOffset;
 	}
@@ -611,22 +613,26 @@ void gui()
 	}
 
 	if (ImGui::Button("Reload texture")) {
-		perlinDisplay.setGpuData(config);
-		proceduralTerrain.setGpuData(config);
+		heightMapGrid = createHeightMap(config);
+
+		perlinDisplay.setGpuData(config, heightMapGrid);
+		proceduralTerrain.setGpuData(config, heightMapGrid);
 		water.setGpuData(config, waterFBOs);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Reset texture")) {
 		config.reset();
 
-		perlinDisplay.setGpuData(config);
-		proceduralTerrain.setGpuData(config);
+		heightMapGrid = createHeightMap(config);
+
+		perlinDisplay.setGpuData(config, heightMapGrid);
+		proceduralTerrain.setGpuData(config, heightMapGrid);
 		water.setGpuData(config, waterFBOs);
 	}
 
 	if (ImGui::Button("Enter world")) {
 		hasEntered = true;
-		cameraPosition = vec3(0, proceduralTerrain.getHeightMapGrid()[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
+		cameraPosition = vec3(0, heightMapGrid[0] * config.heightScale + config.terrainLevel + terrainOffset, 0);
 		cameraSpeed = 10.0f;
 	}
 

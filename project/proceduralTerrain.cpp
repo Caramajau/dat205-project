@@ -26,9 +26,7 @@ void ProceduralTerrain::loadShader(bool is_reload) {
 	loadTexture(snowNormalMap, "../scenes/textures/snowNormal.jpg");
 }
 
-void ProceduralTerrain::setGpuData(const ProceduralConfig& config) {
-	heightMapGrid = createHeightMap(config);
-
+void ProceduralTerrain::setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid) {
 	glGenTextures(1, &perlinTexture);
 	glBindTexture(GL_TEXTURE_2D, perlinTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, config.width, config.length, 0, GL_RED, GL_FLOAT, heightMapGrid.data());

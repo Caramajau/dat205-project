@@ -16,9 +16,8 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
-	void setGpuData(const ProceduralConfig& config);
+	void setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config);
-	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
 
 private:
 	glm::mat4 terrainModelMatrix;
@@ -42,8 +41,6 @@ private:
 	GLuint terrainVertexArrayObject = 0;
 	GLuint terrainVertexBufferObject = 0;
 	GLuint terrainIndexBufferObject = 0;
-
-	std::vector<float> heightMapGrid;
 
 	size_t triangleCount = 0;
 
