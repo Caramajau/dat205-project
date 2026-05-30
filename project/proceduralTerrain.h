@@ -16,14 +16,10 @@ public:
 	~ProceduralTerrain();
 
 	void loadShader(bool is_reload);
-	void setGpuData(const ProceduralConfig& config);
-	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, float waterLevel, glm::vec3 lightPosition, const ProceduralConfig& config) const;
-	const std::vector<float>& getHeightMapGrid() const { return heightMapGrid; }
-
-	float getLevel() const;
+	void setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid);
+	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config);
 
 private:
-	float terrainLevel;
 	glm::mat4 terrainModelMatrix;
 
 	GLuint perlinTexture = 0;
@@ -46,26 +42,8 @@ private:
 	GLuint terrainVertexBufferObject = 0;
 	GLuint terrainIndexBufferObject = 0;
 
-	std::vector<float> heightMapGrid;
-
 	size_t triangleCount = 0;
-
-	float heightScale = 0;
-	bool useNeighbours = false;
-	glm::vec3 sunDirection;
-
-	float textureZoom;
-	float grassThreshold;
-	float rockThreshold;
-	float sandThreshold;
-	float sandLevelOffset;
-	float snowThreshold;
-	float snowStartLevelOffset;
-	float snowEndLevelOffset;
-	float triplanarBlendFactor;
 
 	std::vector<float> createVertices(int width, int length) const;
 	std::vector<unsigned int> createIndices(int width, int length) const;
-
-	void setLevel(float newLevel);
 };

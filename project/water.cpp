@@ -19,30 +19,6 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	refractionTexture = waterFBOs.getRefractionTexture();
 	refractionDepthTexture = waterFBOs.getRefractionDepthTexture();
 
-	sunDirection = config.sunDirection;
-
-	setLevel(config.waterLevel);
-
-	tiling = config.waterTiling;
-	waveSpeed = config.waterWaveSpeed;
-	waveStrength = config.waterWaveStrength;
-
-	shineDamper = config.waterShineDamper;
-	reflectivity = config.waterReflectivity;
-
-	borderTransparencyFactor = config.waterBorderTransparencyFactor;
-	distortionDampening = config.waterDistortionDampening;
-	highlightDampening = config.waterHighlightDampening;
-
-	fresnelModifier = config.waterFresnelModifier;
-
-	normalFlattenFactor = config.waterNormalFlattenFactor;
-
-	murkyColourFactor = config.waterMurkyColourFactor;
-	murkyColour = config.waterMurkyColour;
-	blueTintFactor = config.waterBlueTintFactor;
-	blueColour = config.waterBlueColour;
-
 	float vertices[] = {
 		0.0f,			0.0f, 0.0f,			 0.0f,			0.0f,
 		terrainWidth,	0.0f, 0.0f,			 terrainWidth,	0.0f,
@@ -76,8 +52,8 @@ void Water::setGpuData(const ProceduralConfig& config, const WaterFrameBuffers& 
 	glBindVertexArray(0);
 }
 
-void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far, glm::vec3 lightPosition, const ProceduralConfig& config) {
-	moveFactor += waveSpeed * deltaTime;
+void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, float deltaTime, const glm::vec3& cameraPosition, float near, float far, const glm::vec3& lightPosition, const ProceduralConfig& config) {
+	moveFactor += config.waterWaveSpeed * deltaTime;
 	// Loop back
 	if (moveFactor > 1.0f)
 	{
@@ -100,38 +76,42 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, refractionDepthTexture);
 
+	waterModelMatrix = translate(config.waterLevel * glm::vec3(0.0f, 1.0f, 0.0f));
 	labhelper::setUniformSlow(waterShader, "modelMatrix", waterModelMatrix);
 	labhelper::setUniformSlow(waterShader, "modelViewProjectionMatrix", projMatrix * viewMatrix * waterModelMatrix);
 
 	labhelper::setUniformSlow(waterShader, "cameraPosition", cameraPosition);
 	labhelper::setUniformSlow(waterShader, "usePointLight", config.usePointLight);
-	labhelper::setUniformSlow(waterShader, "sunDirection", sunDirection);
+	labhelper::setUniformSlow(waterShader, "sunDirection", config.sunDirection);
 	labhelper::setUniformSlow(waterShader, "lightPosition", lightPosition);
 
 	labhelper::setUniformSlow(waterShader, "moveFactor", moveFactor);
-	labhelper::setUniformSlow(waterShader, "waveStrength", waveStrength);
+	labhelper::setUniformSlow(waterShader, "waveStrength", config.waterWaveStrength);
 
-	labhelper::setUniformSlow(waterShader, "shineDamper", shineDamper);
-	labhelper::setUniformSlow(waterShader, "reflectivity", reflectivity);
+	labhelper::setUniformSlow(waterShader, "shineDamper", config.waterShineDamper);
+	labhelper::setUniformSlow(waterShader, "reflectivity", config.waterReflectivity);
 
-	labhelper::setUniformSlow(waterShader, "borderTransparencyFactor", borderTransparencyFactor);
-	labhelper::setUniformSlow(waterShader, "distortionDampening", distortionDampening);
-	labhelper::setUniformSlow(waterShader, "highlightDampening", highlightDampening);
+	labhelper::setUniformSlow(waterShader, "borderTransparencyFactor", config.waterBorderTransparencyFactor);
+	labhelper::setUniformSlow(waterShader, "distortionDampening", config.waterDistortionDampening);
+	labhelper::setUniformSlow(waterShader, "highlightDampening", config.waterHighlightDampening);
 
 	labhelper::setUniformSlow(waterShader, "near", near);
 	labhelper::setUniformSlow(waterShader, "far", far);
 
-	labhelper::setUniformSlow(waterShader, "tiling", tiling);
+	labhelper::setUniformSlow(waterShader, "tiling", config.waterTiling);
 
-	labhelper::setUniformSlow(waterShader, "fresnelModifier", fresnelModifier);
+	labhelper::setUniformSlow(waterShader, "fresnelModifier", config.waterFresnelModifier);
 
-	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", normalFlattenFactor);
+	labhelper::setUniformSlow(waterShader, "normalFlattenFactor", config.waterNormalFlattenFactor);
 
-	labhelper::setUniformSlow(waterShader, "murkyColourFactor", murkyColourFactor);
+	labhelper::setUniformSlow(waterShader, "murkyColourFactor", config.waterMurkyColourFactor);
+	
+	glm::vec4 murkyColour = config.waterMurkyColour;
 	glUniform4f(glGetUniformLocation(waterShader, "murkyColour"),
 		murkyColour.r, murkyColour.g, murkyColour.b, murkyColour.a);
 
-	labhelper::setUniformSlow(waterShader, "blueTintFactor", blueTintFactor);
+	glm::vec4 blueColour = config.waterBlueColour;
+	labhelper::setUniformSlow(waterShader, "blueTintFactor", config.waterBlueTintFactor);
 	glUniform4f(glGetUniformLocation(waterShader, "blueColour"),
 		blueColour.r, blueColour.g, blueColour.b, blueColour.a);
 
@@ -141,15 +121,4 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glBindVertexArray(waterVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
-}
-
-float Water::getLevel() const {
-	return level;
-}
-
-void Water::setLevel(float newLevel) {
-	level = newLevel;
-	// NOTE: If world up is changed from 0, 1, 0 this should match.
-	// (probably won't in this project)
-	waterModelMatrix = translate(level * glm::vec3(0.0f, 1.0f, 0.0f));
 }
