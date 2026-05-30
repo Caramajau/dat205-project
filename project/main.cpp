@@ -506,6 +506,24 @@ bool handleEvents(void)
 	return quitEvent;
 }
 
+// Helper function for the question mark GUI component
+// Directly taken from the ImGui demo:
+// https://github.com/pthom/imgui/blob/imgui_bundle/imgui_demo.cpp#L278
+// (Or just look in the imgui_demo.cpp)
+// (Chose to do this, since the ImGui version this project uses has limited tooltip support)
+static void HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This function is to hold the general GUI logic
 ///////////////////////////////////////////////////////////////////////////////
@@ -526,6 +544,8 @@ void gui()
 	if (ImGui::CollapsingHeader("General Terrain Options")) {
 		// Slider int seems to only support half the range (still gives many seed options anyways)
 		ImGui::SliderInt("Seed", &config.seed, INT_MIN / 2, INT_MAX / 2);
+		ImGui::SameLine();
+		HelpMarker("An integer to create different terrains by using a XOR operation with it");
 
 		ImGui::SliderInt("Width", &config.width, 2, 1000);
 		ImGui::SliderInt("Length", &config.length, 2, 1000);
