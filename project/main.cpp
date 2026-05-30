@@ -606,7 +606,11 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Domain Warping Options")) {
 		ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
+		ImGui::SameLine();
+		HelpMarker("The amount of levels of domain warping, more causes the terrain to look more warped");
 		ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
+		ImGui::SameLine();
+		HelpMarker("The amplitude of the domain warping, how strongly it affects the terrain");
 	}
 	if (ImGui::Button("Reload Terrain")) {
 		heightMapGrid = createHeightMap(config);
