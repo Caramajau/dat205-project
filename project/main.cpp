@@ -707,32 +707,73 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Water Options")) {
 		ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
-		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+		ImGui::SameLine();
+		HelpMarker("The level at which the water exists");
 
-		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
-		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
+		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+		ImGui::SameLine();
+		HelpMarker("How zoomed the water \"tiles\" should be");
+
+		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, -1.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("How fast the water waves should move");
+
+		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, -1.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing distortion caused by waves");
 
 		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
-		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
-		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
-		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
-		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+		HelpMarker("Factor for controlling how sharp or spread out the specular hightlights are");
 
-		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+		HelpMarker("Factor for increasing or decreasing specular highlights caused by waves");
+
+		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect transparency");
+
+		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect distortion dampening");
+
+		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect specular highlight dampening");
+
+		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 20.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for adjusting how the Fresnel effect should split, i.e. if it should be more refractive or reflective");
 
 		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how flat the water is preceived");
 
 		// NOTE: ColorEdit3, since alpha is overridden in the shader.
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should make the water get a murky colour");
+
 		ImGui::ColorEdit3("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
+		ImGui::SameLine();
+		HelpMarker("The colour for murky water");
 
 		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor to adjust how blue the water is");
+
+		// TODO: Rename to tint colour?
 		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
+		ImGui::SameLine();
+		HelpMarker("The colour that the water can be tinted by, is blue by default");
 
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
+		ImGui::SameLine();
+		HelpMarker("Small offset to avoid potential distortion artefacts near edges (usally already avoided with the Border Transparency Factor and Distortion Dampening)");
 
 		ImGui::NewLine();
 		ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
+		ImGui::SameLine();
+		HelpMarker("Debug display to see what is rendered to the different textures used for the water");
 
 		if (displayWaterDebug) {
 			bool shouldDebugDisplayUpdate =
