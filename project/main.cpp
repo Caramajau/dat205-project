@@ -757,12 +757,11 @@ void gui()
 		ImGui::SameLine();
 		HelpMarker("The colour for murky water");
 
-		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
+		ImGui::SliderFloat("Water Tint Factor", &config.waterTintFactor, 0.0f, 1.0f);
 		ImGui::SameLine();
-		HelpMarker("Factor to adjust how blue the water is");
+		HelpMarker("Factor to adjust how tinted the water is");
 
-		// TODO: Rename to tint colour?
-		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Tint Colour", glm::value_ptr(config.waterTintColour), ImGuiColorEditFlags_Float);
 		ImGui::SameLine();
 		HelpMarker("The colour that the water can be tinted by, is blue by default");
 
