@@ -110,9 +110,9 @@ void Water::submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix
 	glUniform4f(glGetUniformLocation(waterShader, "murkyColour"),
 		murkyColour.r, murkyColour.g, murkyColour.b, murkyColour.a);
 
-	glm::vec4 blueColour = config.waterBlueColour;
-	labhelper::setUniformSlow(waterShader, "blueTintFactor", config.waterBlueTintFactor);
-	glUniform4f(glGetUniformLocation(waterShader, "blueColour"),
+	glm::vec4 blueColour = config.waterTintColour;
+	labhelper::setUniformSlow(waterShader, "tintFactor", config.waterTintFactor);
+	glUniform4f(glGetUniformLocation(waterShader, "tintColour"),
 		blueColour.r, blueColour.g, blueColour.b, blueColour.a);
 
 	glEnable(GL_BLEND);

@@ -31,8 +31,8 @@ uniform float normalFlattenFactor;
 uniform float murkyColourFactor;
 uniform vec4 murkyColour;
 
-uniform float blueTintFactor;
-uniform vec4 blueColour;
+uniform float tintFactor;
+uniform vec4 tintColour;
 
 uniform float near;
 uniform float far;
@@ -111,8 +111,8 @@ void main()
 	refractColour = mix(refractColour, murkyColour, clamp(waterDepth / murkyColourFactor, 0.0, 1.0));
 
 	fragmentColor = mix(reflectColour, refractColour, fresnel);
-	// Tint slightly blue
-	fragmentColor = mix(fragmentColor, blueColour, blueTintFactor) + vec4(specularHighlights, 0.0);
+	// Tint slightly (default is blue)
+	fragmentColor = mix(fragmentColor, tintColour, tintFactor) + vec4(specularHighlights, 0.0);
 
 	fragmentColor.a = clamp(waterDepth / borderTransparencyFactor, 0.0, 1.0);
 }

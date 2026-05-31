@@ -590,13 +590,28 @@ void gui()
 
 	if (ImGui::CollapsingHeader("Erosion Options")) {
 		ImGui::SliderFloat("Erosion Strength", &config.erosionStrength, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("The erosion strength, higher values cause more detail suppression for slopes and vice versa");
+
+		ImGui::Text("Erosion Method");
+		ImGui::SameLine();
+		HelpMarker("Which method to use for erosion");
 		ImGui::RadioButton("Rational", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Rational));
+		ImGui::SameLine();
+		HelpMarker("1 / (1 + k * x), where k is erosion strength");
 		ImGui::RadioButton("Exponential", reinterpret_cast<int*>(&config.erosionType), static_cast<int>(ErosionType::Exponential));
+		ImGui::SameLine();
+		HelpMarker("e^(-k * x), where k is erosion strength");
 	}
 
 	if (ImGui::CollapsingHeader("Domain Warping Options")) {
 		ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
+		ImGui::SameLine();
+		HelpMarker("The amount of levels of domain warping, more causes the terrain to look more warped");
+
 		ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
+		ImGui::SameLine();
+		HelpMarker("The amplitude of the domain warping, how strongly it affects the terrain");
 	}
 	if (ImGui::Button("Reload Terrain")) {
 		heightMapGrid = createHeightMap(config);
@@ -610,73 +625,154 @@ void gui()
 	ImGui::Text("The following options are updated immediately");
 	if (ImGui::CollapsingHeader("General Terrain Display Options")) {
 		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
+		ImGui::SameLine();
+		HelpMarker("The level at which the height map offsets from");
+
 		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
+		ImGui::SameLine();
+		HelpMarker("How large the heights from the height map should be displayed as");
 	}
 
 	if (ImGui::CollapsingHeader("Lighting Options")) {
 		ImGui::Checkbox("Use Point Light?", &config.usePointLight);
+		ImGui::SameLine();
+		HelpMarker("Use point light instead of default directional");
 
 		// NOTE: Ideally you'd grey out and disable the irrelevant controls, but that seemed
 		// quite difficult with the ImGUI version this uses. Now it hides them instead
 		// as a workaround.
 		if (config.usePointLight) {
 			ImGui::Checkbox("Rotate Point Light?", &rotatePointLight);
-			ImGui::SliderFloat("X Point Light", &lightStationaryPosition.x, 0.0f, 300.0f);
-			ImGui::SliderFloat("Y Point Light", &lightStationaryPosition.y, 0.0f, 100.0f);
-			ImGui::SliderFloat("Z Point Light", &lightStationaryPosition.z, 0.0f, 300.0f);
+			ImGui::SameLine();
+			HelpMarker("Rotate the light around");
+
+			ImGui::Text("Point Light Position");
+			ImGui::SameLine();
+			HelpMarker("Position for the point light");
+			ImGui::SliderFloat("X", &lightStationaryPosition.x, 0.0f, 300.0f);
+			ImGui::SliderFloat("Y", &lightStationaryPosition.y, 0.0f, 100.0f);
+			ImGui::SliderFloat("Z", &lightStationaryPosition.z, 0.0f, 300.0f);
 		}
 		else {
-			ImGui::SliderFloat("X Sun Direction", &config.sunDirection.x, -1.0f, 1.0f);
-			ImGui::SliderFloat("Y Sun Direction", &config.sunDirection.y, -1.0f, 1.0f);
-			ImGui::SliderFloat("Z Sun Direction", &config.sunDirection.z, -1.0f, 1.0f);
+			ImGui::Text("Sun Direction");
+			ImGui::SameLine();
+			HelpMarker("Direction for the directional light");
+			ImGui::SliderFloat("X", &config.sunDirection.x, -1.0f, 1.0f);
+			ImGui::SliderFloat("Y", &config.sunDirection.y, -1.0f, 1.0f);
+			ImGui::SliderFloat("Z", &config.sunDirection.z, -1.0f, 1.0f);
 		}
 	}
 
 	if (ImGui::CollapsingHeader("Texture Options")) {
 		ImGui::Checkbox("Use Neighbours For Normals?", &config.useNeighbours);
+		ImGui::SameLine();
+		HelpMarker("Computes normals using a four-sample cross filter, rather than the cross product of derivatives");
 
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
+		ImGui::SameLine();
+		HelpMarker("Zoom level for the texture sampling");
+
 		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
+		ImGui::SameLine();
+		HelpMarker("How sharp the blending should be between the triplanar textures");
 
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Threshold for rock/grass blending, slopes below this value are fully grass");
+
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Threshold for rock/grass blending, slopes above this value are fully rock");
 
 		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing sand compared to the base grass/rock");
+
 		ImGui::SliderFloat("Sand Level Offset", &config.sandLevelOffset, 0.0f, 5.0f);
+		ImGui::SameLine();
+		HelpMarker("How far the sand should go beyond the water level");
 
 		ImGui::SliderFloat("Snow Threshold", &config.snowThreshold, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("At what threshold to start showing snow compared to the base grass/rock");
+
 		ImGui::SliderFloat("Snow Level Start Offset", &config.snowStartLevelOffset, 0.0f, 80.0f);
+		ImGui::SameLine();
+		HelpMarker("At what level the snow should start from (relative to the water level)");
+
 		ImGui::SliderFloat("Snow Level End Offset", &config.snowEndLevelOffset, 0.0f, 5.0f);
+		ImGui::SameLine();
+		HelpMarker("The level where the snow takes full effect on the terrain (the influence between is smoothen)");
 	}
 
 	if (ImGui::CollapsingHeader("Water Options")) {
 		ImGui::SliderFloat("Water Level", &config.waterLevel, -100.0f, 10.0f);
-		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+		ImGui::SameLine();
+		HelpMarker("The level at which the water exists");
 
-		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, 0.0f, 1.0f);
-		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, 0.0f, 1.0f);
+		ImGui::SliderFloat("Water Tiling", &config.waterTiling, 0.01f, 0.16f);
+		ImGui::SameLine();
+		HelpMarker("How zoomed the water \"tiles\" should be");
+
+		ImGui::SliderFloat("Wave Speed", &config.waterWaveSpeed, -1.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("How fast the water waves should move");
+
+		ImGui::SliderFloat("Wave Strength", &config.waterWaveStrength, -1.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing distortion caused by waves");
 
 		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
-		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
-		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
-		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
-		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+		HelpMarker("Factor for controlling how sharp or spread out the specular highlights are");
 
-		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 100.0f);
+		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+		HelpMarker("Factor for increasing or decreasing specular highlights caused by waves");
+
+		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect transparency");
+
+		ImGui::SliderFloat("Distortion Dampening", &config.waterDistortionDampening, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect distortion dampening");
+
+		ImGui::SliderFloat("Highlight Dampening", &config.waterHighlightDampening, 0.0f, 100.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should affect specular highlight dampening");
+
+		ImGui::SliderFloat("Fresnel Modifier", &config.waterFresnelModifier, 0.0f, 20.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for adjusting how the Fresnel effect should split, i.e. if it should be more refractive or reflective");
 
 		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how flat the water is preceived by scaling the normal map y component");
 
 		// NOTE: ColorEdit3, since alpha is overridden in the shader.
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
-		ImGui::ColorEdit3("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
+		ImGui::SameLine();
+		HelpMarker("Factor for increasing or decreasing how much depth should make the water get a murky colour");
 
-		ImGui::SliderFloat("Blue Tint Factor", &config.waterBlueTintFactor, 0.0f, 1.0f);
-		ImGui::ColorEdit3("Blue Colour", glm::value_ptr(config.waterBlueColour), ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit3("Murky Colour", glm::value_ptr(config.waterMurkyColour), ImGuiColorEditFlags_Float);
+		ImGui::SameLine();
+		HelpMarker("The colour for murky water");
+
+		ImGui::SliderFloat("Water Tint Factor", &config.waterTintFactor, 0.0f, 1.0f);
+		ImGui::SameLine();
+		HelpMarker("Factor to adjust how tinted the water is");
+
+		ImGui::ColorEdit3("Tint Colour", glm::value_ptr(config.waterTintColour), ImGuiColorEditFlags_Float);
+		ImGui::SameLine();
+		HelpMarker("The colour that the water can be tinted by, is blue by default");
 
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
+		ImGui::SameLine();
+		HelpMarker("Small offset to avoid potential distortion artefacts near edges (usually already avoided with the Border Transparency Factor and Distortion Dampening)");
 
 		ImGui::NewLine();
 		ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
+		ImGui::SameLine();
+		HelpMarker("Debug display to see what is rendered to the different textures used for the water");
 
 		if (displayWaterDebug) {
 			bool shouldDebugDisplayUpdate =
