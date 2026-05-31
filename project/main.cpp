@@ -678,11 +678,11 @@ void gui()
 
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
-		HelpMarker("At what threshold to start showing grass");
+		HelpMarker("Threshold for rock/grass blending, slopes below this value are fully grass");
 
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
-		HelpMarker("At what threshold to start showing rock");
+		HelpMarker("Threshold for rock/grass blending, slopes above this value are fully rock");
 
 		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
@@ -723,7 +723,7 @@ void gui()
 		HelpMarker("Factor for increasing or decreasing distortion caused by waves");
 
 		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
-		HelpMarker("Factor for controlling how sharp or spread out the specular hightlights are");
+		HelpMarker("Factor for controlling how sharp or spread out the specular highlights are");
 
 		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
 		HelpMarker("Factor for increasing or decreasing specular highlights caused by waves");
@@ -746,7 +746,7 @@ void gui()
 
 		ImGui::SliderFloat("Normal Flatten Factor", &config.waterNormalFlattenFactor, 0.0f, 10.0f);
 		ImGui::SameLine();
-		HelpMarker("Factor for increasing or decreasing how flat the water is preceived");
+		HelpMarker("Factor for increasing or decreasing how flat the water is preceived by scaling the normal map y component");
 
 		// NOTE: ColorEdit3, since alpha is overridden in the shader.
 		ImGui::SliderFloat("Murky Colour Factor", &config.waterMurkyColourFactor, 0.0f, 100.0f);
@@ -767,7 +767,7 @@ void gui()
 
 		ImGui::SliderFloat("Water Offset", &waterOffset, 0.0f, 2.0f);
 		ImGui::SameLine();
-		HelpMarker("Small offset to avoid potential distortion artefacts near edges (usally already avoided with the Border Transparency Factor and Distortion Dampening)");
+		HelpMarker("Small offset to avoid potential distortion artefacts near edges (usually already avoided with the Border Transparency Factor and Distortion Dampening)");
 
 		ImGui::NewLine();
 		ImGui::Checkbox("Enable Water Debug Display?", &displayWaterDebug);
