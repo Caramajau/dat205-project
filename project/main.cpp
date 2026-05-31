@@ -608,6 +608,7 @@ void gui()
 		ImGui::SliderInt("Domain Warping Level", &config.warpLevel, 0, 2);
 		ImGui::SameLine();
 		HelpMarker("The amount of levels of domain warping, more causes the terrain to look more warped");
+
 		ImGui::SliderFloat("Domain Warping Amplitude", &config.warpAmplitude, 0.0f, 8.0f);
 		ImGui::SameLine();
 		HelpMarker("The amplitude of the domain warping, how strongly it affects the terrain");
@@ -626,6 +627,7 @@ void gui()
 		ImGui::SliderFloat("Terrain Level", &config.terrainLevel, -200, 0);
 		ImGui::SameLine();
 		HelpMarker("The level at which the height map offsets from");
+
 		ImGui::SliderFloat("Height Scale", &config.heightScale, 0.1f, 256.0f);
 		ImGui::SameLine();
 		HelpMarker("How large the heights from the height map should be displayed as");
@@ -669,6 +671,7 @@ void gui()
 		ImGui::SliderFloat("Texture Zoom", &config.textureZoom, 0.01f, 8.0f);
 		ImGui::SameLine();
 		HelpMarker("Zoom level for the texture sampling");
+
 		ImGui::SliderFloat("Triplanar Blending Factor", &config.triplanarBlendFactor, 0.0f, 64.0f);
 		ImGui::SameLine();
 		HelpMarker("How sharp the blending should be between the triplanar textures");
@@ -676,6 +679,7 @@ void gui()
 		ImGui::SliderFloat("Grass Threshold", &config.grassThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
 		HelpMarker("At what threshold to start showing grass");
+
 		ImGui::SliderFloat("Rock Threshold", &config.rockThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
 		HelpMarker("At what threshold to start showing rock");
@@ -683,6 +687,7 @@ void gui()
 		ImGui::SliderFloat("Sand Threshold", &config.sandThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
 		HelpMarker("At what threshold to start showing sand compared to the base grass/rock");
+
 		ImGui::SliderFloat("Sand Level Offset", &config.sandLevelOffset, 0.0f, 5.0f);
 		ImGui::SameLine();
 		HelpMarker("How far the sand should go beyond the water level");
@@ -690,9 +695,11 @@ void gui()
 		ImGui::SliderFloat("Snow Threshold", &config.snowThreshold, 0.0f, 1.0f);
 		ImGui::SameLine();
 		HelpMarker("At what threshold to start showing snow compared to the base grass/rock");
+
 		ImGui::SliderFloat("Snow Level Start Offset", &config.snowStartLevelOffset, 0.0f, 80.0f);
 		ImGui::SameLine();
 		HelpMarker("At what level the snow should start from (relative to the water level)");
+
 		ImGui::SliderFloat("Snow Level End Offset", &config.snowEndLevelOffset, 0.0f, 5.0f);
 		ImGui::SameLine();
 		HelpMarker("The level where the snow takes full effect on the terrain (the influence between is smoothen)");
