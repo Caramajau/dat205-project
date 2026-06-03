@@ -723,9 +723,11 @@ void gui()
 		HelpMarker("Factor for increasing or decreasing distortion caused by waves");
 
 		ImGui::SliderFloat("Shine Damper", &config.waterShineDamper, 0.0f, 100.0f);
+		ImGui::SameLine();
 		HelpMarker("Factor for controlling how sharp or spread out the specular highlights are");
 
 		ImGui::SliderFloat("Reflectivity", &config.waterReflectivity, 0.0f, 1.0f);
+		ImGui::SameLine();
 		HelpMarker("Factor for increasing or decreasing specular highlights caused by waves");
 
 		ImGui::SliderFloat("Border Transparency Factor", &config.waterBorderTransparencyFactor, 0.0f, 100.0f);
