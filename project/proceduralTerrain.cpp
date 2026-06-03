@@ -3,27 +3,45 @@
 ProceduralTerrain::ProceduralTerrain() = default;
 ProceduralTerrain::~ProceduralTerrain() = default;
 
-void ProceduralTerrain::loadShader(bool is_reload) {
+void ProceduralTerrain::loadShader(bool is_reload, bool useLowResTextures) {
 	GLuint shader = labhelper::loadShaderProgram("../project/procedural.vert", "../project/procedural.frag", is_reload);
 	if (shader != 0) {
 		terrainShader = shader;
 	}
+	if (useLowResTextures) {
+		// Texture from https://ambientcg.com/a/Grass005
+		loadTexture(grassTexture, "../scenes/textures/lowGrass.jpg");
+		loadTexture(grassNormalMap, "../scenes/textures/lowGrassNormal.jpg");
 
-	// Texture from https://ambientcg.com/a/Grass005
-	loadTexture(grassTexture, "../scenes/textures/grass.jpg");
-	loadTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
+		// Texture from https://ambientcg.com/a/Ground067
+		loadTexture(rockTexture, "../scenes/textures/lowRock.jpg");
+		loadTexture(rockNormalMap, "../scenes/textures/lowRockNormal.jpg");
 
-	// Texture from https://ambientcg.com/a/Ground067
-	loadTexture(rockTexture, "../scenes/textures/rock.jpg");
-	loadTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
+		// Texture from https://ambientcg.com/a/Ground033
+		loadTexture(sandTexture, "../scenes/textures/lowSand.jpg");
+		loadTexture(sandNormalMap, "../scenes/textures/lowSandNormal.jpg");
 
-	// Texture from https://ambientcg.com/a/Ground033
-	loadTexture(sandTexture, "../scenes/textures/sand.jpg");
-	loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
+		// Texture from https://ambientcg.com/a/Snow010A
+		loadTexture(snowTexture, "../scenes/textures/lowSnow.jpg");
+		loadTexture(snowNormalMap, "../scenes/textures/lowSnowNormal.jpg");
+	}
+	else {
+		// Texture from https://ambientcg.com/a/Grass005
+		loadTexture(grassTexture, "../scenes/textures/grass.jpg");
+		loadTexture(grassNormalMap, "../scenes/textures/grassNormal.jpg");
 
-	// Texture from https://ambientcg.com/a/Snow010A
-	loadTexture(snowTexture, "../scenes/textures/snow.jpg");
-	loadTexture(snowNormalMap, "../scenes/textures/snowNormal.jpg");
+		// Texture from https://ambientcg.com/a/Ground067
+		loadTexture(rockTexture, "../scenes/textures/rock.jpg");
+		loadTexture(rockNormalMap, "../scenes/textures/rockNormal.jpg");
+
+		// Texture from https://ambientcg.com/a/Ground033
+		loadTexture(sandTexture, "../scenes/textures/sand.jpg");
+		loadTexture(sandNormalMap, "../scenes/textures/sandNormal.jpg");
+
+		// Texture from https://ambientcg.com/a/Snow010A
+		loadTexture(snowTexture, "../scenes/textures/snow.jpg");
+		loadTexture(snowNormalMap, "../scenes/textures/snowNormal.jpg");
+	}
 }
 
 void ProceduralTerrain::setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid) {

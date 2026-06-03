@@ -15,7 +15,7 @@ public:
 	explicit ProceduralTerrain();
 	~ProceduralTerrain();
 
-	void loadShader(bool is_reload);
+	void loadShader(bool is_reload, bool useLowResTextures);
 	void setGpuData(const ProceduralConfig& config, const std::vector<float>& heightMapGrid);
 	void submitToGpu(const glm::mat4& viewMatrix, const glm::mat4& projMatrix, const glm::vec4& waterPlane, const glm::vec3& lightPosition, const ProceduralConfig& config);
 
