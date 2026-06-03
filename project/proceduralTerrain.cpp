@@ -10,20 +10,20 @@ void ProceduralTerrain::loadShader(bool is_reload, bool useLowResTextures) {
 	}
 	if (useLowResTextures) {
 		// Texture from https://ambientcg.com/a/Grass005
-		loadTexture(grassTexture, "../scenes/textures/lowGrass.jpg");
-		loadTexture(grassNormalMap, "../scenes/textures/lowGrassNormal.jpg");
+		loadTexture(grassTexture, "../scenes/textures/lowGrass.jpg", 1.0f);
+		loadTexture(grassNormalMap, "../scenes/textures/lowGrassNormal.jpg", 1.0f);
 
 		// Texture from https://ambientcg.com/a/Ground067
-		loadTexture(rockTexture, "../scenes/textures/lowRock.jpg");
-		loadTexture(rockNormalMap, "../scenes/textures/lowRockNormal.jpg");
+		loadTexture(rockTexture, "../scenes/textures/lowRock.jpg", 1.0f);
+		loadTexture(rockNormalMap, "../scenes/textures/lowRockNormal.jpg", 1.0f);
 
 		// Texture from https://ambientcg.com/a/Ground033
-		loadTexture(sandTexture, "../scenes/textures/lowSand.jpg");
-		loadTexture(sandNormalMap, "../scenes/textures/lowSandNormal.jpg");
+		loadTexture(sandTexture, "../scenes/textures/lowSand.jpg", 1.0f);
+		loadTexture(sandNormalMap, "../scenes/textures/lowSandNormal.jpg", 1.0f);
 
 		// Texture from https://ambientcg.com/a/Snow010A
-		loadTexture(snowTexture, "../scenes/textures/lowSnow.jpg");
-		loadTexture(snowNormalMap, "../scenes/textures/lowSnowNormal.jpg");
+		loadTexture(snowTexture, "../scenes/textures/lowSnow.jpg", 1.0f);
+		loadTexture(snowNormalMap, "../scenes/textures/lowSnowNormal.jpg", 1.0f);
 	}
 	else {
 		// Texture from https://ambientcg.com/a/Grass005
