@@ -5,6 +5,8 @@
 #include "erosion.h"
 
 struct ProceduralConfig {
+	bool useLowResTextures = false;
+
 	int seed = 0;
 
 	int width = 256;

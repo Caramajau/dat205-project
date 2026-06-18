@@ -133,7 +133,7 @@ void loadShaders(bool is_reload)
 	}
 
 	perlinDisplay.loadShader(is_reload);
-	proceduralTerrain.loadShader(is_reload, true);
+	proceduralTerrain.loadShader(is_reload, config.useLowResTextures);
 	water.loadShader(is_reload);
 	waterFBOs.loadShader(is_reload);
 }
