@@ -1,5 +1,5 @@
 # DAT205 - Advanced Computer Graphics - Procedural World Project
-This is the repo for the procedural world project I did for the Advanced Computer Graphics course at Chalmers University of Technology. 
+This is the repo for the procedural world project I did for the [Advanced Computer Graphics course](https://www.student.chalmers.se/sp/course?course_id=40758) at Chalmers University of Technology.
 
 The project is based on the basic project template provided for the course, which can be found at https://gitlab.com/chalmerscg/opengl-project-template.
 
